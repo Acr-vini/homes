@@ -1,0 +1,51 @@
+.home-filter {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+
+  form {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--purpleBrdr);
+    border-radius: 8px;
+  }
+
+  .home-button {
+    padding: 10px 16px;
+    background: var(--purpleBck);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+
+    &:hover {
+      background: #6b21a8;
+    }
+  }
+}
+
+.home-results {
+  display: grid;
+  gap: 36px 14px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  justify-content: center;
+  padding: 32px;
+
+  @media (min-width: 500px) and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 499px) {
+    grid-template-columns: 1fr;
+  }
+}

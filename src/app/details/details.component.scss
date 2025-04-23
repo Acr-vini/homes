@@ -1,0 +1,141 @@
+:root {
+  --input-border-color: #ccc;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 40px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.listing-photo {
+  height: 600px;
+  width: 50%;
+  object-fit: cover;
+  border-radius: 30px;
+  border: 4px solid var(--purpleWeak);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.295);
+
+  @media (max-width: 1024px) {
+    width: 100%;
+    height: 400px;
+  }
+}
+
+.listing-description {
+  text-align: center;
+}
+
+.listing-heading {
+  color: var(--purpleBck);
+  font-size: 32pt;
+  font-weight: bold;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.listing-location {
+  font-size: 20pt;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+// FEATURES
+.listing-features {
+  margin-bottom: 20px;
+}
+
+.listing-features .section-heading {
+  color: #111;
+  font-size: 22pt;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--purpleBck);
+  padding-left: 12px;
+}
+
+.listing-features ul {
+  padding-left: 0;
+}
+
+.listing-features li {
+  font-size: 14pt;
+  color: #333;
+  margin-bottom: 8px;
+  padding-left: 16px;
+  list-style-type: none;
+  position: relative;
+}
+
+.listing-features li::before {
+
+  position: absolute;
+  left: 0;
+  color: var(--purpleBorder);
+  font-weight: bold;
+  margin-left: -16px;
+}
+
+// FORMULÁRIO
+.listing-apply .section-heading {
+  font-size: 22pt;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--purpleBck);
+  padding-left: 12px;
+
+}
+
+label {
+  display: block;
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12pt;
+  margin-top: 10px;
+}
+
+input {
+  font-size: 16pt;
+  margin-bottom: 15px;
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  border-bottom: 2px solid var(--purpleWeak);
+  background: transparent;
+  transition: border-color 0.3s ease;
+
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--purpleBck);
+}
+
+button.primary {
+  background-color: var(--purpleBck);
+  color: white;
+  font-size: 16pt;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button.primary:hover {
+  background-color: #5e34b1;
+}
