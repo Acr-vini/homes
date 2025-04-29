@@ -1,17 +1,17 @@
-<section class="home-filter">
-  <form (submit)="onSubmit($event)">
-    <input
-      type="text"
-      placeholder="Filter by city"
-      [formControl]="filterControl"
-    />
-    <button class="home-button" type="submit">Search</button>
-  </form>
-</section>
+<div class="home-filter-wrapper">
+  <section class="home-filter">
+    <form (submit)="onSubmit($event)">
+      <input type="text" placeholder="Filter by city" [formControl]="filterControl" />
+      <button class="home-button" type="submit">Search</button>
+    </form>
+  </section>
 
-<section class="home-results">
-  <app-housing-location
-    *ngFor="let housingLocation of filteredLocationList"
-    [housingLocation]="housingLocation">
+  <div>
+    <button class="create-button" routerLink="/create">Create a House</button>
+  </div>
+</div>
+
+<section class="housing-location-container">
+  <app-housing-location *ngFor="let housingLocation of filteredLocationList" [housingLocation]="housingLocation">
   </app-housing-location>
 </section>

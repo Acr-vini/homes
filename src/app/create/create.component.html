@@ -1,0 +1,41 @@
+<section class="create-form">
+  <h1>Create a New House</h1>
+
+  <!-- Alertas -->
+  <div *ngIf="successMessage" class="alert success-alert">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert error-alert">{{ errorMessage }}</div>
+
+  <form (ngSubmit)="onSubmit()" #formRef="ngForm">
+    <div>
+      <label for="name">House Name</label>
+      <input id="name" name="name" type="text" [(ngModel)]="housingLocation.name" required />
+    </div>
+
+    <div>
+      <label for="city">City</label>
+      <input id="city" name="city" type="text" [(ngModel)]="housingLocation.city" required />
+    </div>
+
+    <div>
+      <label for="state">State</label>
+      <input id="state" name="state" type="text" [(ngModel)]="housingLocation.state" required />
+    </div>
+
+    <div>
+      <label for="availableUnits">Available Units</label>
+      <input id="availableUnits" name="availableUnits" type="number" [(ngModel)]="housingLocation.availableUnits" required />
+    </div>
+
+    <div>
+      <label for="wifi">Wi-Fi Available</label>
+      <input id="wifi" name="wifi" type="checkbox" [(ngModel)]="housingLocation.wifi" />
+    </div>
+
+    <div>
+      <label for="laundry">Laundry Available</label>
+      <input id="laundry" name="laundry" type="checkbox" [(ngModel)]="housingLocation.laundry" />
+    </div>
+
+    <button type="submit" class="submit-button" [disabled]="formRef.invalid">Submit</button>
+  </form>
+</section>

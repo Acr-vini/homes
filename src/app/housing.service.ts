@@ -1,24 +1,37 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { HousingLocation } from './housinglocation';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HousingService {
+  private readonly baseUrl = 'http://localhost:3000/locations';
 
-  url = 'http://localhost:3000/locations';
+  constructor(private http: HttpClient) {}
 
-  async getAllHousingLocations(): Promise<HousingLocation[]> {
-    const data = await fetch(this.url);
-    return await data.json() ?? [];
+  getAllHousingLocations(): Observable<HousingLocation[]> {
+    return this.http.get<HousingLocation[]>(this.baseUrl);
   }
 
-  async getHousingLocationById(id: number): Promise<HousingLocation | undefined> {
-    const data = await fetch(`${this.url}/${id}`);
-    return await data.json() ?? {};
+  getHousingLocationById(id: number): Observable<HousingLocation> {
+    return this.http.get<HousingLocation>(`${this.baseUrl}/${id}`);
   }
 
-  submitApplication(firstName: string, lastName: string, email: string) {
-    console.log(firstName, lastName, email);
+  createHousingLocation(housingLocation: HousingLocation): Observable<HousingLocation> {
+    return this.http.post<HousingLocation>(this.baseUrl, housingLocation);
+  }
+
+  updateHousingLocation(id: number, housingLocation: HousingLocation): Observable<HousingLocation> {
+    return this.http.put<HousingLocation>(`${this.baseUrl}/${id}`, housingLocation);
+  }
+
+  deleteHousingLocation(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  submitApplication(firstName: string, lastName: string, email: string): void {
+    console.log('Application submitted:', { firstName, lastName, email });
   }
 }
