@@ -24,7 +24,12 @@ export class DetailsComponent {
   });
 
   constructor() {
-    const housingLocationId = parseInt(this.route.snapshot.params['id'], 10);
+    const housingLocationId = Number(this.route.snapshot.paramMap.get('id'));
+    if (!housingLocationId) {
+      console.error('ID inválido:', housingLocationId);
+      return;
+    }
+
     this.housingService.getHousingLocationById(housingLocationId).subscribe({
       next: (location) => {
         console.log('Dados recebidos:', location);
@@ -36,11 +41,13 @@ export class DetailsComponent {
     });
   }
 
-  submitApplication(): void {
-    this.housingService.submitApplication(
-      this.applyForm.value.firstName ?? '',
-      this.applyForm.value.lastName ?? '',
-      this.applyForm.value.email ?? ''
-    );
+submitApplication(): void {
+  if (this.applyForm.valid) {
+    console.log('📬 Formulário enviado:', this.applyForm.value);
+    alert('Aplicação enviada com sucesso!');
+    this.applyForm.reset(); // opcional
+  } else {
+    alert('Por favor, preencha todos os campos.');
   }
+}
 }

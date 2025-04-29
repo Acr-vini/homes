@@ -1,41 +1,115 @@
 <section class="create-form">
   <h1>Create a New House</h1>
 
-  <!-- Alertas -->
+  <!-- Mensagens de alerta -->
   <div *ngIf="successMessage" class="alert success-alert">{{ successMessage }}</div>
   <div *ngIf="errorMessage" class="alert error-alert">{{ errorMessage }}</div>
 
-  <form (ngSubmit)="onSubmit()" #formRef="ngForm">
+  <form #formRef="ngForm" (ngSubmit)="onSubmit()">
+    <!-- House Name -->
     <div>
       <label for="name">House Name</label>
-      <input id="name" name="name" type="text" [(ngModel)]="housingLocation.name" required />
+      <input
+        id="name"
+        name="name"
+        type="text"
+        [(ngModel)]="housingLocation.name"
+        required
+        #nameRef="ngModel"
+      />
+      <div class="validation" *ngIf="nameRef.invalid && nameRef.touched">
+        This field is required.
+      </div>
     </div>
 
+    <!-- City -->
     <div>
       <label for="city">City</label>
-      <input id="city" name="city" type="text" [(ngModel)]="housingLocation.city" required />
+      <input
+        id="city"
+        name="city"
+        type="text"
+        [(ngModel)]="housingLocation.city"
+        required
+        #cityRef="ngModel"
+      />
+      <div class="validation" *ngIf="cityRef.invalid && cityRef.touched">
+        This field is required.
+      </div>
     </div>
 
+    <!-- State -->
     <div>
       <label for="state">State</label>
-      <input id="state" name="state" type="text" [(ngModel)]="housingLocation.state" required />
+      <input
+        id="state"
+        name="state"
+        type="text"
+        [(ngModel)]="housingLocation.state"
+        required
+        #stateRef="ngModel"
+      />
+      <div class="validation" *ngIf="stateRef.invalid && stateRef.touched">
+        This field is required.
+      </div>
     </div>
 
+    <!-- Available Units -->
     <div>
       <label for="availableUnits">Available Units</label>
-      <input id="availableUnits" name="availableUnits" type="number" [(ngModel)]="housingLocation.availableUnits" required />
+      <input
+        id="availableUnits"
+        name="availableUnits"
+        type="number"
+        [(ngModel)]="housingLocation.availableUnits"
+        required
+        #unitsRef="ngModel"
+      />
+      <div class="validation" *ngIf="unitsRef.invalid && unitsRef.touched">
+        This field is required.
+      </div>
     </div>
 
+    <!-- WiFi -->
     <div>
       <label for="wifi">Wi-Fi Available</label>
-      <input id="wifi" name="wifi" type="checkbox" [(ngModel)]="housingLocation.wifi" />
+      <input
+        id="wifi"
+        name="wifi"
+        type="checkbox"
+        [(ngModel)]="housingLocation.wifi"
+      />
     </div>
 
+    <!-- Laundry -->
     <div>
       <label for="laundry">Laundry Available</label>
-      <input id="laundry" name="laundry" type="checkbox" [(ngModel)]="housingLocation.laundry" />
+      <input
+        id="laundry"
+        name="laundry"
+        type="checkbox"
+        [(ngModel)]="housingLocation.laundry"
+      />
     </div>
 
-    <button type="submit" class="submit-button" [disabled]="formRef.invalid">Submit</button>
+     <!-- ✅ Campo de upload de imagem -->
+  <label>
+    Upload Image
+    <input type="file" (change)="onImageSelected($event)" />
+  </label>
+
+  <!-- ✅ Preview da imagem -->
+  <div *ngIf="imagePreview" class="image-preview">
+    <p>Preview:</p>
+    <img [src]="imagePreview" alt="Image preview" />
+  </div>
+
+    <button
+      type="submit"
+      class="submit-button"
+      [disabled]="formRef.invalid"
+    >
+      Submit
+    </button>
   </form>
 </section>

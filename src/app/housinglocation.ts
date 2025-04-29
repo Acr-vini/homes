@@ -1,5 +1,5 @@
 export interface HousingLocation {
-  id: number;
+  id?: number;
   name: string;
   city: string;
   state: string;
@@ -7,4 +7,5 @@ export interface HousingLocation {
   availableUnits: number;
   wifi: boolean;
   laundry: boolean;
+  imageUrl?: string;
 }
