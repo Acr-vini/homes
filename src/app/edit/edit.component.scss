@@ -1,7 +1,9 @@
-.create-form {
+/* herança de classes: edit-card é o bloco */
+.edit-card {
   max-width: 600px;
   margin: 2rem auto;
   padding: 1rem;
+  border: var(--purpleBrdr);
 
   mat-card-title {
     font-size: 2rem;
@@ -15,12 +17,10 @@
     width: 100%;
   }
 
-  .image-upload {
-    margin: 1rem 0;
-  }
-
   .image-preview {
+    margin: 1rem 0;
     text-align: center;
+
     img {
       max-width: 100%;
       border-radius: 8px;
@@ -32,25 +32,15 @@
     margin-top: 1.5rem;
     display: flex;
     justify-content: flex-end;
+    gap: 1rem;
+  }
+
+
+  .success {
+    color: green;
+  }
+
+  .error {
+    color: red;
   }
 }
-
-/* Reaproveita seus estilos existentes */
-.alert {
-  padding: 12px;
-  margin-bottom: 16px;
-  border-radius: 4px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.success-alert {
-  background-color: #d1e7dd;
-  color: #0f5132;
-}
-
-.error-alert {
-  background-color: #f8d7da;
-  color: #842029;
-}
-

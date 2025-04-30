@@ -1,5 +1,5 @@
 .home-listing {
-  margin: 10px;
+  margin: 20px;
   display: flex;
   flex-direction: column;
   background-color: var(--purpleWeak);
@@ -7,6 +7,7 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.603);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
 
 
   &:hover {
@@ -61,10 +62,11 @@
     animation: bounce 1s ease-in-out 0s 3;
     transform-origin: bottom center;
     transition: transform 0.3s ease, opacity 0.3s ease;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
   }
 }
 
+// animação do pin
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0);
@@ -76,4 +78,39 @@
   }
 }
 
+:host {
+  display: block;
+  position: relative;
+}
+
+.housing-card {
+  position: relative;
+  padding-bottom: 2.5rem;
+}
+
+.card-edit-button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  bottom: 0.5rem;
+  right: 0.5rem;
+}
+
+.edit-button {
+  background-color: rgb(56, 28, 158); // Roxo
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: rgba(56, 28, 158, 0.8);
+  }
+}
 

@@ -8,6 +8,11 @@ import { HousingLocation } from '../housinglocation';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
 
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -16,7 +21,12 @@ import { RouterModule } from '@angular/router';
     HousingLocationComponent,
     HttpClientModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatIconModule
+
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],

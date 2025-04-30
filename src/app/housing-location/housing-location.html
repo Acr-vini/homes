@@ -8,7 +8,20 @@
     <h2 class="home-listing-heading">{{ housingLocation.name }}</h2>
     <div class="home-listing-row">
       <img class="home-listing-pin" src="../../assets/pin2.webp" alt="pin" />
-      <h5 class="home-listing-location">{{ housingLocation.city }}, {{ housingLocation.state }}</h5>
+      <h5 class="home-listing-location">
+        {{ housingLocation.city }}, {{ housingLocation.state }}
+      </h5>
     </div>
   </a>
+
+  <div class="card-edit-button-wrapper">
+    <button
+      class="edit-button"
+      [routerLink]="['/edit', housingLocation.id]"
+      aria-label="Edit housing"
+    >
+      <span class="material-icons">edit</span>
+    </button>
+
+  </div>
 </section>

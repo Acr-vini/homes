@@ -1,115 +1,128 @@
-<section class="create-form">
-  <h1>Create a New House</h1>
+<mat-card class="create-form">
+  <mat-card-title>Create a New House</mat-card-title>
 
-  <!-- Mensagens de alerta -->
-  <div *ngIf="successMessage" class="alert success-alert">{{ successMessage }}</div>
-  <div *ngIf="errorMessage" class="alert error-alert">{{ errorMessage }}</div>
+  <!-- Mensagens -->
+  <mat-card-content>
+    <div *ngIf="successMessage" class="alert success-alert">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert error-alert">
+      {{ errorMessage }}
+    </div>
+  </mat-card-content>
 
   <form #formRef="ngForm" (ngSubmit)="onSubmit()">
-    <!-- House Name -->
-    <div>
-      <label for="name">House Name</label>
+    <!-- Name -->
+    <mat-form-field class="full-width">
+      <mat-label>House Name</mat-label>
       <input
-        id="name"
+        matInput
         name="name"
-        type="text"
-        [(ngModel)]="housingLocation.name"
         required
+        [(ngModel)]="housingLocation.name"
         #nameRef="ngModel"
       />
-      <div class="validation" *ngIf="nameRef.invalid && nameRef.touched">
+      <mat-error *ngIf="nameRef.invalid && nameRef.touched">
         This field is required.
-      </div>
-    </div>
+      </mat-error>
+    </mat-form-field>
 
     <!-- City -->
-    <div>
-      <label for="city">City</label>
+    <mat-form-field class="full-width">
+      <mat-label>City</mat-label>
       <input
-        id="city"
+        matInput
         name="city"
-        type="text"
-        [(ngModel)]="housingLocation.city"
         required
+        [(ngModel)]="housingLocation.city"
         #cityRef="ngModel"
       />
-      <div class="validation" *ngIf="cityRef.invalid && cityRef.touched">
+      <mat-error *ngIf="cityRef.invalid && cityRef.touched">
         This field is required.
-      </div>
-    </div>
+      </mat-error>
+    </mat-form-field>
 
     <!-- State -->
-    <div>
-      <label for="state">State</label>
+    <mat-form-field class="full-width">
+      <mat-label>State</mat-label>
       <input
-        id="state"
+        matInput
         name="state"
-        type="text"
-        [(ngModel)]="housingLocation.state"
         required
+        [(ngModel)]="housingLocation.state"
         #stateRef="ngModel"
       />
-      <div class="validation" *ngIf="stateRef.invalid && stateRef.touched">
+      <mat-error *ngIf="stateRef.invalid && stateRef.touched">
         This field is required.
-      </div>
-    </div>
+      </mat-error>
+    </mat-form-field>
 
     <!-- Available Units -->
-    <div>
-      <label for="availableUnits">Available Units</label>
+    <mat-form-field class="full-width">
+      <mat-label>Available Units</mat-label>
       <input
-        id="availableUnits"
-        name="availableUnits"
+        matInput
         type="number"
-        [(ngModel)]="housingLocation.availableUnits"
+        name="availableUnits"
         required
+        [(ngModel)]="housingLocation.availableUnits"
         #unitsRef="ngModel"
       />
-      <div class="validation" *ngIf="unitsRef.invalid && unitsRef.touched">
+      <mat-error *ngIf="unitsRef.invalid && unitsRef.touched">
         This field is required.
-      </div>
-    </div>
+      </mat-error>
+    </mat-form-field>
 
-    <!-- WiFi -->
-    <div>
-      <label for="wifi">Wi-Fi Available</label>
-      <input
-        id="wifi"
-        name="wifi"
-        type="checkbox"
-        [(ngModel)]="housingLocation.wifi"
-      />
-    </div>
+    <!-- Wi-Fi -->
+    <mat-checkbox
+      name="wifi"
+      [(ngModel)]="housingLocation.wifi"
+    >
+      Wi-Fi Available
+    </mat-checkbox>
 
     <!-- Laundry -->
-    <div>
-      <label for="laundry">Laundry Available</label>
+    <mat-checkbox
+      name="laundry"
+      [(ngModel)]="housingLocation.laundry"
+    >
+      Laundry Available
+    </mat-checkbox>
+
+    <!-- Upload de imagem -->
+    <div class="image-upload">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="fileInput.click()"
+      >
+        <mat-icon>upload</mat-icon>
+        Upload Image
+      </button>
       <input
-        id="laundry"
-        name="laundry"
-        type="checkbox"
-        [(ngModel)]="housingLocation.laundry"
+        #fileInput
+        type="file"
+        hidden
+        (change)="onImageSelected($event)"
       />
     </div>
 
-     <!-- ✅ Campo de upload de imagem -->
-  <label>
-    Upload Image
-    <input type="file" (change)="onImageSelected($event)" />
-  </label>
+    <!-- Preview -->
+    <div *ngIf="imagePreview" class="image-preview">
+      <p>Preview:</p>
+      <img [src]="imagePreview" alt="Image preview" />
+    </div>
 
-  <!-- ✅ Preview da imagem -->
-  <div *ngIf="imagePreview" class="image-preview">
-    <p>Preview:</p>
-    <img [src]="imagePreview" alt="Image preview" />
-  </div>
-
-    <button
-      type="submit"
-      class="submit-button"
-      [disabled]="formRef.invalid"
-    >
-      Submit
-    </button>
+    <!-- Botão Submit -->
+    <div class="actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="formRef.invalid"
+      >
+        Submit
+      </button>
+    </div>
   </form>
-</section>
+</mat-card>

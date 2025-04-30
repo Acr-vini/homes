@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+@include mat.core();
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 body{
@@ -7,9 +9,9 @@ body{
 }
 
 :root {
-  --purpleBrdr: rgb(14, 5, 44);
-  --purpleBck: rgb(56, 28, 158);
-  --purpleWeak: rgba(56, 28, 158, 0.288);
+  --purpleBrdr: #0e052c;
+  --purpleBck: #381c9e;
+  --purpleWeak: #381c9e49;
   --purpleHeader: #321c7f;
 
 }
@@ -18,3 +20,23 @@ body{
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+
+$my-primary: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
+$my-accent:  mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
+$my-warn:    mat.define-palette(mat.$red-palette);
+
+$my-theme: mat.define-light-theme((
+  color: (
+    primary: $my-primary,
+    accent:  $my-accent,
+    warn:    $my-warn,
+  )
+));
+
+
+@include mat.all-component-themes($my-theme);
+
+

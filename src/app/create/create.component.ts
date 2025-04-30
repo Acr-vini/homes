@@ -1,14 +1,34 @@
-import { HousingLocation } from './../housinglocation';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HousingService } from '../housing.service';
 import { Router } from '@angular/router';
+import { HousingService } from '../housing.service';
+import { HousingLocation } from '../housinglocation';
+
+// → Material modules
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule }     from '@angular/material/input';
+import { MatButtonModule }    from '@angular/material/button';
+import { MatCheckboxModule }  from '@angular/material/checkbox';
+import { MatCardModule }      from '@angular/material/card';
+import { MatIconModule }      from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+
+    // Material
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatIconModule
+  ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
@@ -25,44 +45,39 @@ export class CreateComponent {
     imageUrl: '',
   };
 
-  imagePreview: string | ArrayBuffer | null = null; // Preview da imagem
+  imagePreview: string | ArrayBuffer | null = null;
   successMessage = '';
   errorMessage = '';
 
-  constructor(private housingService: HousingService, private router: Router) {}
+  constructor(
+    private housingService: HousingService,
+    private router: Router
+  ) {}
 
   onSubmit() {
     this.housingService.createHousingLocation(this.housingLocation).subscribe({
-      next: (createdLocation) => {
+      next: () => {
         this.successMessage = 'House created successfully!';
         this.errorMessage = '';
         this.resetForm();
-
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 10);
+        setTimeout(() => this.router.navigate(['/']), 10);
       },
-      error: (err) => {
-        console.error('Erro ao criar casa:', err);
+      error: () => {
         this.errorMessage = 'Failed to create house. Please try again.';
         this.successMessage = '';
       }
     });
   }
 
-  // ✅ Adicionado para capturar e visualizar a imagem em base64
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      const file = input.files[0];
       const reader = new FileReader();
-
       reader.onload = () => {
         this.imagePreview = reader.result;
         this.housingLocation.imageUrl = reader.result as string;
       };
-
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(input.files[0]);
     }
   }
 

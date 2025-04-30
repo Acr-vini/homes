@@ -1,0 +1,109 @@
+<mat-card class="edit-card">
+  <mat-card-title>Editar Casa</mat-card-title>
+
+  <ng-container *ngIf="housingLocation">
+    <form #editForm="ngForm" (ngSubmit)="onSubmit(editForm)" novalidate>
+
+      <!-- Nome -->
+      <mat-form-field class="full-width">
+        <mat-label>Nome</mat-label>
+        <input
+          matInput
+          name="name"
+          required
+          [(ngModel)]="housingLocation.name"
+        />
+      </mat-form-field>
+
+      <!-- Cidade -->
+      <mat-form-field class="full-width">
+        <mat-label>Cidade</mat-label>
+        <input
+          matInput
+          name="city"
+          required
+          [(ngModel)]="housingLocation.city"
+        />
+      </mat-form-field>
+
+      <!-- Estado -->
+      <mat-form-field class="full-width">
+        <mat-label>Estado</mat-label>
+        <input
+          matInput
+          name="state"
+          required
+          [(ngModel)]="housingLocation.state"
+        />
+      </mat-form-field>
+
+      <!-- URL da Foto (opcional, mas mantido) -->
+      <mat-form-field class="full-width">
+        <mat-label>URL da Foto (opcional)</mat-label>
+        <input
+          matInput
+          name="photo"
+          [(ngModel)]="housingLocation.photo"
+        />
+      </mat-form-field>
+
+      <!-- Preview da imagem -->
+      <div class="image-preview" *ngIf="housingLocation.imageUrl">
+        <img [src]="housingLocation.imageUrl" alt="Preview foto" />
+      </div>
+
+      <!-- Seletor de imagem -->
+      <div class="file-upload">
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Selecionar imagem"
+          (click)="fileInput.click()"
+        >
+          <mat-icon>upload</mat-icon>
+        </button>
+        <span>Selecionar imagem</span>
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onImageSelected($event)"
+        />
+      </div>
+
+
+
+
+
+      <div class="actions">
+
+        <!-- Botão de deletar -->
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="onDelete()"
+          >
+          Deletar
+        </button>
+
+        <!-- Botão de salvar -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!editForm.valid"
+        >
+          Salvar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+
+  <!-- Mensagens de feedback -->
+  <mat-card-content>
+    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="error"   *ngIf="errorMessage"   >{{ errorMessage }}</p>
+  </mat-card-content>
+</mat-card>

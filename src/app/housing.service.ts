@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { HousingLocation } from './housinglocation';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { HousingFormValues } from './housingformvalues';
+
 
 
 @Injectable({
@@ -21,17 +23,16 @@ export class HousingService {
     return this.http.get<HousingLocation>(`${this.baseUrl}/${id}`);
   }
 
-// Corrigindo erro de quando criar nova casa, ele redirecionar por conta de não ter id
 createHousingLocation(housingLocation: HousingLocation): Observable<HousingLocation> {
   return this.getAllHousingLocations().pipe(
     map(houses => {
-      // Converte todos os ids para número com parseInt, ignorando inválidos
+
       const ids = houses
         .map(h => parseInt(String(h.id), 10))
-        .filter(id => !isNaN(id)); // apenas números válidos
+        .filter(id => !isNaN(id));
 
-      const maxId = Math.max(...ids, 0); // começa com 0 se estiver vazio
-      const newId = String(maxId + 1);  // GERA COMO STRING
+      const maxId = Math.max(...ids, 0);
+      const newId = String(maxId + 1);
       return { ...housingLocation, id: newId };
     }),
     switchMap(houseWithId => {
@@ -41,9 +42,11 @@ createHousingLocation(housingLocation: HousingLocation): Observable<HousingLocat
 }
 
 
-  updateHousingLocation(id: string, housingLocation: HousingLocation): Observable<HousingLocation> {
+updateHousingLocation(id: string, housingLocation: HousingFormValues): Observable<HousingLocation> {
   return this.http.put<HousingLocation>(`${this.baseUrl}/${id}`, housingLocation);
 }
+
+
 
 deleteHousingLocation(id: string): Observable<void> {
   return this.http.delete<void>(`${this.baseUrl}/${id}`);

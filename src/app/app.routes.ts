@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { DetailsComponent } from './details/details.component';
 import { createComponent } from '@angular/core';
+import { EditComponent } from './edit/edit.component';
 
 
 const routeConfig: Routes = [
@@ -20,7 +21,13 @@ const routeConfig: Routes = [
     path: 'create',
     component: CreateComponent,
     title: 'create'
+  },
+  {
+    path: 'edit/:id',
+    component: EditComponent,
+    title: 'edit'
   }
+
 ];
 
 export default routeConfig;
