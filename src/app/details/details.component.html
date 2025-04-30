@@ -1,26 +1,30 @@
-<article class="page-container">
+<article class="page-container" *ngIf="housingLocation">
+
+  <!-- Seção da imagem e descrição -->
   <img
     class="listing-photo housing-image"
-    [src]="housingLocation?.photo"
-    alt="Exterior photo of {{ housingLocation?.name }}"
+    [src]="housingLocation.imageUrl || housingLocation.photo"
+    [alt]="'Exterior photo of ' + housingLocation.name"
   />
 
-  <section class="listing-description">
-    <h2 class="listing-heading">{{ housingLocation?.name }}</h2>
+  <section class="listing-description" *ngIf="housingLocation">
+    <h2 class="listing-heading">{{ housingLocation.name }}</h2>
     <p class="listing-location">
-      {{ housingLocation?.city }}, {{ housingLocation?.state }}
+      {{ housingLocation.city }}, {{ housingLocation.state }}
     </p>
   </section>
 
+  <!-- Seção de informações adicionais -->
   <section class="listing-features">
     <h2 class="section-heading">About this housing location</h2>
     <ul>
-      <li>✔ Units available: {{ housingLocation?.availableUnits }}</li>
-      <li>✔ Does this location have wifi: {{ housingLocation?.wifi }}</li>
-      <li>✔ Does this location have laundry: {{ housingLocation?.laundry }}</li>
+      <li>✔ Units available: {{ housingLocation.availableUnits }}</li>
+      <li>✔ Does this location have wifi: {{ housingLocation.wifi }}</li>
+      <li>✔ Does this location have laundry: {{ housingLocation.laundry }}</li>
     </ul>
   </section>
 
+  <!-- Formulário de aplicação -->
   <section class="listing-apply">
     <h2 class="section-heading">Apply now to live here</h2>
     <form class="apply-form" [formGroup]="applyForm" (submit)="submitApplication()">

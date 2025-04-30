@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class CreateComponent {
   housingLocation: HousingLocation = {
-    id: 0,
+    id: "0",
     name: '',
     city: '',
     state: '',
@@ -40,7 +40,7 @@ export class CreateComponent {
 
         setTimeout(() => {
           this.router.navigate(['/']);
-        }, 2000);
+        }, 10);
       },
       error: (err) => {
         console.error('Erro ao criar casa:', err);
@@ -68,7 +68,7 @@ export class CreateComponent {
 
   resetForm() {
     this.housingLocation = {
-      id: 0,
+      id: "0",
       name: '',
       city: '',
       state: '',

@@ -24,7 +24,7 @@ export class DetailsComponent {
   });
 
   constructor() {
-    const housingLocationId = Number(this.route.snapshot.paramMap.get('id'));
+    const housingLocationId = String(this.route.snapshot.paramMap.get('id'));
     if (!housingLocationId) {
       console.error('ID inválido:', housingLocationId);
       return;
