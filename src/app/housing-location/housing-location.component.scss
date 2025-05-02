@@ -31,19 +31,19 @@
   }
 
   &-heading {
-    color: var(--purpleBrdr);
+    color: var(--card-title-color);
     padding: 10px 20px 0;
   }
 
   &-location {
     font-size: 1rem;
-    color: #000000;
+    color: var(--card-title-color);
     padding: 5px;
   }
 
   &-link {
     text-decoration: none;
-    color: var(--purpleBck);
+    color: var(--card-title-color);
 
     &::after {
       margin-left: 5px;

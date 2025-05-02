@@ -48,19 +48,34 @@
 
 
 .app-header-nav-link {
+  color: var(mat);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4px;
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
-  color: white;
-  transition: color 0.3s ease, opacity 0.3s ease;
-  justify-content: center;
-  text-align: center;
+  color: var(--textColor);
+  transition: transform 0.2s ease-in-out, color 0.3s ease;
 
+  mat-icon {
+    font-size: 20px;
+    color: white;
+    transition: color 0.3s ease;
+  }
 
   &:hover {
-    opacity: 0.7;
+    transform: scale(1.05);
+    color: white;
+
+    mat-icon {
+      color: white;
+    }
   }
 }
+
 
 .app-header-divider {
   opacity: 0.6;
@@ -90,4 +105,8 @@
 
 .app-header-toggle {
   justify-content: flex-end;
+}
+
+.app-header-section app-header-nav-menu {
+  color: var(--textColor);
 }

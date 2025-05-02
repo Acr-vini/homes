@@ -14,22 +14,25 @@ body{
   --purpleWeak: #381c9e49;
   --purpleHeader: #321c7f;
 
-}
-/* styles.scss */
 
-/* Tema claro */
-body.light-theme {
-  --background: #ffffff;
-  --text-color: #000000;
-  --card-bg: #f5f5f5;
+
+  body.light-theme {
+    --card-title-color: #0e052c;
+    --background: #ffffff;
+    --text-color: #ffffff;
+    --card-bg: #f5f5f5;
+  }
+
+  /* Tema escuro */
+  body.dark-theme {
+    --card-title-color: #ffffff;
+    --background: #121212;
+    --text-color: #ffffff;
+    --card-bg: #27165e;
+  }
+
 }
 
-/* Tema escuro */
-body.dark-theme {
-  --background: #121212;
-  --text-color: #ffffff;
-  --card-bg: #1e1e1e;
-}
 
 /* Aplica variáveis */
 body {
@@ -42,6 +45,9 @@ mat-card {
   color: var(--text-color) !important;
 }
 
+.card-title {
+  color: var(--card-title-color);
+}
 
 
 
