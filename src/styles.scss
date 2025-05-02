@@ -15,6 +15,33 @@ body{
   --purpleHeader: #321c7f;
 
 }
+/* styles.scss */
+
+/* Tema claro */
+body.light-theme {
+  --background: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f5f5f5;
+}
+
+/* Tema escuro */
+body.dark-theme {
+  --background: #121212;
+  --text-color: #ffffff;
+  --card-bg: #1e1e1e;
+}
+
+/* Aplica variáveis */
+body {
+  background-color: var(--background);
+  color: var(--text-color);
+}
+
+mat-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
 
 
 
@@ -38,5 +65,4 @@ $my-theme: mat.define-light-theme((
 
 
 @include mat.all-component-themes($my-theme);
-
 

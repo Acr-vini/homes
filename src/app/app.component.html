@@ -1,26 +1,34 @@
 <main class="app-main">
   <mat-toolbar class="app-header">
-    <a [routerLink]="['/']" class="app-header-logo">
-      <img src="../assets/Homes.png" alt="logo" class="app-header-logo-img" />
-    </a>
+    <!-- Coluna da Esquerda: Logo -->
+    <div class="app-header-section">
+      <a [routerLink]="['/']" class="app-header-logo">
+        <img src="../assets/Homes.png" alt="logo" class="app-header-logo-img" />
+      </a>
+    </div>
 
-    <nav class="app-header-nav-menu">
-      <a mat-button class="app-header-nav-link" href="#sobre">About</a>
+    <!-- Coluna Central: Menu -->
+    <div class="app-header-section app-header-nav-menu">
+      <a mat-button class="app-header-nav-link" [routerLink]="['/about']">About</a>
       <span class="app-header-divider">|</span>
-      <a mat-button class="app-header-nav-link" href="#contato">Contact</a>
-    </nav>
+      <a mat-button class="app-header-nav-link" [routerLink]="['/contact']">Contact</a>
+    </div>
+
+    <!-- Coluna da Direita: Toggle -->
+    <div class="app-header-section app-header-toggle">
+      <mat-slide-toggle (change)="toggleDarkMode($event.checked)">
+        🌙
+      </mat-slide-toggle>
+    </div>
   </mat-toolbar>
+
 
   <section class="app-content">
     <router-outlet></router-outlet>
   </section>
 
-  <section id="sobre" class="app-sobre">
-  </section>
 
-  <section id="contato" class="app-contato">
-  </section>
-</main>
+
 
 <!-- //usar no terminal: json-server --watch db.json -->
 

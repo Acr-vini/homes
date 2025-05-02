@@ -18,10 +18,17 @@
   justify-content: space-between;
 }
 
+.app-header-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
 /* Logo */
 .app-header-logo {
   display: flex;
   align-items: center;
+  height: 40px;
 }
 
 .app-header-logo-img {
@@ -29,12 +36,16 @@
   height: 50px;
 }
 
-/* Navegação */
 .app-header-nav-menu {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  flex-grow: 1;
+  gap: 12px;
+  font-weight: 500;
+
 }
+
 
 .app-header-nav-link {
   text-decoration: none;
@@ -42,6 +53,9 @@
   font-weight: 500;
   color: white;
   transition: color 0.3s ease, opacity 0.3s ease;
+  justify-content: center;
+  text-align: center;
+
 
   &:hover {
     opacity: 0.7;
@@ -49,8 +63,11 @@
 }
 
 .app-header-divider {
+  opacity: 0.6;
   color: white;
   font-size: 18px;
+  font-weight: 300;
+
 }
 
 /* Conteúdo principal */
@@ -69,4 +86,8 @@
 .app-contato {
   padding: 16px;
   background-color: #f9f9f9;
+}
+
+.app-header-toggle {
+  justify-content: flex-end;
 }

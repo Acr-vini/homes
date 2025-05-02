@@ -14,7 +14,17 @@
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr; // 1 coluna em celulares
+
+    .create-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10;
+      border-radius: 50%;
+      padding: 16px;
+    }
   }
+
 }
 section {
   display: grid;
@@ -97,3 +107,11 @@ section {
   justify-content: center;
 }
 
+mat-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+}
