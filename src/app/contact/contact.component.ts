@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule }     from '@angular/material/input';
-import { MatButtonModule }    from '@angular/material/button';
-import { MatIconModule }      from '@angular/material/icon';
-import { MatCardModule }      from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-contact',
@@ -20,8 +20,6 @@ import { MatCardModule }      from '@angular/material/card';
     MatCardModule,
   ],
   templateUrl: './contact.component.html',
-  styleUrl: './contact.component.scss'
+  styleUrl: './contact.component.scss',
 })
-export class ContactComponent {
-
-}
+export class ContactComponent {}

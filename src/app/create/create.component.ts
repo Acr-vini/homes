@@ -1,14 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormControl,
+} from '@angular/forms';
 import { HousingService } from '../housing.service';
 import { HousingLocation } from '../housinglocation';
 import { State, City } from 'country-state-city';
 
 // Angular Material
 // acima de @Component
-import { MatCheckboxModule }  from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,16 +39,22 @@ import { Observable, startWith, map } from 'rxjs';
     MatSnackBarModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatCheckboxModule
+    MatCheckboxModule,
   ],
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
   form: FormGroup;
   // Configura FormControls como non-nullable para emitirem apenas string
-  stateControl = new FormControl<string>('', { nonNullable: true, validators: [Validators.required] });
-  cityControl = new FormControl<string>('', { nonNullable: true, validators: [Validators.required] });
+  stateControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.required],
+  });
+  cityControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.required],
+  });
 
   allStates = State.getStatesOfCountry('US');
   allCities: string[] = [];
@@ -65,7 +77,7 @@ export class CreateComponent implements OnInit {
       availableUnits: [0, [Validators.required, Validators.min(1)]],
       wifi: [false],
       laundry: [false],
-      imageUrl: ['']
+      imageUrl: [''],
     });
   }
 
@@ -73,16 +85,18 @@ export class CreateComponent implements OnInit {
     // Filtra estados conforme digita
     this.filteredStates = this.stateControl.valueChanges.pipe(
       startWith(this.stateControl.value),
-      map(value => this._filterStates(value))
+      map((value) => this._filterStates(value))
     );
 
     // Atualiza cidades quando estado muda
-    this.stateControl.valueChanges.subscribe(val => {
+    this.stateControl.valueChanges.subscribe((val) => {
       const iso = this._findStateIso(val);
-      this.allCities = iso ? City.getCitiesOfState('US', iso).map(c => c.name) : [];
+      this.allCities = iso
+        ? City.getCitiesOfState('US', iso).map((c) => c.name)
+        : [];
       this.filteredCities = this.cityControl.valueChanges.pipe(
         startWith(this.cityControl.value),
-        map(v => this._filterCities(v))
+        map((v) => this._filterCities(v))
       );
       this.cityControl.setValue('');
     });
@@ -90,22 +104,24 @@ export class CreateComponent implements OnInit {
     // Filtra cidades conforme digita
     this.filteredCities = this.cityControl.valueChanges.pipe(
       startWith(this.cityControl.value),
-      map(v => this._filterCities(v))
+      map((v) => this._filterCities(v))
     );
   }
 
   private _filterStates(value: string): { name: string; isoCode: string }[] {
     const filter = value.toLowerCase();
-    return this.allStates.filter(s => s.name.toLowerCase().includes(filter));
+    return this.allStates.filter((s) => s.name.toLowerCase().includes(filter));
   }
 
   private _filterCities(value: string): string[] {
     const filter = value.toLowerCase();
-    return this.allCities.filter(c => c.toLowerCase().includes(filter));
+    return this.allCities.filter((c) => c.toLowerCase().includes(filter));
   }
 
   private _findStateIso(name: string): string | undefined {
-    const match = this.allStates.find(s => s.name.toLowerCase() === name.toLowerCase());
+    const match = this.allStates.find(
+      (s) => s.name.toLowerCase() === name.toLowerCase()
+    );
     return match?.isoCode;
   }
 
@@ -119,20 +135,20 @@ export class CreateComponent implements OnInit {
         this.snackBar.open('House created!', 'Close', {
           duration: 3000,
           horizontalPosition: 'center', // centralizado na horizontal
-          verticalPosition: 'top'       // fixado no topo da tela
+          verticalPosition: 'top', // fixado no topo da tela
         });
         this.form.reset();
         this.imagePreview = null;
         setTimeout(() => this.router.navigate(['/']), 100);
       },
-      error: () => this.snackBar.open('Error creating house', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center', // centralizado também no erro
-        verticalPosition: 'top'
-      })
+      error: () =>
+        this.snackBar.open('Error creating house', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center', // centralizado também no erro
+          verticalPosition: 'top',
+        }),
     });
   }
-
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

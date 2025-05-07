@@ -2,7 +2,6 @@
   <mat-card-title>Create a new house</mat-card-title>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
     <!-- House Name -->
     <mat-form-field class="full-width">
       <mat-label>House Name</mat-label>
@@ -84,24 +83,19 @@
       <input matInput formControlName="imageUrl" />
     </mat-form-field>
 
-
     <!-- Wi-Fi Available -->
-    <mat-checkbox formControlName="wifi">
-      Wi-Fi Available
-    </mat-checkbox>
+    <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
 
     <!-- Laundry Available -->
-    <mat-checkbox formControlName="laundry">
-      Laundry Available
-    </mat-checkbox>
-
+    <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
 
     <!-- Image Preview & Upload -->
     <div *ngIf="imagePreview" class="image-preview">
       <img [src]="imagePreview" alt="Image preview" />
     </div>
 
-    <div class="create-file-upload"> <!-- classe atualizada -->
+    <div class="create-file-upload">
+      <!-- classe atualizada -->
       <button mat-icon-button type="button" (click)="fileInput.click()">
         <mat-icon>upload</mat-icon>
       </button>
@@ -114,9 +108,6 @@
         (change)="onImageSelected($event)"
       />
     </div>
-
-
-
 
     <!-- Submit Button -->
     <div class="actions">

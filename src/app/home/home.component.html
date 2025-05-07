@@ -1,17 +1,14 @@
 <div class="home-filter-wrapper">
   <section class="home-filter">
     <form (submit)="onSubmit($event)">
-      <input type="text"
-      placeholder="Filter by city"
-      [formControl]="filterControl" />
-      <button
-      class="home-button"
-      type="submit"
-      mat-icon-button
-      color="primary"
-    >
-      <mat-icon>search</mat-icon>
-    </button>
+      <input
+        type="text"
+        placeholder="Filter by city"
+        [formControl]="filterControl"
+      />
+      <button class="home-button" type="submit" mat-icon-button color="primary">
+        <mat-icon>search</mat-icon>
+      </button>
     </form>
   </section>
 
@@ -21,6 +18,9 @@
 </div>
 
 <section class="housing-location-container">
-  <app-housing-location *ngFor="let housingLocation of filteredLocationList" [housingLocation]="housingLocation">
+  <app-housing-location
+    *ngFor="let housingLocation of filteredLocationList"
+    [housingLocation]="housingLocation"
+  >
   </app-housing-location>
 </section>

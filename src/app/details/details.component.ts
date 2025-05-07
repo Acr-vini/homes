@@ -8,11 +8,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports:
-  [
-    CommonModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
@@ -41,17 +37,17 @@ export class DetailsComponent {
       },
       error: (err) => {
         console.error('Erro ao carregar detalhes da casa:', err);
-      }
+      },
     });
   }
 
-submitApplication(): void {
-  if (this.applyForm.valid) {
-    console.log('📬 Formulário enviado:', this.applyForm.value);
-    alert('Aplicação enviada com sucesso!');
-    this.applyForm.reset(); // opcional
-  } else {
-    alert('Por favor, preencha todos os campos.');
+  submitApplication(): void {
+    if (this.applyForm.valid) {
+      console.log('📬 Formulário enviado:', this.applyForm.value);
+      alert('Aplicação enviada com sucesso!');
+      this.applyForm.reset(); // opcional
+    } else {
+      alert('Por favor, preencha todos os campos.');
+    }
   }
-}
 }

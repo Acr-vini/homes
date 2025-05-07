@@ -6,10 +6,7 @@ import { HousingLocation } from '../housinglocation';
 @Component({
   selector: 'app-housing-location',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule
-  ],
+  imports: [CommonModule, RouterModule],
   templateUrl: './housing-location.html',
   styleUrls: ['./housing-location.component.scss'],
 })

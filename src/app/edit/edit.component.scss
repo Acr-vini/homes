@@ -1,4 +1,8 @@
-/* herança de classes: edit-card é o bloco */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
 .edit-card {
   max-width: 600px;
   margin: 2rem auto;
@@ -9,7 +13,7 @@
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1rem;
-    color: var(--purpleBck);
+    color: var(--text-color);
     text-align: center;
   }
 
@@ -24,7 +28,7 @@
     img {
       max-width: 100%;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
   }
 
@@ -34,7 +38,6 @@
     justify-content: flex-end;
     gap: 1rem;
   }
-
 
   .success {
     color: green;
@@ -53,14 +56,16 @@
   margin-top: 16px; // Espaço entre os checkboxes e o botão
 
   button {
-    background-color:var(--purpleWeak); // Mesmo estilo para manter consistência
+    background-color: var(
+      --purpleWeak
+    ); // Mesmo estilo para manter consistência
     color: var(--text-color);
-    border-color: var(--purpleBck) ;
+    border-color: var(--purpleBck);
     border-radius: 4px;
   }
 
   span {
     font-size: 14px;
-    color: var(--purpleBck);
+    color: var(--text-color);
   }
 }

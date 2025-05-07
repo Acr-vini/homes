@@ -1,5 +1,4 @@
 <article class="page-container" *ngIf="housingLocation">
-
   <!-- Seção da imagem e descrição -->
   <img
     class="listing-photo housing-image"
@@ -27,15 +26,34 @@
   <!-- Formulário de aplicação -->
   <section class="listing-apply">
     <h2 class="section-heading">Apply now to live here</h2>
-    <form class="apply-form" [formGroup]="applyForm" (submit)="submitApplication()">
+    <form
+      class="apply-form"
+      [formGroup]="applyForm"
+      (submit)="submitApplication()"
+    >
       <label for="first-name">First Name</label>
-      <input id="first-name" type="text" formControlName="firstName" class="form-input" />
+      <input
+        id="first-name"
+        type="text"
+        formControlName="firstName"
+        class="form-input"
+      />
 
       <label for="last-name">Last Name</label>
-      <input id="last-name" type="text" formControlName="lastName" class="form-input" />
+      <input
+        id="last-name"
+        type="text"
+        formControlName="lastName"
+        class="form-input"
+      />
 
       <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" class="form-input" />
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        class="form-input"
+      />
 
       <button type="submit" class="primary">Apply now</button>
     </form>

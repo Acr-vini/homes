@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
         this.housingLocationList = list;
         this.filteredLocationList = list;
       },
-      error: (err) => console.error('Erro ao buscar os dados:', err)
+      error: (err) => console.error('Erro ao buscar os dados:', err),
     });
   }
 
@@ -74,24 +74,24 @@ export class HomeComponent implements OnInit {
       });
   }
 
-
-
   onSubmit(event: Event): void {
     event.preventDefault();
     this.filterResults();
   }
 
-
   filterResults(): void {
     const term = (this.filterControl.value ?? '').toLowerCase();
 
-    this.filteredLocationList = this.housingLocationList.filter((location: HousingLocation) => {
-      const matchesText = location.city.toLowerCase().includes(term);
-      const matchesAvailable = !this.filterAvailable || location.availableUnits > 0;
-      const matchesWifi      = !this.filterWifi      || location.wifi;
-      const matchesLaundry   = !this.filterLaundry   || location.laundry;
+    this.filteredLocationList = this.housingLocationList.filter(
+      (location: HousingLocation) => {
+        const matchesText = location.city.toLowerCase().includes(term);
+        const matchesAvailable =
+          !this.filterAvailable || location.availableUnits > 0;
+        const matchesWifi = !this.filterWifi || location.wifi;
+        const matchesLaundry = !this.filterLaundry || location.laundry;
 
-      return matchesText && matchesAvailable && matchesWifi && matchesLaundry;
-    });
+        return matchesText && matchesAvailable && matchesWifi && matchesLaundry;
+      }
+    );
   }
 }

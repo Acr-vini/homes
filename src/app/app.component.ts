@@ -28,7 +28,7 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatInputModule,
     MatSlideToggleModule,
-    MatToolbarModule
+    MatToolbarModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

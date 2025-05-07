@@ -1,3 +1,8 @@
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
 .home-listing {
   margin: 20px;
   display: flex;
@@ -8,8 +13,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.603);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
-
-
 
   &:hover {
     transform: translateY(-4px);
@@ -69,7 +72,8 @@
 
 // animação do pin
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
     opacity: 1;
   }
@@ -114,4 +118,3 @@
     background-color: rgba(56, 28, 158, 0.8);
   }
 }
-
