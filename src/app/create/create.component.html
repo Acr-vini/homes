@@ -12,22 +12,24 @@
       </mat-error>
     </mat-form-field>
 
+     <!-- State -->
+     <mat-form-field class="full-width">
+      <mat-label>State</mat-label>
+      <mat-select formControlName="state" required>
+        <mat-option *ngFor="let st of states" [value]="st.isoCode">
+          {{ st.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <!-- City -->
     <mat-form-field class="full-width">
       <mat-label>City</mat-label>
-      <input matInput formControlName="city" required />
-      <mat-error *ngIf="form.get('city')?.invalid && form.get('city')?.touched">
-        This field is required.
-      </mat-error>
-    </mat-form-field>
-
-    <!-- State -->
-    <mat-form-field class="full-width">
-      <mat-label>State</mat-label>
-      <input matInput formControlName="state" required />
-      <mat-error *ngIf="form.get('state')?.invalid && form.get('state')?.touched">
-        This field is required.
-      </mat-error>
+      <mat-select formControlName="city" required>
+        <mat-option *ngFor="let city of cities" [value]="city.name">
+          {{ city.name }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <!-- Available Units -->

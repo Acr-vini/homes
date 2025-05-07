@@ -10,17 +10,27 @@
         <input matInput formControlName="name" required />
       </mat-form-field>
 
+        <!-- Estado -->
+        <mat-form-field class="full-width">
+          <mat-label>State</mat-label>
+          <mat-select formControlName="state">
+            <mat-option *ngFor="let st of states" [value]="st.isoCode">
+              {{ st.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
       <!-- Cidade -->
       <mat-form-field class="full-width">
         <mat-label>City</mat-label>
-        <input matInput formControlName="city" required />
+        <mat-select formControlName="city">
+          <mat-option *ngFor="let city of cities" [value]="city.name">
+            {{ city.name }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
 
-      <!-- Estado -->
-      <mat-form-field class="full-width">
-        <mat-label>State</mat-label>
-        <input matInput formControlName="state" required />
-      </mat-form-field>
 
       <!-- URL da Foto (opcional) -->
       <mat-form-field class="full-width">
