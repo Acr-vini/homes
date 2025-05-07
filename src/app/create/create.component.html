@@ -15,21 +15,33 @@
      <!-- State -->
      <mat-form-field class="full-width">
       <mat-label>State</mat-label>
-      <mat-select formControlName="state" required>
-        <mat-option *ngFor="let st of states" [value]="st.isoCode">
+      <input type="text" matInput [formControl]="stateControl"
+             [matAutocomplete]="autoState" />
+      <mat-autocomplete #autoState="matAutocomplete" autoActiveFirstOption>
+        <mat-option *ngFor="let st of filteredStates | async" [value]="st.name">
           {{ st.name }}
         </mat-option>
-      </mat-select>
+        <mat-option *ngIf="stateControl.value && !(filteredStates | async)?.length"
+                    [value]="stateControl.value">
+          Add "{{ stateControl.value }}"
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
 
     <!-- City -->
     <mat-form-field class="full-width">
       <mat-label>City</mat-label>
-      <mat-select formControlName="city" required>
-        <mat-option *ngFor="let city of cities" [value]="city.name">
-          {{ city.name }}
+      <input type="text" matInput [formControl]="cityControl"
+             [matAutocomplete]="autoCity" />
+      <mat-autocomplete #autoCity="matAutocomplete" autoActiveFirstOption>
+        <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+          {{ city }}
         </mat-option>
-      </mat-select>
+        <mat-option *ngIf="cityControl.value && !(filteredCities | async)?.length"
+                    [value]="cityControl.value">
+          Add "{{ cityControl.value }}"
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
 
     <!-- Available Units -->
