@@ -1,51 +1,64 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
 import { HousingService } from '../housing.service';
 import { HousingLocation } from '../housinglocation';
 import { HousingFormValues } from '../housingformvalues';
 
-// Angular Material
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule }     from '@angular/material/input';
 import { MatButtonModule }    from '@angular/material/button';
 import { MatIconModule }      from '@angular/material/icon';
 import { MatCardModule }      from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
+    MatSnackBarModule
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
+  form!: FormGroup;
   housingLocation!: HousingLocation;
-  successMessage = '';
-  errorMessage = '';
+  imagePreview: string | ArrayBuffer | null = null;
 
   constructor(
+    private fb: FormBuilder,
     private housingService: HousingService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') || '';
+
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
         this.housingLocation = house;
-        // Se a imagem estiver apenas em `imageUrl`, copia para `photo`
-        this.housingLocation.photo = this.housingLocation.photo || this.housingLocation.imageUrl;
+        this.imagePreview = house.imageUrl ?? house.photo ?? null;
+
+        this.form = this.fb.group({
+          name: [house.name, Validators.required],
+          city: [house.city, Validators.required],
+          state: [house.state, Validators.required],
+          photo: [house.photo || ''],
+          imageUrl: [house.imageUrl || '']
+        });
       },
       error: () => this.router.navigateByUrl('/')
     });
@@ -57,32 +70,41 @@ export class EditComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        this.housingLocation.imageUrl = result;
-        this.housingLocation.photo = result;
+        this.imagePreview = result;
+        this.form.get('imageUrl')?.setValue(result);
+        this.form.get('photo')?.setValue(result);
       };
       reader.readAsDataURL(input.files[0]);
     }
   }
 
-  onSubmit(form: any): void {
-    if (!form.valid) return;
+  onSubmit(): void {
+    if (this.form.invalid || !this.housingLocation.id) return;
 
     const payload: HousingFormValues = {
-      name:  this.housingLocation.name,
-      city:  this.housingLocation.city,
-      state: this.housingLocation.state,
-      photo: this.housingLocation.photo ?? ''
+      name: this.form.value.name,
+      city: this.form.value.city,
+      state: this.form.value.state,
+      photo: this.form.value.photo || ''
     };
 
     this.housingService.updateHousingLocation(this.housingLocation.id, payload).subscribe({
       next: () => {
-        this.successMessage = 'Casa atualizada com sucesso!';
-        this.errorMessage = '';
+        this.snackBar.open('Casa atualizada com sucesso!', 'Fechar', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
+        });
         setTimeout(() => this.router.navigateByUrl('/'), 500);
       },
       error: () => {
-        this.errorMessage = 'Falha ao atualizar. Tente novamente.';
-        this.successMessage = '';
+        this.snackBar.open('Falha ao atualizar. Tente novamente.', 'Fechar', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }
@@ -95,13 +117,21 @@ export class EditComponent implements OnInit {
     if (confirmDelete) {
       this.housingService.deleteHousingLocation(this.housingLocation.id).subscribe({
         next: () => {
-          this.successMessage = 'Casa excluída com sucesso!';
-          this.errorMessage = '';
+          this.snackBar.open('Casa excluída com sucesso!', 'Fechar', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
+          });
           setTimeout(() => this.router.navigateByUrl('/'), 500);
         },
         error: () => {
-          this.errorMessage = 'Erro ao excluir. Tente novamente.';
-          this.successMessage = '';
+          this.snackBar.open('Erro ao excluir. Tente novamente.', 'Fechar', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
         }
       });
     }

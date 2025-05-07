@@ -1,58 +1,39 @@
 <mat-card class="edit-card">
-  <mat-card-title>Editar Casa</mat-card-title>
+  <mat-card-title>Edit house</mat-card-title>
 
-  <ng-container *ngIf="housingLocation">
-    <form #editForm="ngForm" (ngSubmit)="onSubmit(editForm)" novalidate>
+  <ng-container *ngIf="form">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
       <!-- Nome -->
       <mat-form-field class="full-width">
-        <mat-label>Nome</mat-label>
-        <input
-          matInput
-          name="name"
-          required
-          [(ngModel)]="housingLocation.name"
-        />
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
       </mat-form-field>
 
       <!-- Cidade -->
       <mat-form-field class="full-width">
-        <mat-label>Cidade</mat-label>
-        <input
-          matInput
-          name="city"
-          required
-          [(ngModel)]="housingLocation.city"
-        />
+        <mat-label>City</mat-label>
+        <input matInput formControlName="city" required />
       </mat-form-field>
 
       <!-- Estado -->
       <mat-form-field class="full-width">
-        <mat-label>Estado</mat-label>
-        <input
-          matInput
-          name="state"
-          required
-          [(ngModel)]="housingLocation.state"
-        />
+        <mat-label>State</mat-label>
+        <input matInput formControlName="state" required />
       </mat-form-field>
 
-      <!-- URL da Foto (opcional, mas mantido) -->
+      <!-- URL da Foto (opcional) -->
       <mat-form-field class="full-width">
-        <mat-label>URL da Foto (opcional)</mat-label>
-        <input
-          matInput
-          name="photo"
-          [(ngModel)]="housingLocation.photo"
-        />
+        <mat-label>Photo URL (optional)</mat-label>
+        <input matInput formControlName="photo" />
       </mat-form-field>
 
-      <!-- Preview da imagem -->
-      <div class="image-preview" *ngIf="housingLocation.imageUrl">
-        <img [src]="housingLocation.imageUrl" alt="Preview foto" />
+      <!-- Preview -->
+      <div class="image-preview" *ngIf="imagePreview">
+        <img [src]="imagePreview" alt="Preview foto" />
       </div>
 
-      <!-- Seletor de imagem -->
+      <!-- Upload de imagem -->
       <div class="file-upload">
         <button
           mat-icon-button
@@ -62,7 +43,7 @@
         >
           <mat-icon>upload</mat-icon>
         </button>
-        <span>Selecionar imagem</span>
+        <span>Select image</span>
         <input
           #fileInput
           type="file"
@@ -72,38 +53,11 @@
         />
       </div>
 
-
-
-
-
+      <!-- Ações -->
       <div class="actions">
-
-        <!-- Botão de deletar -->
-        <button
-          mat-raised-button
-          color="warn"
-          type="button"
-          (click)="onDelete()"
-          >
-          Deletar
-        </button>
-
-        <!-- Botão de salvar -->
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="!editForm.valid"
-        >
-          Salvar
-        </button>
+        <button mat-raised-button color="warn" type="button" (click)="onDelete()">Delete</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Save</button>
       </div>
     </form>
   </ng-container>
-
-  <!-- Mensagens de feedback -->
-  <mat-card-content>
-    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
-    <p class="error"   *ngIf="errorMessage"   >{{ errorMessage }}</p>
-  </mat-card-content>
 </mat-card>

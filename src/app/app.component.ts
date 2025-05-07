@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CommonModule } from '@angular/common';
@@ -33,12 +33,22 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'homes';
 
-  toggleDarkMode(isDarkMode: boolean) {
-    const themeClass = isDarkMode ? 'dark-theme' : 'light-theme';
-    document.body.classList.remove('dark-theme', 'light-theme');
-    document.body.classList.add(themeClass);
+  ngOnInit(): void {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    this.applyTheme(darkMode);
+  }
+
+  toggleDarkMode(isDarkMode: boolean): void {
+    localStorage.setItem('darkMode', String(isDarkMode));
+    this.applyTheme(isDarkMode);
+  }
+
+  applyTheme(isDarkMode: boolean): void {
+    const body = document.body;
+    body.classList.remove('dark-theme', 'light-theme');
+    body.classList.add(isDarkMode ? 'dark-theme' : 'light-theme');
   }
 }

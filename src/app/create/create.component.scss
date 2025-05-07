@@ -54,3 +54,16 @@
   color: #842029;
 }
 
+.success-snackbar {
+  background-color: #4caf50; // verde para sucesso
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.error-snackbar {
+  background-color: #f44336;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}

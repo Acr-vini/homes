@@ -1,6 +1,11 @@
+:host {
+  padding: 16px;
+  color: var(--text-color);
+}
+
 .contact {
   padding: 2rem;
-  color: #333;
+  color: var(--text-color);
   h1 {
     font-size: 2rem;
     margin-bottom: 1rem;

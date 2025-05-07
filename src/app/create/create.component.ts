@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HousingService } from '../housing.service';
 import { HousingLocation } from '../housinglocation';
 
@@ -12,14 +12,14 @@ import { MatButtonModule }    from '@angular/material/button';
 import { MatCheckboxModule }  from '@angular/material/checkbox';
 import { MatCardModule }      from '@angular/material/card';
 import { MatIconModule }      from '@angular/material/icon';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
 
     // Material
     MatCardModule,
@@ -27,72 +27,76 @@ import { MatIconModule }      from '@angular/material/icon';
     MatInputModule,
     MatCheckboxModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent {
-  housingLocation: HousingLocation = {
-    id: "0",
-    name: '',
-    city: '',
-    state: '',
-    photo: '',
-    availableUnits: 0,
-    wifi: false,
-    laundry: false,
-    imageUrl: '',
-  };
-
+  form: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
-  successMessage = '';
-  errorMessage = '';
 
   constructor(
+    private fb: FormBuilder,
     private housingService: HousingService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
+    // ✅ Inicializando o formulário reativo com FormBuilder
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      availableUnits: [0, [Validators.required, Validators.min(1)]],
+      wifi: [false],
+      laundry: [false],
+      imageUrl: ['']
+    });
+  }
 
+  // ✅ Manipulação do envio do formulário
   onSubmit() {
-    this.housingService.createHousingLocation(this.housingLocation).subscribe({
+    if (this.form.invalid) return;
+
+    const housingLocation: HousingLocation = {
+      id: "0",
+      photo: '',
+      ...this.form.value
+    };
+
+    this.housingService.createHousingLocation(housingLocation).subscribe({
       next: () => {
-        this.successMessage = 'House created successfully!';
-        this.errorMessage = '';
-        this.resetForm();
+        this.snackBar.open('House created successfully!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar'] });
+        this.form.reset();
+        this.imagePreview = null;
         setTimeout(() => this.router.navigate(['/']), 10);
       },
+
       error: () => {
-        this.errorMessage = 'Failed to create house. Please try again.';
-        this.successMessage = '';
+        this.snackBar.open('Failed to create house. Please try again.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'] });
       }
     });
   }
 
+  // ✅ Manipulação da imagem
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
-        this.housingLocation.imageUrl = reader.result as string;
+        this.form.get('imageUrl')?.setValue(reader.result as string);
       };
       reader.readAsDataURL(input.files[0]);
     }
-  }
-
-  resetForm() {
-    this.housingLocation = {
-      id: "0",
-      name: '',
-      city: '',
-      state: '',
-      photo: '',
-      availableUnits: 0,
-      wifi: false,
-      laundry: false,
-      imageUrl: '',
-    };
-    this.imagePreview = null;
   }
 }

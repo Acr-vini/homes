@@ -1,28 +1,13 @@
 <mat-card class="create-form">
-  <mat-card-title>Create a New House</mat-card-title>
+  <mat-card-title>Create a new house</mat-card-title>
 
-  <!-- Mensagens -->
-  <mat-card-content>
-    <div *ngIf="successMessage" class="alert success-alert">
-      {{ successMessage }}
-    </div>
-    <div *ngIf="errorMessage" class="alert error-alert">
-      {{ errorMessage }}
-    </div>
-  </mat-card-content>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-  <form #formRef="ngForm" (ngSubmit)="onSubmit()">
     <!-- Name -->
     <mat-form-field class="full-width">
       <mat-label>House Name</mat-label>
-      <input
-        matInput
-        name="name"
-        required
-        [(ngModel)]="housingLocation.name"
-        #nameRef="ngModel"
-      />
-      <mat-error *ngIf="nameRef.invalid && nameRef.touched">
+      <input matInput formControlName="name" required />
+      <mat-error *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
         This field is required.
       </mat-error>
     </mat-form-field>
@@ -30,14 +15,8 @@
     <!-- City -->
     <mat-form-field class="full-width">
       <mat-label>City</mat-label>
-      <input
-        matInput
-        name="city"
-        required
-        [(ngModel)]="housingLocation.city"
-        #cityRef="ngModel"
-      />
-      <mat-error *ngIf="cityRef.invalid && cityRef.touched">
+      <input matInput formControlName="city" required />
+      <mat-error *ngIf="form.get('city')?.invalid && form.get('city')?.touched">
         This field is required.
       </mat-error>
     </mat-form-field>
@@ -45,14 +24,8 @@
     <!-- State -->
     <mat-form-field class="full-width">
       <mat-label>State</mat-label>
-      <input
-        matInput
-        name="state"
-        required
-        [(ngModel)]="housingLocation.state"
-        #stateRef="ngModel"
-      />
-      <mat-error *ngIf="stateRef.invalid && stateRef.touched">
+      <input matInput formControlName="state" required />
+      <mat-error *ngIf="form.get('state')?.invalid && form.get('state')?.touched">
         This field is required.
       </mat-error>
     </mat-form-field>
@@ -60,51 +33,29 @@
     <!-- Available Units -->
     <mat-form-field class="full-width">
       <mat-label>Available Units</mat-label>
-      <input
-        matInput
-        type="number"
-        name="availableUnits"
-        required
-        [(ngModel)]="housingLocation.availableUnits"
-        #unitsRef="ngModel"
-      />
-      <mat-error *ngIf="unitsRef.invalid && unitsRef.touched">
-        This field is required.
+      <input matInput type="number" formControlName="availableUnits" required />
+      <mat-error *ngIf="form.get('availableUnits')?.invalid && form.get('availableUnits')?.touched">
+        This field is required and must be greater than 0.
       </mat-error>
     </mat-form-field>
 
     <!-- Wi-Fi -->
-    <mat-checkbox
-      name="wifi"
-      [(ngModel)]="housingLocation.wifi"
-    >
+    <mat-checkbox formControlName="wifi">
       Wi-Fi Available
     </mat-checkbox>
 
     <!-- Laundry -->
-    <mat-checkbox
-      name="laundry"
-      [(ngModel)]="housingLocation.laundry"
-    >
+    <mat-checkbox formControlName="laundry">
       Laundry Available
     </mat-checkbox>
 
     <!-- Upload de imagem -->
     <div class="image-upload">
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="fileInput.click()"
-      >
+      <button mat-stroked-button type="button" (click)="fileInput.click()">
         <mat-icon>upload</mat-icon>
         Upload Image
       </button>
-      <input
-        #fileInput
-        type="file"
-        hidden
-        (change)="onImageSelected($event)"
-      />
+      <input #fileInput type="file" hidden (change)="onImageSelected($event)" />
     </div>
 
     <!-- Preview -->
@@ -115,12 +66,7 @@
 
     <!-- Botão Submit -->
     <div class="actions">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="formRef.invalid"
-      >
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
         Submit
       </button>
     </div>

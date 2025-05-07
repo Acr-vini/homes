@@ -1,21 +1,22 @@
 :host {
   --content-padding: 10px;
+  color: var(--text-color);
+
 }
 
-/* Container principal da aplicação */
 .app-main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Header / Toolbar */
 .app-header {
   background: var(--purpleHeader);
   padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: background-color 0.3s ease;
 }
 
 .app-header-section {
@@ -24,7 +25,6 @@
   align-items: center;
 }
 
-/* Logo */
 .app-header-logo {
   display: flex;
   align-items: center;
@@ -43,12 +43,10 @@
   flex-grow: 1;
   gap: 12px;
   font-weight: 500;
-
 }
 
-
 .app-header-nav-link {
-  color: var(mat);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,8 +55,6 @@
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
-  color: var(--textColor);
-  transition: transform 0.2s ease-in-out, color 0.3s ease;
 
   mat-icon {
     font-size: 20px;
@@ -66,47 +62,29 @@
     transition: color 0.3s ease;
   }
 
-  &:hover {
-    transform: scale(1.05);
+  span {
     color: white;
-
-    mat-icon {
-      color: white;
-    }
   }
 }
-
 
 .app-header-divider {
   opacity: 0.6;
   color: white;
   font-size: 18px;
   font-weight: 300;
-
 }
 
-/* Conteúdo principal */
 .app-content {
   padding: var(--content-padding);
   flex-grow: 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Seções adicionais */
-.app-sobre {
-  padding: 16px;
-  font-size: 16px;
-  background-color: #f3f3f3;
-}
-
-.app-contato {
-  padding: 16px;
-  background-color: #f9f9f9;
-}
 
 .app-header-toggle {
   justify-content: flex-end;
 }
 
 .app-header-section app-header-nav-menu {
-  color: var(--textColor);
+  color: var(--text-color);
 }

@@ -13,25 +13,23 @@ body{
   --purpleBck: #381c9e;
   --purpleWeak: #381c9e49;
   --purpleHeader: #321c7f;
-
-
-
-  body.light-theme {
-    --card-title-color: #0e052c;
-    --background: #ffffff;
-    --text-color: #ffffff;
-    --card-bg: #f5f5f5;
-  }
-
-  /* Tema escuro */
-  body.dark-theme {
-    --card-title-color: #ffffff;
-    --background: #121212;
-    --text-color: #ffffff;
-    --card-bg: #27165e;
-  }
-
 }
+
+body.light-theme {
+  --card-title-color: #0e052c;
+  --background: #ffffff;
+  --text-color: #121212;
+  --card-bg: #f5f5f5;
+}
+
+/* Tema escuro */
+body.dark-theme {
+  --card-title-color: #ffffff;
+  --background: #121212;
+  --text-color: #ffffff;
+  --card-bg: #27165e;
+}
+
 
 
 /* Aplica variáveis */

@@ -8,7 +8,11 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports:
+  [
+    CommonModule,
+    ReactiveFormsModule
+  ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
