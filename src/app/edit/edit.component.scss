@@ -44,3 +44,23 @@
     color: red;
   }
 }
+
+// Herança de classe para o botão de upload no componente de edição
+.edit-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px; // Espaço entre os checkboxes e o botão
+
+  button {
+    background-color:var(--purpleWeak); // Mesmo estilo para manter consistência
+    color: var(--text-color);
+    border-color: var(--purpleBck) ;
+    border-radius: 4px;
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--purpleBck);
+  }
+}

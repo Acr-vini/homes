@@ -7,6 +7,8 @@ import { HousingLocation } from '../housinglocation';
 import { State, City } from 'country-state-city';
 
 // Angular Material
+// acima de @Component
+import { MatCheckboxModule }  from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,7 +32,8 @@ import { Observable, startWith, map } from 'rxjs';
     MatIconModule,
     MatSnackBarModule,
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatCheckboxModule
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
@@ -108,16 +111,28 @@ export class CreateComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.invalid) return;
+
     const payload: HousingLocation = { id: '0', photo: '', ...this.form.value };
+
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {
-        this.snackBar.open('House created!', 'Close', { duration: 3000 });
-        this.form.reset(); this.imagePreview = null;
+        this.snackBar.open('House created!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center', // centralizado na horizontal
+          verticalPosition: 'top'       // fixado no topo da tela
+        });
+        this.form.reset();
+        this.imagePreview = null;
         setTimeout(() => this.router.navigate(['/']), 100);
       },
-      error: () => this.snackBar.open('Error creating house', 'Close', { duration: 3000 })
+      error: () => this.snackBar.open('Error creating house', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center', // centralizado também no erro
+        verticalPosition: 'top'
+      })
     });
   }
+
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

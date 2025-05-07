@@ -7,7 +7,6 @@ import { HousingLocation } from '../housinglocation';
 import { HousingFormValues } from '../housingformvalues';
 import { State, City } from 'country-state-city';
 
-// Angular Material Modules
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -63,6 +62,7 @@ export class EditComponent implements OnInit {
         this.housingLocation = house;
         this.imagePreview = house.imageUrl ?? house.photo ?? null;
 
+        // Montagem do formulário com valores iniciais
         this.form = this.fb.group({
           name: [house.name || '', Validators.required],
           state: this.stateControl,
@@ -71,8 +71,9 @@ export class EditComponent implements OnInit {
           imageUrl: [house.imageUrl || '']
         });
 
+        // Pegamos o nome do estado com base no ISO vindo da API
         const stateName = this._findStateName(house.state) || '';
-        this.stateControl.setValue(stateName);
+        this.stateControl.setValue(stateName); // Estado no formulário é o nome
 
         const iso = house.state || '';
         this.allCities = iso ? City.getCitiesOfState('US', iso).map(c => c.name) : [];
@@ -85,23 +86,28 @@ export class EditComponent implements OnInit {
   }
 
   private _setupFilters(): void {
+    // Autocomplete para estados
     this.filteredStates = this.stateControl.valueChanges.pipe(
-      startWith(this.stateControl.value),
-      map(val => this._filterStates(val))
+      startWith<string>(this.stateControl.value),
+      map((val: string) => this._filterStates(val))
     );
 
+    // Autocomplete para cidades
     this.filteredCities = this.cityControl.valueChanges.pipe(
-      startWith(this.cityControl.value),
-      map(val => this._filterCities(val))
+      startWith<string>(this.cityControl.value),
+      map((v: string) => this._filterCities(v))
     );
 
-    this.stateControl.valueChanges.subscribe(val => {
+    // Quando estado mudar, recarrega cidades
+    this.stateControl.valueChanges.subscribe((val: string) => {
       const iso = this._findStateIso(val);
-      this.allCities = iso ? City.getCitiesOfState('US', iso).map(c => c.name) : [];
+      this.allCities = iso
+        ? City.getCitiesOfState('US', iso).map(c => c.name)
+        : [];
       this.cityControl.setValue('');
       this.filteredCities = this.cityControl.valueChanges.pipe(
-        startWith(''),
-        map(v => this._filterCities(v))
+        startWith<string>(''),
+        map((v2: string) => this._filterCities(v2))
       );
     });
   }
@@ -139,31 +145,54 @@ export class EditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.invalid || !this.housingLocation.id) return;
+
+    // Pegamos o isoCode correto para salvar no banco
     const iso = this._findStateIso(this.stateControl.value) || this.housingLocation.state;
+
     const payload: HousingFormValues = {
       name: this.form.value.name,
-      state: iso,
+      state: iso, // Salva ISO, não o nome
       city: this.cityControl.value,
       photo: this.form.value.photo || ''
     };
+
     this.housingService.updateHousingLocation(this.housingLocation.id, payload).subscribe({
       next: () => {
-        this.snackBar.open('Casa atualizada com sucesso!', 'Fechar', { duration: 3000 });
-        setTimeout(() => this.router.navigate(['/']), 500);
+        this.snackBar.open('House updated successfully!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+
+        this.router.navigateByUrl('/');
       },
-      error: () => this.snackBar.open('Erro ao atualizar.', 'Fechar', { duration: 3000 })
+      error: () => this.snackBar.open('Failed to update the house.', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      })
     });
   }
 
   onDelete(): void {
     if (!this.housingLocation.id) return;
-    if (!confirm('Tem certeza que deseja excluir esta casa?')) return;
+    if (!confirm('Are you sure you want to delete this house?')) return;
+
     this.housingService.deleteHousingLocation(this.housingLocation.id).subscribe({
       next: () => {
-        this.snackBar.open('Casa excluída com sucesso!', 'Fechar', { duration: 3000 });
-        setTimeout(() => this.router.navigate(['/']), 500);
+        this.snackBar.open('House deleted successfully!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+
+        this.router.navigateByUrl('/');
       },
-      error: () => this.snackBar.open('Erro ao excluir.', 'Fechar', { duration: 3000 })
+      error: () => this.snackBar.open('Failed to delete the house.', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      })
     });
   }
 }
