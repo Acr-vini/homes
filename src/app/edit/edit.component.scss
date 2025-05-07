@@ -1,0 +1,66 @@
+/* herança de classes: edit-card é o bloco */
+.edit-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: var(--purpleBrdr);
+
+  mat-card-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--purpleBck);
+    text-align: center;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .image-preview {
+    margin: 1rem 0;
+    text-align: center;
+
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+  }
+
+  .actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+
+  .success {
+    color: green;
+  }
+
+  .error {
+    color: red;
+  }
+}
+
+// Herança de classe para o botão de upload no componente de edição
+.edit-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px; // Espaço entre os checkboxes e o botão
+
+  button {
+    background-color:var(--purpleWeak); // Mesmo estilo para manter consistência
+    color: var(--text-color);
+    border-color: var(--purpleBck) ;
+    border-radius: 4px;
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--purpleBck);
+  }
+}

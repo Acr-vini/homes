@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { HousingService } from '../housing.service';
 import { HousingLocation } from '../housinglocation';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,11 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports:
+  [
+    CommonModule,
+    ReactiveFormsModule
+  ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
@@ -24,17 +28,30 @@ export class DetailsComponent {
   });
 
   constructor() {
-    const housingLocationId = parseInt(this.route.snapshot.params['id'], 10);
-    this.housingService.getHousingLocationById(housingLocationId).then(location => {
-      this.housingLocation = location;
+    const housingLocationId = String(this.route.snapshot.paramMap.get('id'));
+    if (!housingLocationId) {
+      console.error('ID inválido:', housingLocationId);
+      return;
+    }
+
+    this.housingService.getHousingLocationById(housingLocationId).subscribe({
+      next: (location) => {
+        console.log('Dados recebidos:', location);
+        this.housingLocation = location;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar detalhes da casa:', err);
+      }
     });
   }
 
-  submitApplication() {
-    this.housingService.submitApplication(
-      this.applyForm.value.firstName ?? '',
-      this.applyForm.value.lastName ?? '',
-      this.applyForm.value.email ?? ''
-    );
+submitApplication(): void {
+  if (this.applyForm.valid) {
+    console.log('📬 Formulário enviado:', this.applyForm.value);
+    alert('Aplicação enviada com sucesso!');
+    this.applyForm.reset(); // opcional
+  } else {
+    alert('Por favor, preencha todos os campos.');
   }
+}
 }
