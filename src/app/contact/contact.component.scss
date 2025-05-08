@@ -1,6 +1,5 @@
 :host {
   padding: 16px;
-  color: var(--text-color);
 }
 
 * {
@@ -10,7 +9,7 @@
 
 .contact {
   padding: 2rem;
-  color: var(--text-color);
+  color: var(--titleAC);
   h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
@@ -50,6 +49,6 @@ mat-card-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: var(--text-color);
+  color: var(--titleAC);
   text-align: center;
 }

@@ -86,8 +86,28 @@
 
 .app-header-toggle {
   justify-content: flex-end;
+  margin-right: 16px; // Adicione um espaçamento para afastar do canto
+}
+
+.app-header-toggle mat-icon {
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.app-header-toggle mat-icon {
+  color: var(--toggle) !important;
 }
 
 .app-header-section app-header-nav-menu {
   color: var(--text-color);
+}
+
+body.dark-theme {
+  --card-bg: #cccccc; // cinza claro
+  color: #ffffff;
+}
+
+body.light-theme {
+  --card-bg: #444444; // cinza escuro
+  color: #000000;
 }

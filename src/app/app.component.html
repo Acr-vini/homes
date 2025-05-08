@@ -23,7 +23,7 @@
     <!-- Coluna da Direita: Toggle -->
     <div class="app-header-section app-header-toggle">
       <mat-slide-toggle (change)="toggleDarkMode($event.checked)">
-        🌙
+        <mat-icon>{{ isDarkMode ? "dark_mode" : "light_mode" }}</mat-icon>
       </mat-slide-toggle>
     </div>
   </mat-toolbar>

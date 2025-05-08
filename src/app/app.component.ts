@@ -35,6 +35,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class AppComponent implements OnInit {
   title = 'homes';
+  isDarkMode = false; // Variável para rastrear o estado do tema
 
   ngOnInit(): void {
     const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -42,6 +43,7 @@ export class AppComponent implements OnInit {
   }
 
   toggleDarkMode(isDarkMode: boolean): void {
+    this.isDarkMode = isDarkMode;
     localStorage.setItem('darkMode', String(isDarkMode));
     this.applyTheme(isDarkMode);
   }

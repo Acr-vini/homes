@@ -12,8 +12,6 @@ import { HousingService } from '../housing.service';
 import { HousingLocation } from '../housinglocation';
 import { State, City } from 'country-state-city';
 
-// Angular Material
-// acima de @Component
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';

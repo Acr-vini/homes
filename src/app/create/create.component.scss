@@ -13,7 +13,7 @@
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1rem;
-    color: var(--text-color);
+    color: var(--purpleBck);
     text-align: center;
   }
 
@@ -82,16 +82,17 @@
   margin-top: 16px; // Espaço entre os checkboxes e o botão
 
   button {
-    background-color: var(
-      --purpleWeak
-    ); // Mesmo estilo para manter consistência
-    color: var(--text-color);
-    border-color: var(--purpleBck);
+    background-color: var(--purpleBck);
+    color: #ffffff; // Cor fixa para o ícone, garantindo contraste
     border-radius: 4px;
+
+    mat-icon {
+      color: #ffffff; // Força o ícone a ficar visível
+    }
   }
 
   span {
     font-size: 14px;
-    color: var(--text-color);
+    color: black;
   }
 }

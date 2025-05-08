@@ -1,8 +1,8 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 @include mat.core();
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-body{
+body {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -20,6 +20,9 @@ body.light-theme {
   --background: #ffffff;
   --text-color: #121212;
   --card-bg: #f5f5f5;
+  --toggle: #eeff00;
+  --titleAC: #321c7f;
+  --cardBck: #f5f5f5;
 }
 
 /* Tema escuro */
@@ -28,9 +31,10 @@ body.dark-theme {
   --background: #121212;
   --text-color: #ffffff;
   --card-bg: #27165e;
+  --toggle: #555555;
+  --titleAC: #ffffff;
+  --cardBck: #6f5ead;
 }
-
-
 
 /* Aplica variáveis */
 body {
@@ -39,34 +43,35 @@ body {
 }
 
 mat-card {
-  background-color: var(--card-bg) !important;
+  background-color: var(--cardBck) !important;
   color: var(--text-color) !important;
 }
 
 .card-title {
-  color: var(--card-title-color);
+  color: var(--titleAC);
 }
 
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-
-
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 $my-primary: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
-$my-accent:  mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
-$my-warn:    mat.define-palette(mat.$red-palette);
+$my-accent: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
+$my-warn: mat.define-palette(mat.$red-palette);
 
-$my-theme: mat.define-light-theme((
-  color: (
-    primary: $my-primary,
-    accent:  $my-accent,
-    warn:    $my-warn,
+$my-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+      warn: $my-warn,
+    ),
   )
-));
-
+);
 
 @include mat.all-component-themes($my-theme);
-

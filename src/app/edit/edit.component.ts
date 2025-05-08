@@ -160,13 +160,12 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid || !this.housingLocation.id) return;
 
-    // Pegamos o isoCode correto para salvar no banco
     const iso =
       this._findStateIso(this.stateControl.value) || this.housingLocation.state;
 
     const payload: HousingFormValues = {
       name: this.form.value.name,
-      state: iso, // Salva ISO, não o nome
+      state: iso,
       city: this.cityControl.value,
       photo: this.form.value.photo || '',
     };
