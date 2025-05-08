@@ -1,0 +1,51 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+  <!-- Campo de email -->
+  <mat-form-field appearance="fill" class="login-form-field">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" formControlName="email" />
+    <!-- Mensagem de erro para campo de email -->
+    <mat-error
+      *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+    >
+      O email é obrigatório e deve ser válido.
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Campo de senha com ícone de olho -->
+  <mat-form-field appearance="fill" class="login-form-field">
+    <mat-label>Senha</mat-label>
+    <input
+      matInput
+      [type]="hidePassword ? 'password' : 'text'"
+      formControlName="password"
+    />
+    <mat-error
+      *ngIf="
+        loginForm.get('password')?.invalid && loginForm.get('password')?.touched
+      "
+    >
+      A senha é obrigatória.
+    </mat-error>
+    <!-- Botão para mostrar/ocultar a senha -->
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="hidePassword = !hidePassword"
+      [attr.aria-label]="'Alternar visibilidade da senha'"
+      [attr.aria-pressed]="!hidePassword"
+    >
+      <mat-icon>{{ hidePassword ? "visibility_off" : "visibility" }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <!-- Botão de login -->
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="loginForm.invalid"
+  >
+    Login
+  </button>
+</form>

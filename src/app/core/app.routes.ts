@@ -6,43 +6,49 @@ import { createComponent } from '@angular/core';
 import { EditComponent } from './edit/edit.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
-
+import { LoginComponent } from './components/login.component'; // ajuste o caminho conforme sua estrutura
 
 const routeConfig: Routes = [
   {
     path: '',
+    redirectTo: '/login',
+    pathMatch: 'full', // Redireciona para login
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./components/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'home',
     component: HomeComponent,
-    title: 'Home page'
+    title: 'Home page',
   },
   {
     path: 'details/:id',
     component: DetailsComponent,
-    title: 'Home details'
+    title: 'Home details',
   },
   {
     path: 'create',
     component: CreateComponent,
-    title: 'create'
+    title: 'create',
   },
   {
     path: 'edit/:id',
     component: EditComponent,
-    title: 'edit'
+    title: 'edit',
   },
   {
     path: 'about',
     component: AboutComponent,
-    title: 'about'
-
+    title: 'about',
   },
   {
     path: 'contact',
     component: ContactComponent,
-    title: 'contact'
+    title: 'contact',
   },
-
 ];
 
 export default routeConfig;
-
-

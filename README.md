@@ -1,6 +1,9 @@
 # Homes
 
-  <!-- //usar no terminal: json-server --watch db.json -->
+## terminal
+
+Create two terminals one to run: ng s
+an another to run: json-server --watch db.json
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.13.
 
