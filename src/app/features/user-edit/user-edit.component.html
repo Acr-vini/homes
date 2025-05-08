@@ -1,0 +1,15 @@
+<div class="edit-user">
+  <h2>Edit User</h2>
+  <form (ngSubmit)="onSave()">
+    <label for="name">Name:</label>
+    <input [(ngModel)]="user.name" name="name" id="name" required />
+
+    <label for="email">Email:</label>
+    <input [(ngModel)]="user.email" name="email" id="email" required />
+
+    <label for="status">Status:</label>
+    <input [(ngModel)]="user.status" name="status" id="status" required />
+
+    <button type="submit">Save</button>
+  </form>
+</div>

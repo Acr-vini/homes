@@ -111,3 +111,9 @@ body.light-theme {
   --card-bg: #444444; // cinza escuro
   color: #000000;
 }
+.app-users-header-section {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

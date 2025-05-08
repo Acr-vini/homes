@@ -7,13 +7,13 @@
       </a>
     </div>
 
-    <!-- Coluna levemente a direita: Botão de Usuários -->
-    <header>
-      <button mat-button routerLink="/users">Users</button>
-    </header>
-
     <!-- Coluna Central: Menu -->
     <div class="app-header-section app-header-nav-menu">
+      <a mat-button class="app-header-nav-link" [routerLink]="['/users']">
+        <mat-icon>person</mat-icon>
+        <span>Users</span>
+      </a>
+      <span class="app-header-divider">|</span>
       <a mat-button class="app-header-nav-link" [routerLink]="['/about']">
         <mat-icon>info</mat-icon>
         <span>About</span>

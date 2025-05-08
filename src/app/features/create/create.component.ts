@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   FormControl,
 } from '@angular/forms';
-import { HousingService } from '../housing.service';
+import { HousingService } from '../../core/services/housing.service';
 import { HousingLocation } from '../housinglocation';
 import { State, City } from 'country-state-city';
 

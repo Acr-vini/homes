@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HousingLocation } from './housinglocation';
+import { HousingLocation } from '../../features/housinglocation';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { HousingFormValues } from './housingformvalues';
-
-
+import { HousingFormValues } from '../../features/housingformvalues';
 
 @Injectable({
   providedIn: 'root',
@@ -23,34 +21,38 @@ export class HousingService {
     return this.http.get<HousingLocation>(`${this.baseUrl}/${id}`);
   }
 
-createHousingLocation(housingLocation: HousingLocation): Observable<HousingLocation> {
-  return this.getAllHousingLocations().pipe(
-    map(houses => {
+  createHousingLocation(
+    housingLocation: HousingLocation
+  ): Observable<HousingLocation> {
+    return this.getAllHousingLocations().pipe(
+      map((houses) => {
+        const ids = houses
+          .map((h) => parseInt(String(h.id), 10))
+          .filter((id) => !isNaN(id));
 
-      const ids = houses
-        .map(h => parseInt(String(h.id), 10))
-        .filter(id => !isNaN(id));
+        const maxId = Math.max(...ids, 0);
+        const newId = String(maxId + 1);
+        return { ...housingLocation, id: newId };
+      }),
+      switchMap((houseWithId) => {
+        return this.http.post<HousingLocation>(this.baseUrl, houseWithId);
+      })
+    );
+  }
 
-      const maxId = Math.max(...ids, 0);
-      const newId = String(maxId + 1);
-      return { ...housingLocation, id: newId };
-    }),
-    switchMap(houseWithId => {
-      return this.http.post<HousingLocation>(this.baseUrl, houseWithId);
-    })
-  );
-}
+  updateHousingLocation(
+    id: string,
+    housingLocation: HousingFormValues
+  ): Observable<HousingLocation> {
+    return this.http.put<HousingLocation>(
+      `${this.baseUrl}/${id}`,
+      housingLocation
+    );
+  }
 
-
-updateHousingLocation(id: string, housingLocation: HousingFormValues): Observable<HousingLocation> {
-  return this.http.put<HousingLocation>(`${this.baseUrl}/${id}`, housingLocation);
-}
-
-
-
-deleteHousingLocation(id: string): Observable<void> {
-  return this.http.delete<void>(`${this.baseUrl}/${id}`);
-}
+  deleteHousingLocation(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 
   submitApplication(firstName: string, lastName: string, email: string): void {
     console.log('Application submitted:', { firstName, lastName, email });

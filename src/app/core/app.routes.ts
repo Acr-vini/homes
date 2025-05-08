@@ -1,23 +1,25 @@
-import { CreateComponent } from './create/create.component';
+import { CreateComponent } from '../features/create/create.component';
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { DetailsComponent } from './details/details.component';
+import { HomeComponent } from '../features/home/home.component';
+import { DetailsComponent } from '../features/details/details.component';
 import { createComponent } from '@angular/core';
-import { EditComponent } from './edit/edit.component';
-import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
-import { LoginComponent } from './components/login.component'; // ajuste o caminho conforme sua estrutura
+import { EditComponent } from '../features/edit/edit.component';
+import { AboutComponent } from '../features/about/about.component';
+import { ContactComponent } from '../features/contact/contact.component';
+import { LoginComponent } from '../features/login/login.component';
+import { UsersComponent } from '../features/users/users.component';
+import { UserEditComponent } from '../features/user-edit/user-edit.component';
 
 const routeConfig: Routes = [
   {
     path: '',
     redirectTo: '/login',
-    pathMatch: 'full', // Redireciona para login
+    pathMatch: 'full',
   },
   {
     path: 'login',
     loadComponent: () =>
-      import('./components/login.component').then((m) => m.LoginComponent),
+      import('../features/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'home',
@@ -48,6 +50,14 @@ const routeConfig: Routes = [
     path: 'contact',
     component: ContactComponent,
     title: 'contact',
+  },
+  {
+    path: 'users',
+    component: UsersComponent,
+  },
+  {
+    path: 'users/edit/:id',
+    component: UserEditComponent,
   },
 ];
 

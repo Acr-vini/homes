@@ -1,0 +1,26 @@
+.users {
+  &-table {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}
+mat-card {
+  width: 100%;
+}
+mat-card-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--purpleBck);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.full-width-table {
+  width: 100%;
+  margin-top: 1rem;
+}
