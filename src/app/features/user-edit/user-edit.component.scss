@@ -1,12 +1,90 @@
-.edit-user {
-  margin: 20px;
+/* Transição suave */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }
 
-form {
+.edit-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid var(--cardBck);
+  background-color: var(--cardBck);
+  color: var(--text-color); // Certifique-se de que o texto usa a cor correta
+
+  mat-card-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--purpleBck);
+    text-align: center;
+  }
+
+  mat-form-field {
+    color: var(--text-color); // Ajuste a cor dos campos de formulário
+  }
+
+  input,
+  mat-select {
+    background-color: transparent; // Certifique-se de que o fundo dos inputs é transparente
+    color: var(--text-color); // Ajuste a cor do texto nos inputs
+  }
+
+  mat-error {
+    color: red; // Cor para mensagens de erro
+  }
+
+  .actions button {
+    background-color: var(--purpleBck);
+    color: white;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  /* Espaçamento interno no conteúdo do card */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .success {
+    color: green;
+  }
+
+  .error {
+    color: red;
+  }
+}
+
+/* Botões de ação no upload (se usar upload de avatar etc) */
+.edit-file-upload {
   display: flex;
-  flex-direction: column;
-}
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
 
-input {
-  margin: 10px 0;
+  button {
+    background-color: var(--purpleWeak);
+    color: var(--purpleBck);
+    border-radius: 4px;
+
+    mat-icon {
+      color: var(--purpleBck);
+    }
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--text-color);
+  }
 }

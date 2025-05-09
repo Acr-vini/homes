@@ -1,15 +1,77 @@
-<div class="edit-user">
-  <h2>Edit User</h2>
-  <form (ngSubmit)="onSave()">
-    <label for="name">Name:</label>
-    <input [(ngModel)]="user.name" name="name" id="name" required />
+<mat-card class="edit-card">
+  <mat-card-title>Edit User</mat-card-title>
 
-    <label for="email">Email:</label>
-    <input [(ngModel)]="user.email" name="email" id="email" required />
+  <form [formGroup]="userForm" (ngSubmit)="onSave()">
+    <!-- Name -->
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-error
+        *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched"
+      >
+        Name is required
+      </mat-error>
+    </mat-form-field>
 
-    <label for="status">Status:</label>
-    <input [(ngModel)]="user.status" name="status" id="status" required />
+    <!-- Email -->
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" required />
+      <mat-error
+        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+      >
+        Valid email is required
+      </mat-error>
+    </mat-form-field>
 
-    <button type="submit">Save</button>
+    <!-- Phone -->
+    <mat-form-field class="full-width">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+
+    <!-- Location -->
+    <mat-form-field class="full-width">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location" />
+    </mat-form-field>
+
+    <!-- Role -->
+    <mat-form-field class="full-width">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role" required>
+        <mat-option value="User">User</mat-option>
+        <mat-option value="Manager">Manager</mat-option>
+        <mat-option value="Admin">Admin</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field class="full-width">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status" required>
+        <mat-option value="active">Active</mat-option>
+        <mat-option value="disabled">Disabled</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          userForm.get('status')?.invalid && userForm.get('status')?.touched
+        "
+      >
+        Status is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="userForm.invalid"
+      >
+        Save
+      </button>
+    </div>
   </form>
-</div>
+</mat-card>

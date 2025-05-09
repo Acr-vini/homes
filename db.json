@@ -120,13 +120,13 @@
   "users": [
     {
       "id": "1",
-      "name": "John Doe",
-      "email": "john.doe@example.com",
+      "name": "VIni",
+      "email": "vini@example.com",
       "password": "password123",
       "status": "active",
-      "role": "user",
+      "role": "Admin",
       "phone": "123-456-7890",
-      "location": "Chicago, IL"
+      "location": "Brasil, PR"
     },
     {
       "id": "2",
@@ -134,9 +134,29 @@
       "email": "jane.smith@example.com",
       "password": "password456",
       "status": "active",
-      "role": "user",
+      "role": "Manager",
       "phone": "987-654-3210",
       "location": "New York, NY"
+    },
+    {
+      "id": "3",
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "password": "password789",
+      "status": "active",
+      "role": "User",
+      "phone": "555-123-4567",
+      "location": "Los Angeles, CA"
+    },
+    {
+      "id": "4",
+      "name": "Bob Brown",
+      "email": "bob.brown@example.com",
+      "password": "password101",
+      "status": "disabled",
+      "role": "User",
+      "phone": "444-555-6666",
+      "location": "Miami, FL"
     }
   ]
 }
