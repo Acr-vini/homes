@@ -59,6 +59,13 @@ const routeConfig: Routes = [
     path: 'users/edit/:id',
     component: UserEditComponent,
   },
+  {
+    path: 'users/create',
+    loadComponent: () =>
+      import('../features/user-create/user-create.component').then(
+        (m) => m.UserCreateComponent
+      ),
+  },
 ];
 
 export default routeConfig;

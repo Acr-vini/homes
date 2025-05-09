@@ -157,6 +157,15 @@
       "role": "User",
       "phone": "444-555-6666",
       "location": "Miami, FL"
+    },
+    {
+      "id": "7c99",
+      "name": "Charlie Davis",
+      "email": "charlie.davis@example.com",
+      "phone": "333-444-5555",
+      "location": "Seattle, WA",
+      "role": "User",
+      "status": "active"
     }
   ]
 }

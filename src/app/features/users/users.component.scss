@@ -11,16 +11,33 @@ mat-card-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: var(--purpleBck);
+  color: var(--titleAC);
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 1rem;
+  margin-top: 1rem;
   gap: 0.5rem;
 }
 
 .full-width-table {
   width: 100%;
   margin-top: 1rem;
+}
+
+.new-user-btn {
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  box-shadow: 0 2px 8px rgba(56, 28, 158, 0.08);
+
+  mat-icon {
+    color: white;
+  }
 }
