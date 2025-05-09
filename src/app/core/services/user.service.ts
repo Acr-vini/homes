@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 // Defina a interface User (pode extrair num arquivo models/user.ts)
 export interface User {
@@ -47,5 +48,12 @@ export class UserService {
   /** POST: cria um novo usuário */
   createUser(user: Omit<User, 'id'>): Observable<User> {
     return this.http.post<User>(this.baseUrl, user);
+  }
+
+  // Busca usuário por email e senha
+  authenticate(email: string, password: string): Observable<any | null> {
+    return this.http
+      .get<any[]>(`${this.baseUrl}?email=${email}&password=${password}`)
+      .pipe(map((users) => (users.length ? users[0] : null)));
   }
 }

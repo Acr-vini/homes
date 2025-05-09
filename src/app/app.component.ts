@@ -35,6 +35,11 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class AppComponent implements OnInit {
   title = 'homes';
+
+  get isLoggedIn(): boolean {
+    return localStorage.getItem('isLoggedIn') === 'true';
+  }
+
   isDarkMode = false; // Variável para rastrear o estado do tema
 
   ngOnInit(): void {

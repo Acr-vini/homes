@@ -1,71 +1,70 @@
-import { CreateComponent } from '../features/create/create.component';
 import { Routes } from '@angular/router';
+
+// Página pública de login
+import { LoginComponent } from '../features/login/login.component';
+
+// Container com toolbar/menu para páginas autenticadas
+import { ShellComponent } from '../features/shell/shell.component';
+
+// Páginas protegidas
 import { HomeComponent } from '../features/home/home.component';
 import { DetailsComponent } from '../features/details/details.component';
-import { createComponent } from '@angular/core';
+import { CreateComponent } from '../features/create/create.component';
 import { EditComponent } from '../features/edit/edit.component';
 import { AboutComponent } from '../features/about/about.component';
 import { ContactComponent } from '../features/contact/contact.component';
-import { LoginComponent } from '../features/login/login.component';
 import { UsersComponent } from '../features/users/users.component';
+import { UserCreateComponent } from '../features/user-create/user-create.component';
 import { UserEditComponent } from '../features/user-edit/user-edit.component';
 
-const routeConfig: Routes = [
+import { AuthGuard } from '../core/guards/auth.guard';
+
+const routes: Routes = [
+  // Rota pública
+  { path: 'login', component: LoginComponent },
+
+  // Container principal (Shell) para todas as rotas autenticadas
   {
     path: '',
-    redirectTo: '/login',
-    pathMatch: 'full',
+    component: ShellComponent,
+    canActivate: [AuthGuard],
+    children: [
+      // Redireciona raiz para /home
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+
+      // Dashboard / Home
+      { path: 'home', component: HomeComponent, title: 'Home page' },
+
+      // CRUD de Houses
+      {
+        path: 'details/:id',
+        component: DetailsComponent,
+        title: 'Home details',
+      },
+      { path: 'create', component: CreateComponent, title: 'Create house' },
+      { path: 'edit/:id', component: EditComponent, title: 'Edit house' },
+
+      // Sobre e Contato
+      { path: 'about', component: AboutComponent, title: 'About' },
+      { path: 'contact', component: ContactComponent, title: 'Contact' },
+
+      // CRUD de Usuários
+      { path: 'users', component: UsersComponent, title: 'Users' },
+      {
+        path: 'users/create',
+        component: UserCreateComponent,
+        title: 'New User',
+      },
+      {
+        path: 'users/edit/:id',
+        component: UserEditComponent,
+        title: 'Edit User',
+      },
+    ],
   },
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('../features/login/login.component').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'home',
-    component: HomeComponent,
-    title: 'Home page',
-  },
-  {
-    path: 'details/:id',
-    component: DetailsComponent,
-    title: 'Home details',
-  },
-  {
-    path: 'create',
-    component: CreateComponent,
-    title: 'create',
-  },
-  {
-    path: 'edit/:id',
-    component: EditComponent,
-    title: 'edit',
-  },
-  {
-    path: 'about',
-    component: AboutComponent,
-    title: 'about',
-  },
-  {
-    path: 'contact',
-    component: ContactComponent,
-    title: 'contact',
-  },
-  {
-    path: 'users',
-    component: UsersComponent,
-  },
-  {
-    path: 'users/edit/:id',
-    component: UserEditComponent,
-  },
-  {
-    path: 'users/create',
-    loadComponent: () =>
-      import('../features/user-create/user-create.component').then(
-        (m) => m.UserCreateComponent
-      ),
-  },
+
+  // Qualquer rota não cadastrada redireciona para login
+  { path: '**', redirectTo: 'login' },
 ];
 
-export default routeConfig;
+export default routes;

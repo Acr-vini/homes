@@ -1,44 +1,60 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap, map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
-@Injectable({
-  providedIn: 'root',
-})
+export interface User {
+  id: string;
+  email: string;
+  password: string;
+  // ... outros campos ...
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Controle reativo do estado de autenticação
-  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+  private loggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
+  private apiUrl = 'http://localhost:3000/users';
 
-  constructor(private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  // Simula login com usuário/senha fixos
-  login(email: string, password: string): boolean {
-    // Substitua esses dados por uma integração real no futuro
-    const validEmail = 'admin@email.com';
-    const validPassword = '123456';
-
-    if (email === validEmail && password === validPassword) {
-      localStorage.setItem('token', 'fake-jwt-token');
-      this.loggedIn.next(true); // atualiza estado reativo
-      return true;
-    }
-
-    return false;
+  /** Consulta o db.json filtrando por email e password */
+  login(email: string, password: string): Observable<boolean> {
+    // GET /users?email=xxx&password=yyy
+    return this.http
+      .get<User[]>(`${this.apiUrl}?email=${email}&password=${password}`)
+      .pipe(
+        map((users) => {
+          const user = users[0];
+          if (user) {
+            // sucesso: grava token “fake” e emite estado
+            localStorage.setItem('token', 'fake-jwt-token');
+            this.loggedIn$.next(true);
+            return true;
+          } else {
+            return false;
+          }
+        })
+      );
   }
 
-  // Remove o token e atualiza o estado
   logout(): void {
     localStorage.removeItem('token');
-    this.loggedIn.next(false);
-    this.router.navigate(['/login']); // redireciona ao logout
+    this.loggedIn$.next(false);
+    this.router.navigate(['/login']);
   }
 
-  // Observável para saber se o usuário está logado
-  isLoggedIn(): Observable<boolean> {
-    return this.loggedIn.asObservable();
+  isLoggedIn(): boolean {
+    return this.loggedIn$.value;
   }
 
-  // Método interno para verificar token
+  isLoggedIn$(): Observable<boolean> {
+    return this.loggedIn$.asObservable();
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
   private hasToken(): boolean {
     return !!localStorage.getItem('token');
   }

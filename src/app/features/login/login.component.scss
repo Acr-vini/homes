@@ -1,13 +1,10 @@
-/* login.component.scss */
-
-/* Certifique-se de que o :host ocupe 100% da altura da tela */
 :host {
   display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: flex-start; /* Ajusta a posição vertical para começar no topo */
-  height: 100vh; /* Ocupa 100% da altura da tela */
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
   margin: 0;
-  width: 100%; /* Garante que o :host ocupe 100% da largura */
+  width: 100%;
 }
 
 .login-form {
@@ -15,13 +12,13 @@
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  max-width: 400px; /* Largura máxima do formulário */
+  max-width: 400px;
   padding: 2rem;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  margin-top: 50px; /* Espaçamento superior para mover o formulário para cima */
+  margin-top: 50px;
 }
 
 .login-form-field {
