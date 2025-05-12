@@ -129,22 +129,21 @@
       "location": "Brasil, PR"
     },
     {
-      "id": "2",
-      "name": "Jane Smith",
-      "email": "jane.smith@example.com",
-      "password": "password456",
-      "status": "active",
-      "role": "Manager",
-      "phone": "987-654-3210",
-      "location": "New York, NY"
+      "id": "5b44",
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "phone": "555-123-4567",
+      "location": "USA, NY",
+      "role": "User",
+      "status": "active"
     },
     {
-      "id": "709c",
-      "name": "asdsadsad",
-      "email": "adsadad@dasdads",
-      "phone": "3424234523",
-      "location": "asfasfaa",
-      "role": "User",
+      "id": "c1e3",
+      "name": "Vini",
+      "email": "vini@example.com",
+      "phone": "123-456-7890",
+      "location": "Brasil, PR",
+      "role": "Admin",
       "status": "active"
     }
   ]

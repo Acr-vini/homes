@@ -130,7 +130,7 @@ export class CreateComponent implements OnInit {
 
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {
-        this.snackBar.open('House created!', 'Close', {
+        this.snackBar.open('✅ House created!', 'Close', {
           duration: 3000,
           horizontalPosition: 'center', // centralizado na horizontal
           verticalPosition: 'top', // fixado no topo da tela
@@ -140,7 +140,7 @@ export class CreateComponent implements OnInit {
         setTimeout(() => this.router.navigate(['/']), 100);
       },
       error: () =>
-        this.snackBar.open('Error creating house', 'Close', {
+        this.snackBar.open('❌ Error creating house', 'Close', {
           duration: 3000,
           horizontalPosition: 'center', // centralizado também no erro
           verticalPosition: 'top',

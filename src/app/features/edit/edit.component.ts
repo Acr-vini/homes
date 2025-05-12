@@ -174,7 +174,7 @@ export class EditComponent implements OnInit {
       .updateHousingLocation(this.housingLocation.id, payload)
       .subscribe({
         next: () => {
-          this.snackBar.open('House updated successfully!', 'Close', {
+          this.snackBar.open('✅ House updated successfully!', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
@@ -183,7 +183,7 @@ export class EditComponent implements OnInit {
           this.router.navigateByUrl('/');
         },
         error: () =>
-          this.snackBar.open('Failed to update the house.', 'Close', {
+          this.snackBar.open('❌ Failed to update the house.', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top',

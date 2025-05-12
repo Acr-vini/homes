@@ -42,9 +42,11 @@ export class UserCreateComponent {
     private router: Router,
     private snackBar: MatSnackBar
   ) {
+    // ✅ Criação do formulário com validações
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required], // ✅ Novo campo obrigatório
       phone: [''],
       location: [''],
       role: ['', Validators.required],
@@ -56,12 +58,18 @@ export class UserCreateComponent {
     if (this.userForm.valid) {
       this.userService.createUser(this.userForm.value).subscribe({
         next: () => {
-          this.snackBar.open('User created!', 'Close', { duration: 2000 });
+          // ✅ Mensagem de sucesso centralizada no topo (posição já configurada no app.config.ts)
+          this.snackBar.open('✅ User successfully created!', 'Close', {
+            panelClass: ['snackbar-success'], // opcional: classe para customizar estilo
+          });
+
+          // ✅ Redireciona para a listagem após salvar
           this.router.navigate(['/users']);
         },
         error: () => {
-          this.snackBar.open('Error creating user', 'Close', {
-            duration: 2000,
+          // ✅ Mensagem de erro
+          this.snackBar.open('❌ Error creating user', 'Close', {
+            panelClass: ['snackbar-error'], // opcional: estilo diferenciado para erros
           });
         },
       });

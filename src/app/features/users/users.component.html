@@ -1,8 +1,21 @@
 <mat-card>
-  <!-- Centered English title -->
+  <!-- Título centralizado -->
   <mat-card-title class="title-center">Users</mat-card-title>
+
+  <!-- Campo de busca por nome -->
+  <mat-form-field appearance="outline" class="users-user-filter">
+    <mat-label>Search by name</mat-label>
+    <input
+      matInput
+      type="text"
+      (keyup)="applyFilter($event)"
+      placeholder="Type to filter..."
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
   <mat-card-content>
-    <!-- Button to create a new user -->
+    <!-- Botão de novo usuário -->
     <button
       mat-raised-button
       color="primary"
@@ -13,49 +26,49 @@
       New User
     </button>
 
-    <!-- Users table -->
+    <!-- Tabela de usuários -->
     <table
       mat-table
       [dataSource]="dataSource"
       class="full-width-table mat-elevation-z8"
     >
-      <!-- Name Column -->
+      <!-- Coluna Nome -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name:</th>
         <td mat-cell *matCellDef="let user">{{ user.name }}</td>
       </ng-container>
 
-      <!-- Email Column -->
+      <!-- Coluna Email -->
       <ng-container matColumnDef="email">
         <th mat-header-cell *matHeaderCellDef>Email:</th>
         <td mat-cell *matCellDef="let user">{{ user.email }}</td>
       </ng-container>
 
-      <!-- Status Column -->
+      <!-- Coluna Status -->
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status:</th>
         <td mat-cell *matCellDef="let user">{{ user.status }}</td>
       </ng-container>
 
-      <!-- Role Column -->
+      <!-- Coluna Role -->
       <ng-container matColumnDef="role">
         <th mat-header-cell *matHeaderCellDef>Role:</th>
         <td mat-cell *matCellDef="let user">{{ user.role }}</td>
       </ng-container>
 
-      <!-- Phone Column -->
+      <!-- Coluna Phone -->
       <ng-container matColumnDef="phone">
         <th mat-header-cell *matHeaderCellDef>Phone:</th>
         <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
       </ng-container>
 
-      <!-- Location Column -->
+      <!-- Coluna Location -->
       <ng-container matColumnDef="location">
         <th mat-header-cell *matHeaderCellDef>Location:</th>
         <td mat-cell *matCellDef="let user">{{ user.location }}</td>
       </ng-container>
 
-      <!-- Actions Column -->
+      <!-- Coluna Ações -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions:</th>
         <td mat-cell *matCellDef="let user">
@@ -68,7 +81,7 @@
         </td>
       </ng-container>
 
-      <!-- Header and Row Declarations -->
+      <!-- Cabeçalho e linhas -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
