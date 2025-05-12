@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { LegalInfoComponent } from '../../features/legal-info/legal-info.component';
 
 @Component({
   selector: 'app-home',
@@ -33,6 +34,7 @@ import { MatInputModule } from '@angular/material/input';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    LegalInfoComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],

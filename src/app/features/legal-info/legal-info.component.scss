@@ -1,0 +1,25 @@
+.legal-info-card {
+  margin: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--purpleWeak);
+  text-align: center;
+  color: var(--text-color);
+
+  ul {
+    list-style-position: inside; // Faz o bullet vir para dentro, alinhado com o texto
+    padding: 0; // Remove padding padrão
+    margin: 0 auto; // Centraliza horizontalmente
+    display: inline-block; // Faz o UL se comportar como bloco centrado
+    text-align: left; // Alinha o texto da lista à esquerda para melhor leitura
+  }
+}
+
+.legal-info-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  color: var(--titleAC);
+  text-align: center;
+}

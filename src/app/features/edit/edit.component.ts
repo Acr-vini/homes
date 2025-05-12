@@ -146,14 +146,20 @@ export class EditComponent implements OnInit {
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+
     if (input.files?.[0]) {
+      const file = input.files[0];
       const reader = new FileReader();
+
       reader.onload = () => {
-        const res = reader.result as string;
-        this.imagePreview = res;
-        this.form.patchValue({ imageUrl: res, photo: res });
+        this.imagePreview = reader.result;
+        this.form.patchValue({
+          photo: file.name,
+          imageUrl: reader.result,
+        });
       };
-      reader.readAsDataURL(input.files[0]);
+
+      reader.readAsDataURL(file); // Converte a imagem para base64
     }
   }
 
@@ -192,27 +198,34 @@ export class EditComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (!this.housingLocation.id) return;
-    if (!confirm('Are you sure you want to delete this house?')) return;
+    const snackBarRef = this.snackBar.open(
+      'Are you sure you want to delete this house?',
+      'Yes',
+      {
+        duration: 5000, // Fecha automaticamente após 5 segundos se não clicar
+      }
+    );
 
-    this.housingService
-      .deleteHousingLocation(this.housingLocation.id)
-      .subscribe({
-        next: () => {
-          this.snackBar.open('House deleted successfully!', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-          });
-
-          this.router.navigateByUrl('/');
-        },
-        error: () =>
-          this.snackBar.open('Failed to delete the house.', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-          }),
-      });
+    snackBarRef.onAction().subscribe(() => {
+      this.housingService
+        .deleteHousingLocation(this.housingLocation.id)
+        .subscribe({
+          next: () => {
+            this.snackBar.open('✅ House deleted successfully!', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+            });
+            this.router.navigateByUrl('/'); // Redireciona para a página inicial após a exclusão
+          },
+          error: () => {
+            this.snackBar.open('❌ Failed to delete the house.', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+            });
+          },
+        });
+    });
   }
 }

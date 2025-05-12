@@ -91,7 +91,7 @@ export class UsersComponent implements OnInit {
         },
         error: () =>
           this.snackBar.open('❌ Error deleting user', 'Close', {
-            duration: 2000,
+            duration: 3000,
           }),
       });
     });
