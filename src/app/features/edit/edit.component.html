@@ -71,7 +71,7 @@
     </div>
 
     <!-- Actions -->
-    <div class="actions">
+    <div class="actions" *ngIf="canEditOrDelete()">
       <button mat-raised-button color="warn" type="button" (click)="onDelete()">
         Delete
       </button>
