@@ -60,6 +60,15 @@ const routes: Routes = [
         component: UserEditComponent,
         title: 'Edit User',
       },
+
+      // Exemplo de rota
+      {
+        path: 'favorites',
+        loadComponent: () =>
+          import('../features/favorites/favorites.component').then(
+            (m) => m.FavoritesComponent
+          ),
+      },
     ],
   },
 

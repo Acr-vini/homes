@@ -1,4 +1,15 @@
 <section class="home-listing">
+  <button
+    class="favorite-icon-button"
+    (click)="toggleFavorite(housingLocation)"
+    [ngClass]="{'favorited': isFavorited(housingLocation)}"
+    aria-label="Favorite"
+    type="button"
+  >
+    <mat-icon>
+      {{ isFavorited(housingLocation) ? 'favorite' : 'favorite_border' }}
+    </mat-icon>
+  </button>
   <a class="home-listing-link" [routerLink]="['/details', housingLocation.id]">
     <img
       class="home-listing-photo"

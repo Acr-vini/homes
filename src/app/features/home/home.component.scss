@@ -106,6 +106,40 @@ section {
   }
 }
 
+.create-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.favorites-button {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  background-color: var(--purpleBck);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.3s;
+
+  mat-icon {
+    color: white;
+    font-size: 24px;
+  }
+
+  &:hover {
+    background: #c62828;
+    mat-icon {
+      color: #ff1744;
+    }
+  }
+}
+
 .mat-icon {
   transition: background 0.3s;
   justify-content: center;

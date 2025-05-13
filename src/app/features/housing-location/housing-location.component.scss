@@ -118,3 +118,36 @@
     background-color: rgba(56, 28, 158, 0.8);
   }
 }
+
+.favorite-icon-button {
+  position: absolute;
+  top: 10px; // aumente o espaço do topo
+  right: 10px; // aumente o espaço da direita
+  background: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px; // aumente o padding
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.2s;
+
+  mat-icon {
+    color: #bdbdbd;
+    font-size: 26px; // aumente o tamanho do ícone se quiser
+    transition: color 0.2s;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &.favorited mat-icon {
+    color: #e53935;
+  }
+
+  &:hover mat-icon {
+    color: #e53935;
+  }
+}

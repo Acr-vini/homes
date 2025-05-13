@@ -1,0 +1,13 @@
+<h2 class="title">Your Favorite Houses</h2>
+<div
+  *ngIf="favoriteHouses.length; else noFavs"
+  class="housing-location-container"
+>
+  <app-housing-location
+    *ngFor="let house of favoriteHouses"
+    [housingLocation]="house"
+  ></app-housing-location>
+</div>
+<ng-template #noFavs>
+  <p>You have no favorites yet.</p>
+</ng-template>
