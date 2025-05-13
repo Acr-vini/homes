@@ -43,6 +43,8 @@ import { Observable, startWith, map } from 'rxjs';
   styleUrl: './user-edit.component.scss',
 })
 export class UserEditComponent implements OnInit {
+  currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
   userId!: string;
   user = {
     id: '',
@@ -101,5 +103,38 @@ export class UserEditComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/users']);
+  }
+
+  canEdit(user: any): boolean {
+    if (!this.currentUser) return false;
+    if (this.currentUser.role === 'Admin') return true;
+    if (this.currentUser.role === 'Manager') {
+      // Manager pode editar ele mesmo e outros, menos Admin
+      return user.role !== 'Admin' || user.id === this.currentUser.id;
+    }
+    return false;
+  }
+
+  canDelete(user: any): boolean {
+    if (!this.currentUser) return false;
+    if (this.currentUser.role === 'Admin') return true;
+    if (this.currentUser.role === 'Manager') {
+      // Manager pode deletar ele mesmo e outros, menos Admin
+      return user.role !== 'Admin' || user.id === this.currentUser.id;
+    }
+    return false;
+  }
+
+  onEdit(id: string) {
+    // Redireciona para a tela de edição do usuário
+    this.router.navigate(['/users/edit', id]);
+  }
+
+  onDelete(id: string) {
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.userService.deleteUser(id).subscribe(() => {
+        this.router.navigate(['/users']);
+      });
+    }
   }
 }

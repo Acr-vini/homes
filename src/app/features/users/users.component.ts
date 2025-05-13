@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -8,6 +8,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginator } from '@angular/material/paginator';
+
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { UserService, User } from '../../core/services/user.service';
 
@@ -22,8 +25,10 @@ import { UserService, User } from '../../core/services/user.service';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatFormFieldModule, // Import para <mat-form-field>
-    MatInputModule, // Import para <matInput>
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginator,
+    MatTooltipModule,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
@@ -43,18 +48,25 @@ export class UsersComponent implements OnInit {
     'location',
     'actions',
   ];
+  currentUser: any;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    // Define que o filtro deve buscar apenas no campo "name"
-    this.dataSource.filterPredicate = (data: User, filter: string) =>
-      data.name.toLowerCase().includes(filter);
+    this.currentUser = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    );
+    this.dataSource.filterPredicate = this.createFilter();
     this.loadUsers();
   }
 
   /** Carrega os usuários */
   loadUsers(): void {
     this.userService.getUsers().subscribe({
-      next: (users) => (this.dataSource.data = users),
+      next: (users) => {
+        this.dataSource.data = users;
+        this.dataSource.paginator = this.paginator;
+      },
       error: () =>
         this.snackBar.open('Erro ao carregar usuários', 'Close', {
           duration: 2000,
@@ -65,7 +77,10 @@ export class UsersComponent implements OnInit {
   /** Aplica filtro na tabela */
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase(); // Remove espaços e deixa minúsculo
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   /** Redireciona para tela de edição */
@@ -95,5 +110,39 @@ export class UsersComponent implements OnInit {
           }),
       });
     });
+  }
+
+  canEdit(user: any): boolean {
+    if (!this.currentUser) return false;
+    if (this.currentUser.role === 'Admin') return true;
+    if (this.currentUser.role === 'Manager') {
+      // Manager pode editar ele mesmo e outros, menos Admin
+      return user.role !== 'Admin' || user.id === this.currentUser.id;
+    }
+    return false;
+  }
+
+  canDelete(user: any): boolean {
+    if (!this.currentUser) return false;
+    if (this.currentUser.role === 'Admin') return true;
+    if (this.currentUser.role === 'Manager') {
+      // Manager pode deletar ele mesmo e outros, menos Admin
+      return user.role !== 'Admin' || user.id === this.currentUser.id;
+    }
+    return false;
+  }
+
+  createFilter(): (data: User, filter: string) => boolean {
+    return (data: User, filter: string): boolean => {
+      const search = filter.trim().toLowerCase();
+      return (
+        data.name?.toLowerCase().includes(search) ||
+        data.email?.toLowerCase().includes(search) ||
+        data.status?.toLowerCase().includes(search) ||
+        data.role?.toLowerCase().includes(search) ||
+        data.phone?.toLowerCase().includes(search) ||
+        data.location?.toLowerCase().includes(search)
+      );
+    };
   }
 }

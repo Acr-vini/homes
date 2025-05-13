@@ -1,19 +1,19 @@
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-  <!-- Campo de email -->
+  <!-- Email field -->
   <mat-form-field appearance="fill" class="login-form-field">
     <mat-label>Email</mat-label>
     <input matInput type="email" formControlName="email" />
-    <!-- Mensagem de erro para campo de email -->
+    <!-- Error message for email field -->
     <mat-error
       *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
     >
-      O email é obrigatório e deve ser válido.
+      Email is required and must be valid.
     </mat-error>
   </mat-form-field>
 
-  <!-- Campo de senha com ícone de olho -->
+  <!-- Password field with eye icon -->
   <mat-form-field appearance="fill" class="login-form-field">
-    <mat-label>Senha</mat-label>
+    <mat-label>Password</mat-label>
     <input
       matInput
       [type]="hidePassword ? 'password' : 'text'"
@@ -24,22 +24,22 @@
         loginForm.get('password')?.invalid && loginForm.get('password')?.touched
       "
     >
-      A senha é obrigatória.
+      Password is required.
     </mat-error>
-    <!-- Botão para mostrar/ocultar a senha -->
+    <!-- Button to show/hide password -->
     <button
       mat-icon-button
       matSuffix
       type="button"
       (click)="hidePassword = !hidePassword"
-      [attr.aria-label]="'Alternar visibilidade da senha'"
+      [attr.aria-label]="'Toggle password visibility'"
       [attr.aria-pressed]="!hidePassword"
     >
       <mat-icon>{{ hidePassword ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
   </mat-form-field>
 
-  <!-- Botão de login -->
+  <!-- Login button -->
   <button
     mat-raised-button
     color="primary"

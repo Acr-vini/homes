@@ -14,15 +14,19 @@
   <div class="app-header-section app-header-center">
     <!-- Users -->
     <a
+      *ngIf="userRole === 'Admin' || userRole === 'Manager'"
       mat-button
-      [routerLink]="isLoggedIn ? ['/users'] : null"
+      [routerLink]="['/users']"
       class="app-header-nav-link"
-      [class.disabled]="!isLoggedIn"
     >
       <mat-icon>person</mat-icon>
       <span>Users</span>
     </a>
-    <span class="app-header-divider">|</span>
+    <span
+      *ngIf="userRole === 'Admin' || userRole === 'Manager'"
+      class="app-header-divider"
+      >|</span
+    >
 
     <!-- About (acessível sempre) -->
     <a mat-button [routerLink]="['/about']" class="app-header-nav-link">
@@ -61,3 +65,7 @@
 </mat-toolbar>
 
 <router-outlet></router-outlet>
+
+<script>
+  currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+</script>

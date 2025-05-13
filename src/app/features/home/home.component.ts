@@ -51,6 +51,7 @@ export class HomeComponent implements OnInit {
   filterAvailable = false;
   filterWifi = false;
   filterLaundry = false;
+  userRole: any;
 
   ngOnInit(): void {
     this.loadLocations();
@@ -94,5 +95,9 @@ export class HomeComponent implements OnInit {
         return matchesText && matchesAvailable && matchesWifi && matchesLaundry;
       }
     );
+  }
+  get currentUserRole(): string | null {
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    return user?.role || null;
   }
 }

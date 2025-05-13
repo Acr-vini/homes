@@ -58,6 +58,7 @@ export class EditComponent implements OnInit {
 
   imagePreview: string | ArrayBuffer | null = null;
   housingLocation!: HousingLocation;
+  currentUserRole: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -97,6 +98,9 @@ export class EditComponent implements OnInit {
       },
       error: () => this.router.navigateByUrl('/'),
     });
+
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    this.currentUserRole = user?.role || null;
   }
 
   private _setupFilters(): void {
@@ -227,5 +231,11 @@ export class EditComponent implements OnInit {
           },
         });
     });
+  }
+
+  canEditOrDelete(): boolean {
+    return (
+      this.currentUserRole === 'Admin' || this.currentUserRole === 'Manager'
+    );
   }
 }

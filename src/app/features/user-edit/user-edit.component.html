@@ -59,13 +59,7 @@
         <mat-option value="active">Active</mat-option>
         <mat-option value="disabled">Disabled</mat-option>
       </mat-select>
-      <mat-error
-        *ngIf="
-          userForm.get('status')?.invalid && userForm.get('status')?.touched
-        "
-      >
-        Status is required
-      </mat-error>
+      <mat-error> Status is required </mat-error>
     </mat-form-field>
 
     <!-- Actions -->

@@ -6,6 +6,9 @@
 }
 mat-card {
   width: 100%;
+  min-height: 100vh; // ocupa toda a altura da tela
+  display: flex;
+  flex-direction: column;
 }
 mat-card-title {
   font-size: 2rem;
@@ -24,28 +27,36 @@ mat-card-title {
 .full-width-table {
   width: 100%;
   margin-top: 1rem;
+  overflow: auto;
 }
 
 .new-user-btn {
-  font-size: 1.1rem;
-  padding: 0.75rem 2rem;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  box-shadow: 0 2px 8px rgba(56, 28, 158, 0.08);
-
+  min-width: 0;
+  padding: 0 8px;
+  font-size: 0.95rem;
+  border-radius: 50px;
+  box-shadow: none;
+  margin: 0;
   mat-icon {
-    color: white;
+    margin-right: 0;
   }
 }
-.users-user-filter {
-  align-items: center;
+
+.new-user-btn-wrapper {
   display: flex;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-  margin-top: 1rem;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.add_button {
+  background-color: var(--purpleBck);
+  color: white;
+  border-color: var(--titleAC);
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
+  transition: background-color 0.3s;
 }

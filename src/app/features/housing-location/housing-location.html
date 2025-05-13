@@ -14,7 +14,10 @@
     </div>
   </a>
 
-  <div class="card-edit-button-wrapper">
+  <div
+    class="card-edit-button-wrapper"
+    *ngIf="currentUserRole === 'Admin' || currentUserRole === 'Manager'"
+  >
     <button
       class="edit-button"
       [routerLink]="['/edit', housingLocation.id]"

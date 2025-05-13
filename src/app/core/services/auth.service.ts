@@ -4,10 +4,11 @@ import { BehaviorSubject, Observable, of, switchMap, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 export interface User {
+  role: string;
   id: string;
   email: string;
   password: string;
-  // ... outros campos ...
+  status: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -26,8 +27,17 @@ export class AuthService {
         map((users) => {
           const user = users[0];
           if (user) {
+            if (user.role === 'disabled') {
+              // Usuário desabilitado
+              throw new Error('disabled');
+            }
+            if (user.status === 'disabled') {
+              throw new Error('disabled');
+            }
             // sucesso: grava token “fake” e emite estado
             localStorage.setItem('token', 'fake-jwt-token');
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            localStorage.setItem('isLoggedIn', 'true');
             this.loggedIn$.next(true);
             return true;
           } else {
@@ -38,8 +48,8 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    this.loggedIn$.next(false);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('isLoggedIn');
     this.router.navigate(['/login']);
   }
 
@@ -53,6 +63,11 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getCurrentUserRole(): string | null {
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    return user?.role || null;
   }
 
   private hasToken(): boolean {

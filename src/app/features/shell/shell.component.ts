@@ -19,8 +19,8 @@ import { AuthService } from '../../core/services/auth.service';
     MatButtonModule,
     MatIconModule,
   ],
-  templateUrl: './shell.component.html', // <-- MOVEMOS PARA HTML EXTERNO
-  styleUrls: ['./shell.component.scss'], // <-- MOVEMOS PARA SCSS EXTERNO
+  templateUrl: './shell.component.html',
+  styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
   private authService = inject(AuthService);
@@ -28,6 +28,10 @@ export class ShellComponent {
   /** Para saber se exibe opções privadas */
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  get userRole(): string | null {
+    return this.authService.getCurrentUserRole(); // Implemente esse método no AuthService
   }
 
   /** Estado do tema */

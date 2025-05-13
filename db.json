@@ -121,20 +121,41 @@
     {
       "id": "1",
       "name": "Vini",
-      "email": "vini@example.com",
+      "email": "vini@example.com.br",
       "password": "password123",
       "status": "active",
       "role": "Admin",
-      "phone": "123-456-7890",
-      "location": "Brasil, PR"
+      "phone": "123123",
+      "location": "abc ab"
     },
     {
       "id": "5b44",
-      "name": "Alice Johnson",
-      "email": "alice.johnson@example.com",
-      "phone": "555-123-4567",
-      "location": "USA, NY",
+      "name": "active",
+      "email": "active_user@example.com.br",
+
+      "phone": "123123",
+      "location": "abc ab",
       "role": "User",
+      "status": "active"
+    },
+    {
+      "id": "78d0",
+      "name": "disable ",
+      "email": "disable_user@example.com.br",
+      "password": "disable123",
+      "phone": "123123",
+      "location": "abc ab",
+      "role": "User",
+      "status": "disabled"
+    },
+    {
+      "id": "7aca",
+      "name": "manager",
+      "email": "Manager@Example.com.br",
+      "password": "manager123",
+      "phone": "123123",
+      "location": "abc ab",
+      "role": "Manager",
       "status": "active"
     }
   ]

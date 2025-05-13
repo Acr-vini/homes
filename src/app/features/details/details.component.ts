@@ -21,6 +21,7 @@ export class DetailsComponent {
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     email: new FormControl(''),
+    visitDate: new FormControl(''), // <-- novo campo
   });
 
   constructor() {

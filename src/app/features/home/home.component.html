@@ -13,7 +13,13 @@
   </section>
 
   <div class="create-wrapper">
-    <button class="create-button" routerLink="/create">+ Create a House</button>
+    <button
+      *ngIf="currentUserRole === 'Admin' || currentUserRole === 'Manager'"
+      class="create-button"
+      routerLink="/create"
+    >
+      + Create a House
+    </button>
   </div>
 </div>
 

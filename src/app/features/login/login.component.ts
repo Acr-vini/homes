@@ -43,15 +43,30 @@ export class LoginComponent {
   hidePassword = true;
 
   onSubmit(): void {
-    if (this.loginForm.invalid) return;
-
     const { email, password } = this.loginForm.value;
-    this.authService.login(email, password).subscribe((success) => {
-      if (success) {
-        this.router.navigate(['/home']);
-      } else {
-        this.snackBar.open('Invalid credentials', 'Close', { duration: 3000 });
-      }
+    this.authService.login(email, password).subscribe({
+      next: (success) => {
+        if (success) {
+          this.router.navigate(['/home']);
+        } else {
+          this.snackBar.open('Invalid credentials', 'Close', {
+            duration: 3000,
+          });
+        }
+      },
+      error: (err) => {
+        if (err.message === 'disabled') {
+          this.snackBar.open(
+            'Your user is disabled. Please contact support.',
+            'Close',
+            { duration: 5000 }
+          );
+        } else {
+          this.snackBar.open('Error trying to login', 'Close', {
+            duration: 3000,
+          });
+        }
+      },
     });
   }
 }

@@ -121,6 +121,20 @@ input:focus {
   border-color: var(--text-color);
 }
 
+input[type="date"].form-input {
+  color: var(--textColor);
+}
+
+input[type="date"].form-input::-webkit-input-placeholder {
+  color: var(--textColor);
+}
+input[type="date"].form-input::-webkit-datetime-edit {
+  color: var(--textColor);
+}
+input[type="date"].form-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}
+
 button.primary {
   background-color: var(--purpleBck);
   color: white;

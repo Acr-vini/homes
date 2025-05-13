@@ -12,4 +12,9 @@ import { HousingLocation } from '../housinglocation';
 })
 export class HousingLocationComponent {
   @Input() housingLocation!: HousingLocation;
+
+  get currentUserRole(): string | null {
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    return user?.role || null;
+  }
 }
