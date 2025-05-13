@@ -1,10 +1,8 @@
-// src/app/core/services/user.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-// Defina a interface User (pode extrair num arquivo models/user.ts)
 export interface User {
   id: string;
   name: string;
@@ -20,7 +18,6 @@ export interface User {
   providedIn: 'root',
 })
 export class UserService {
-  // URL base do seu json-server
   private baseUrl = 'http://localhost:3000/users';
 
   constructor(private http: HttpClient) {}

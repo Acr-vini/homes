@@ -28,13 +28,11 @@ export class AuthService {
           const user = users[0];
           if (user) {
             if (user.role === 'disabled') {
-              // Usuário desabilitado
               throw new Error('disabled');
             }
             if (user.status === 'disabled') {
               throw new Error('disabled');
             }
-            // sucesso: grava token “fake” e emite estado
             localStorage.setItem('token', 'fake-jwt-token');
             localStorage.setItem('currentUser', JSON.stringify(user));
             localStorage.setItem('isLoggedIn', 'true');

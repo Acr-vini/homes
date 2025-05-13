@@ -132,7 +132,6 @@
       "id": "5b44",
       "name": "active",
       "email": "active_user@example.com.br",
-
       "phone": "123123",
       "location": "abc ab",
       "role": "User",
@@ -157,6 +156,24 @@
       "location": "abc ab",
       "role": "Manager",
       "status": "active"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "housingLocationId": "123",
+      "userName": "John Doe",
+      "rating": 4,
+      "comment": "Great place, very clean!",
+      "date": "2025-05-13"
+    },
+    {
+      "id": "734c",
+      "userName": "asdasd",
+      "rating": 5,
+      "comment": "adsad",
+      "housingLocationId": "1",
+      "date": "2025-05-13"
     }
   ]
 }
