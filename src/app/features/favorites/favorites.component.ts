@@ -4,6 +4,7 @@ import { HousingService } from '../../core/services/housing.service';
 import { HousingLocation } from '../housinglocation';
 import { HousingLocationComponent } from '../housing-location/housing-location.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-favorites',
@@ -16,6 +17,7 @@ export class FavoritesComponent implements OnInit, DoCheck {
   private housingService = inject(HousingService);
   favoriteHouses: HousingLocation[] = [];
   private allHouses: HousingLocation[] = [];
+  snackBar = inject(MatSnackBar);
 
   get currentUserId(): string | null {
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
@@ -45,10 +47,18 @@ export class FavoritesComponent implements OnInit, DoCheck {
     );
   }
   clearFavorites() {
-    const userId = this.currentUserId;
-    if (userId) {
-      localStorage.removeItem(`favoriteHouses_${userId}`);
-      this.favoriteHouses = [];
-    }
+    const snackBarRef = this.snackBar.open(
+      'Are you sure you want to clear all favorites?',
+      'Yes',
+      { duration: 5000 }
+    );
+    snackBarRef.onAction().subscribe(() => {
+      const userId = this.currentUserId;
+      if (userId) {
+        localStorage.removeItem(`favoriteHouses_${userId}`);
+        this.favoriteHouses = [];
+      }
+      this.snackBar.open('✅ Favorites cleared!', '', { duration: 2000 });
+    });
   }
 }
