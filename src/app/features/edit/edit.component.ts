@@ -238,4 +238,8 @@ export class EditComponent implements OnInit {
       this.currentUserRole === 'Admin' || this.currentUserRole === 'Manager'
     );
   }
+
+  onCancel(): void {
+    this.router.navigate(['/']);
+  }
 }

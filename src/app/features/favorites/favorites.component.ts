@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { HousingService } from '../../core/services/housing.service';
 import { HousingLocation } from '../housinglocation';
 import { HousingLocationComponent } from '../housing-location/housing-location.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.scss'],
-  imports: [CommonModule, HousingLocationComponent],
+  imports: [CommonModule, HousingLocationComponent, MatIconModule],
 })
 export class FavoritesComponent implements OnInit, DoCheck {
   private housingService = inject(HousingService);
@@ -42,5 +43,12 @@ export class FavoritesComponent implements OnInit, DoCheck {
     this.favoriteHouses = this.allHouses.filter((h) =>
       ids.includes(String(h.id))
     );
+  }
+  clearFavorites() {
+    const userId = this.currentUserId;
+    if (userId) {
+      localStorage.removeItem(`favoriteHouses_${userId}`);
+      this.favoriteHouses = [];
+    }
   }
 }

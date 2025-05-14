@@ -159,4 +159,8 @@ export class CreateComponent implements OnInit {
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+  onCancel(): void {
+    this.router.navigate(['/']);
+  }
 }
