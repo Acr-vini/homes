@@ -69,4 +69,25 @@ export class LoginComponent {
       },
     });
   }
+
+  onForgotPassword(event: Event): void {
+    event.preventDefault();
+    const email = this.loginForm.get('email')?.value;
+    if (!email || this.loginForm.get('email')?.invalid) {
+      this.snackBar.open(
+        'Please enter a valid email to reset your password.',
+        'Close',
+        {
+          duration: 4000,
+        }
+      );
+      return;
+    }
+    // Mock envio de e-mail
+    this.snackBar.open(
+      `A password reset link was sent to ${email} (mocked).`,
+      'Close',
+      { duration: 4000 }
+    );
+  }
 }

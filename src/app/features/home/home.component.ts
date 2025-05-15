@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
   filterLaundry = false;
   userRole: any;
 
-  pageSize = 5;
+  pageSize = 20;
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
 
@@ -68,8 +68,9 @@ export class HomeComponent implements OnInit {
   loadLocations(): void {
     this.housingService.getAllHousingLocations().subscribe({
       next: (list) => {
-        this.housingLocationList = list;
-        this.filteredLocationList = list;
+        // Só mostra casas que NÃO foram deletadas
+        this.housingLocationList = list.filter((h) => !h.deletedBy);
+        this.filteredLocationList = this.housingLocationList;
         this.updatePagedList();
       },
       error: (err) => console.error('Erro ao buscar os dados:', err),
@@ -103,7 +104,7 @@ export class HomeComponent implements OnInit {
         return matchesText && matchesAvailable && matchesWifi && matchesLaundry;
       }
     );
-    this.pageIndex = 0; // Volta para a primeira página ao filtrar
+    this.pageIndex = 0;
     this.updatePagedList();
   }
 

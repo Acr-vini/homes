@@ -50,22 +50,26 @@ section {
 }
 
 .home-filter {
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  min-width: 0;
 
   form {
     width: 100%;
     max-width: 600px;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
   }
 
   input[type="text"] {
     flex: 1;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid var(--purpleBrdr);
     border-radius: 8px;
   }
@@ -111,6 +115,7 @@ section {
   display: flex;
   gap: 12px;
   align-items: center;
+  margin-left: 24px; // Espaço entre barra e botões
 }
 
 .favorites-button {

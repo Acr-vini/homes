@@ -29,3 +29,14 @@ button[type="submit"] {
   align-self: center;
   width: 100%;
 }
+
+.forgot-password-link {
+  margin-bottom: 1rem;
+  text-align: right;
+}
+.forgot-password-link a {
+  color: var(--purpleBck, #381c9e);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.98rem;
+}
