@@ -126,7 +126,13 @@ export class CreateComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) return;
 
-    const payload: HousingLocation = { id: '0', photo: '', ...this.form.value };
+    const currentUser = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    );
+    const payload = {
+      ...this.form.value,
+      createdBy: currentUser?.id,
+    };
 
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {

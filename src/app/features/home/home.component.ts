@@ -16,6 +16,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LegalInfoComponent } from '../../features/legal-info/legal-info.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-home',
@@ -35,6 +37,7 @@ import { LegalInfoComponent } from '../../features/legal-info/legal-info.compone
     MatFormFieldModule,
     MatInputModule,
     LegalInfoComponent,
+    MatPaginatorModule,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
@@ -53,6 +56,10 @@ export class HomeComponent implements OnInit {
   filterLaundry = false;
   userRole: any;
 
+  pageSize = 5;
+  pageIndex = 0;
+  pagedLocationList: HousingLocation[] = [];
+
   ngOnInit(): void {
     this.loadLocations();
     this.setupSearchListener();
@@ -63,6 +70,7 @@ export class HomeComponent implements OnInit {
       next: (list) => {
         this.housingLocationList = list;
         this.filteredLocationList = list;
+        this.updatePagedList();
       },
       error: (err) => console.error('Erro ao buscar os dados:', err),
     });
@@ -95,7 +103,22 @@ export class HomeComponent implements OnInit {
         return matchesText && matchesAvailable && matchesWifi && matchesLaundry;
       }
     );
+    this.pageIndex = 0; // Volta para a primeira página ao filtrar
+    this.updatePagedList();
   }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePagedList();
+  }
+
+  updatePagedList() {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.pagedLocationList = this.filteredLocationList.slice(start, end);
+  }
+
   get currentUserRole(): string | null {
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
     return user?.role || null;

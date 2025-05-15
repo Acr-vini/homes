@@ -1,60 +1,69 @@
 /* Transição suave */
 * {
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .edit-card {
   max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid var(--cardBck);
-  background-color: var(--cardBck);
-  color: var(--text-color); // Certifique-se de que o texto usa a cor correta
+  margin: 2.5rem auto;
+  padding: 2rem 2.5rem 2rem 2.5rem;
+  border-radius: 18px;
+  background: var(--cardBck);
+  box-shadow: 0 4px 18px #381c9e33;
+  color: var(--text-color);
 
   mat-card-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: bold;
-    margin-bottom: 1rem;
-    color: var(--purpleBck);
+    margin-bottom: 2rem;
+    color: var(--titleAC);
     text-align: center;
+    letter-spacing: 1px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
   }
 
   mat-form-field {
-    color: var(--text-color); // Ajuste a cor dos campos de formulário
+    color: var(--text-color);
+    width: 100%;
+    margin-bottom: 1rem;
   }
 
   input,
   mat-select {
-    background-color: transparent; // Certifique-se de que o fundo dos inputs é transparente
-    color: var(--text-color); // Ajuste a cor do texto nos inputs
+    background: transparent;
+    color: var(--text-color);
   }
 
   mat-error {
-    color: red; // Cor para mensagens de erro
-  }
-
-  .actions button {
-    background-color: var(--purpleBck);
-    color: white;
-  }
-
-  .full-width {
-    width: 100%;
-  }
-
-  /* Espaçamento interno no conteúdo do card */
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    color: #e53935;
+    font-size: 0.95rem;
+    margin-top: 2px;
   }
 
   .actions {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
+    justify-content: center;
+    gap: 1.5rem;
+
+    button {
+      min-width: 110px;
+      font-weight: 600;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #381c9e22;
+      background: var(--purpleBck);
+      color: #fff;
+
+      &:hover {
+        background: var(--purpleWeak);
+        color: var(--purpleBck);
+      }
+    }
   }
 
   .success {
@@ -66,15 +75,15 @@
   }
 }
 
-/* Botões de ação no upload (se usar upload de avatar etc) */
+/* Upload de arquivo, se houver */
 .edit-file-upload {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 10px;
+  margin-top: 18px;
 
   button {
-    background-color: var(--purpleWeak);
+    background: var(--purpleWeak);
     color: var(--purpleBck);
     border-radius: 4px;
 
@@ -84,7 +93,7 @@
   }
 
   span {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text-color);
   }
 }

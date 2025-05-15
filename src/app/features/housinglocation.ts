@@ -8,5 +8,7 @@ export interface HousingLocation {
   availableUnits: number;
   wifi: boolean;
   laundry: boolean;
+  createdBy?: string;
+  editedBy?: string;
+  deletedBy?: string; // novo campo
 }
-

@@ -1,6 +1,11 @@
 export interface HousingFormValues {
   name: string;
-  city: string;
   state: string;
-  photo: string;
+  city: string;
+  availableUnits: number;
+  photo?: string;
+  imageUrl?: string;
+  wifi?: boolean;
+  laundry?: boolean;
+  editedBy?: string;
 }

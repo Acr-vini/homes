@@ -21,6 +21,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, startWith, map } from 'rxjs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-edit',
@@ -34,7 +36,9 @@ import { Observable, startWith, map } from 'rxjs';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
+    MatSelectModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
@@ -80,8 +84,14 @@ export class EditComponent implements OnInit {
           name: [house.name || '', Validators.required],
           state: this.stateControl,
           city: this.cityControl,
+          availableUnits: [
+            house.availableUnits || '',
+            [Validators.required, Validators.min(1)],
+          ],
           photo: [house.photo || ''],
           imageUrl: [house.imageUrl || ''],
+          wifi: [house.wifi || false],
+          laundry: [house.laundry || false],
         });
 
         // Pegamos o nome do estado com base no ISO vindo da API
@@ -173,11 +183,19 @@ export class EditComponent implements OnInit {
     const iso =
       this._findStateIso(this.stateControl.value) || this.housingLocation.state;
 
+    const currentUser = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    );
     const payload: HousingFormValues = {
       name: this.form.value.name,
       state: iso,
       city: this.cityControl.value,
+      availableUnits: this.form.value.availableUnits,
       photo: this.form.value.photo || '',
+      imageUrl: this.form.value.imageUrl || '',
+      wifi: this.form.value.wifi,
+      laundry: this.form.value.laundry,
+      editedBy: currentUser?.id,
     };
 
     this.housingService
@@ -205,14 +223,20 @@ export class EditComponent implements OnInit {
     const snackBarRef = this.snackBar.open(
       'Are you sure you want to delete this house?',
       'Yes',
-      {
-        duration: 5000, // Fecha automaticamente após 5 segundos se não clicar
-      }
+      { duration: 5000 }
     );
 
     snackBarRef.onAction().subscribe(() => {
+      const currentUser = JSON.parse(
+        localStorage.getItem('currentUser') || 'null'
+      );
+      const payload = {
+        ...this.housingLocation,
+        deletedBy: currentUser?.id,
+        deletedAt: new Date().toISOString(), // opcional
+      };
       this.housingService
-        .deleteHousingLocation(this.housingLocation.id)
+        .updateHousingLocation(this.housingLocation.id, payload)
         .subscribe({
           next: () => {
             this.snackBar.open('✅ House deleted successfully!', 'Close', {
@@ -220,7 +244,7 @@ export class EditComponent implements OnInit {
               horizontalPosition: 'center',
               verticalPosition: 'top',
             });
-            this.router.navigateByUrl('/'); // Redireciona para a página inicial após a exclusão
+            this.router.navigateByUrl('/');
           },
           error: () => {
             this.snackBar.open('❌ Failed to delete the house.', 'Close', {
@@ -234,9 +258,18 @@ export class EditComponent implements OnInit {
   }
 
   canEditOrDelete(): boolean {
-    return (
-      this.currentUserRole === 'Admin' || this.currentUserRole === 'Manager'
+    // Admin e Manager podem editar qualquer casa
+    if (
+      this.currentUserRole === 'Admin' ||
+      this.currentUserRole === 'Manager'
+    ) {
+      return true;
+    }
+    // Usuário comum só pode editar se for o criador
+    const currentUser = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
     );
+    return this.housingLocation?.createdBy === currentUser?.id;
   }
 
   onCancel(): void {

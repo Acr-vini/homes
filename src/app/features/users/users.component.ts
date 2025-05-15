@@ -9,10 +9,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
-
+import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { UserService, User } from '../../core/services/user.service';
+import { UserEditComponent } from '../user-edit/user-edit.component';
+import { UserDetailsModalComponent } from '../user-edit/user-details-modal.component';
+import { UserCreateComponent } from '../user-create/user-create.component';
 
 @Component({
   selector: 'app-users',
@@ -37,6 +40,7 @@ export class UsersComponent implements OnInit {
   private userService = inject(UserService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   dataSource = new MatTableDataSource<User>();
   displayedColumns: string[] = [
@@ -144,5 +148,31 @@ export class UsersComponent implements OnInit {
         data.location?.toLowerCase().includes(search)
       );
     };
+  }
+
+  openUserDetails(user: User) {
+    this.dialog.open(UserDetailsModalComponent, {
+      data: { user },
+      width: '600px',
+    });
+  }
+
+  openEditUser(user: User) {
+    this.dialog
+      .open(UserEditComponent, {
+        data: { user },
+        width: '600px',
+      })
+      .afterClosed()
+      .subscribe(() => this.loadUsers());
+  }
+
+  openCreateUser() {
+    this.dialog
+      .open(UserCreateComponent, {
+        width: '600px',
+      })
+      .afterClosed()
+      .subscribe(() => this.loadUsers());
   }
 }

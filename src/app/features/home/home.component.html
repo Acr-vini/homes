@@ -33,9 +33,18 @@
 
 <section class="housing-location-container">
   <app-housing-location
-    *ngFor="let housingLocation of filteredLocationList"
+    *ngFor="let housingLocation of pagedLocationList"
     [housingLocation]="housingLocation"
   >
   </app-housing-location>
 </section>
+
+<mat-paginator
+  [length]="filteredLocationList.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
+
 <app-legal-info></app-legal-info>

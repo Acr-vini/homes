@@ -97,6 +97,16 @@
           >
             <mat-icon>delete</mat-icon>
           </button>
+          <!-- Details -->
+          <button
+            mat-icon-button
+            color="accent"
+            (click)="openUserDetails(user)"
+            [matTooltip]="'Details'"
+            aria-label="Details"
+          >
+            <mat-icon>info</mat-icon>
+          </button>
         </td>
       </ng-container>
 
