@@ -18,6 +18,8 @@ import { MatInputModule } from '@angular/material/input';
 import { LegalInfoComponent } from '../../features/legal-info/legal-info.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateComponent } from '../create/create.component';
 
 @Component({
   selector: 'app-home',
@@ -59,6 +61,8 @@ export class HomeComponent implements OnInit {
   pageSize = 20;
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
+
+  private dialog = inject(MatDialog);
 
   ngOnInit(): void {
     this.loadLocations();
@@ -123,5 +127,13 @@ export class HomeComponent implements OnInit {
   get currentUserRole(): string | null {
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
     return user?.role || null;
+  }
+
+  openCreateHouse() {
+    this.dialog.open(CreateComponent, {
+      width: '500px',
+      disableClose: true,
+      autoFocus: false,
+    });
   }
 }

@@ -31,7 +31,7 @@
   >
     <button
       class="edit-button"
-      [routerLink]="['/edit', housingLocation.id]"
+      (click)="openEditHouse(housingLocation.id)"
       aria-label="Edit housing"
     >
       <span class="material-icons">edit</span>

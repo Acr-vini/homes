@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Inject, Optional } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import {
   FormBuilder,
@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-create',
@@ -35,12 +36,16 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class UserCreateComponent {
   userForm: FormGroup;
+  userId?: string;
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    @Optional() public dialogRef?: MatDialogRef<UserCreateComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {
     // ✅ Criação do formulário com validações
     this.userForm = this.fb.group({
@@ -54,6 +59,23 @@ export class UserCreateComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.userId = this.data?.id || this.route.snapshot.paramMap.get('id')!;
+    if (this.userId) {
+      this.userService.getUserById(this.userId).subscribe((user) => {
+        this.userForm.patchValue({
+          name: user.name,
+          email: user.email,
+          password: user.password, // ✅ Novo campo obrigatório
+          phone: user.phone,
+          location: user.location,
+          role: user.role,
+          status: user.status,
+        });
+      });
+    }
+  }
+
   onSave(): void {
     if (this.userForm.valid) {
       this.userService.createUser(this.userForm.value).subscribe({
@@ -64,7 +86,11 @@ export class UserCreateComponent {
           });
 
           // ✅ Redireciona para a listagem após salvar
-          this.router.navigate(['/users']);
+          if (this.dialogRef) {
+            this.dialogRef.close();
+          } else {
+            this.router.navigate(['/users']);
+          }
         },
         error: () => {
           // ✅ Mensagem de erro
@@ -77,6 +103,10 @@ export class UserCreateComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/users']);
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      this.router.navigate(['/users']);
+    }
   }
 }

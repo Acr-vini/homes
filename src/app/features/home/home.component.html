@@ -16,7 +16,7 @@
     <button
       *ngIf="currentUserRole === 'Admin' || currentUserRole === 'Manager'"
       class="create-button"
-      routerLink="/create"
+      (click)="openCreateHouse()"
     >
       + Create a House
     </button>

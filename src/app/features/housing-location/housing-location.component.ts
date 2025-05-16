@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HousingLocation } from '../housinglocation';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
 
 @Component({
   selector: 'app-housing-location',
@@ -13,6 +16,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class HousingLocationComponent {
   @Input() housingLocation!: HousingLocation;
+
+  constructor(private dialog: MatDialog) {}
 
   get currentUserRole(): string | null {
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
@@ -45,5 +50,22 @@ export class HousingLocationComponent {
       ids = [...ids, id]; // Use spread para criar novo array
     }
     localStorage.setItem(this.favoriteKey, JSON.stringify(ids));
+  }
+
+  openCreateHouse() {
+    this.dialog.open(CreateComponent, {
+      width: '500px',
+      disableClose: true,
+      autoFocus: false,
+    });
+  }
+
+  openEditHouse(houseId: string) {
+    this.dialog.open(EditComponent, {
+      width: '500px',
+      data: { id: houseId },
+      disableClose: true,
+      autoFocus: false,
+    });
   }
 }

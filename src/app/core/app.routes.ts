@@ -41,8 +41,6 @@ const routes: Routes = [
         component: DetailsComponent,
         title: 'Home details',
       },
-      { path: 'create', component: CreateComponent, title: 'Create house' },
-      { path: 'edit/:id', component: EditComponent, title: 'Edit house' },
 
       // Sobre e Contato
       { path: 'about', component: AboutComponent, title: 'About' },
@@ -50,11 +48,7 @@ const routes: Routes = [
 
       // CRUD de Usuários
       { path: 'users', component: UsersComponent, title: 'Users' },
-      {
-        path: 'users/create',
-        component: UserCreateComponent,
-        title: 'New User',
-      },
+
       {
         path: 'users/edit/:id',
         component: UserEditComponent,

@@ -157,20 +157,21 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  openEditUser(user: User) {
-    this.dialog
-      .open(UserEditComponent, {
-        data: { user },
-        width: '600px',
-      })
-      .afterClosed()
-      .subscribe(() => this.loadUsers());
+  openEditUser(userId: string) {
+    this.dialog.open(UserEditComponent, {
+      width: '440px',
+      data: { id: userId },
+      disableClose: true,
+      autoFocus: false,
+    });
   }
 
   openCreateUser() {
     this.dialog
       .open(UserCreateComponent, {
-        width: '600px',
+        width: '440px',
+        disableClose: true,
+        autoFocus: false,
       })
       .afterClosed()
       .subscribe(() => this.loadUsers());

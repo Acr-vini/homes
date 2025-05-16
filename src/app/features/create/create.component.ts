@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -22,6 +22,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, startWith, map } from 'rxjs';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create',
@@ -66,7 +67,8 @@ export class CreateComponent implements OnInit {
     private fb: FormBuilder,
     private housingService: HousingService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    @Optional() public dialogRef?: MatDialogRef<CreateComponent>
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -143,7 +145,11 @@ export class CreateComponent implements OnInit {
         });
         this.form.reset();
         this.imagePreview = null;
-        setTimeout(() => this.router.navigate(['/']), 100);
+        if (this.dialogRef) {
+          this.dialogRef.close();
+        } else {
+          setTimeout(() => this.router.navigate(['/']), 100);
+        }
       },
       error: () =>
         this.snackBar.open('❌ Error creating house', 'Close', {
@@ -167,6 +173,10 @@ export class CreateComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/']);
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

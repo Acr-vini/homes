@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -23,6 +23,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, startWith, map } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit',
@@ -69,7 +70,8 @@ export class EditComponent implements OnInit {
     private housingService: HousingService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    @Optional() public dialogRef?: MatDialogRef<EditComponent>
   ) {}
 
   ngOnInit(): void {
@@ -273,6 +275,10 @@ export class EditComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/']);
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

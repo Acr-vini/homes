@@ -20,6 +20,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, startWith, map } from 'rxjs';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Inject, Optional } from '@angular/core';
 
 @Component({
   selector: 'app-user-edit',
@@ -62,14 +64,17 @@ export class UserEditComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    @Optional() public dialogRef?: MatDialogRef<UserEditComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.route.snapshot.paramMap.get('id')!;
+    this.userId = this.data?.id || this.route.snapshot.paramMap.get('id')!;
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      password: [''], // Adicione este campo!
       phone: [''],
       location: [''],
       role: [''],
@@ -93,7 +98,13 @@ export class UserEditComponent implements OnInit {
     if (this.userForm.valid) {
       const updatedUser = { ...this.user, ...this.userForm.value };
       this.userService.updateUser(updatedUser).subscribe({
-        next: () => this.router.navigate(['/users']),
+        next: () => {
+          if (this.dialogRef) {
+            this.dialogRef.close();
+          } else {
+            this.router.navigate(['/users']);
+          }
+        },
         error: () => {
           // Exiba um erro se necessário
         },
@@ -102,7 +113,11 @@ export class UserEditComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/users']);
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      this.router.navigate(['/users']);
+    }
   }
 
   canEdit(user: any): boolean {
@@ -133,7 +148,11 @@ export class UserEditComponent implements OnInit {
   onDelete(id: string) {
     if (confirm('Are you sure you want to delete this user?')) {
       this.userService.deleteUser(id).subscribe(() => {
-        this.router.navigate(['/users']);
+        if (this.dialogRef) {
+          this.dialogRef.close();
+        } else {
+          this.router.navigate(['/users']);
+        }
       });
     }
   }
