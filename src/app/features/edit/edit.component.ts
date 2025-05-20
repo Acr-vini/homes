@@ -1,29 +1,30 @@
-import { Component, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import {
   FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
   FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { City, State } from 'country-state-city';
 import { HousingService } from '../../core/services/housing.service';
-import { HousingLocation } from '../housinglocation';
 import { HousingFormValues } from '../housingformvalues';
-import { State, City } from 'country-state-city';
+import { HousingLocation } from '../housinglocation';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Observable, startWith, map } from 'rxjs';
-import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { map, Observable, startWith } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-edit',
@@ -40,6 +41,7 @@ import { MatDialogRef } from '@angular/material/dialog';
     MatSelectModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    MatTooltipModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
@@ -71,11 +73,16 @@ export class EditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    @Optional() public dialogRef?: MatDialogRef<EditComponent>
+    @Optional() public dialogRef?: MatDialogRef<EditComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id') || '';
+    const id = this.data?.id || this.route.snapshot.paramMap.get('id') || '';
+    if (!id) {
+      this.router.navigateByUrl('/');
+      return;
+    }
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
         this.housingLocation = house;
@@ -97,8 +104,9 @@ export class EditComponent implements OnInit {
         });
 
         // Pegamos o nome do estado com base no ISO vindo da API
-        const stateName = this._findStateName(house.state) || '';
-        this.stateControl.setValue(stateName); // Estado no formulário é o nome
+        // Se house.state for ISO, tenta achar o nome, senão usa o próprio valor
+        const stateName = this._findStateName(house.state) || house.state || '';
+        this.stateControl.setValue(stateName);
 
         const iso = house.state || '';
         this.allCities = iso
@@ -210,7 +218,12 @@ export class EditComponent implements OnInit {
             verticalPosition: 'top',
           });
 
-          this.router.navigateByUrl('/');
+          if (this.dialogRef) {
+            this.dialogRef.close();
+            setTimeout(() => window.location.reload(), 200);
+          } else {
+            this.router.navigateByUrl('/').then(() => window.location.reload());
+          }
         },
         error: () =>
           this.snackBar.open('❌ Failed to update the house.', 'Close', {
@@ -278,7 +291,7 @@ export class EditComponent implements OnInit {
     if (this.dialogRef) {
       this.dialogRef.close();
     } else {
-      this.router.navigate(['/']);
+      this.router.navigateByUrl('/');
     }
   }
 }

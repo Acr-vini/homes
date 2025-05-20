@@ -54,7 +54,8 @@ export class HousingLocationComponent {
 
   openCreateHouse() {
     this.dialog.open(CreateComponent, {
-      width: '500px',
+      width: '700px',
+      minWidth: '800px',
       disableClose: true,
       autoFocus: false,
     });
@@ -62,7 +63,8 @@ export class HousingLocationComponent {
 
   openEditHouse(houseId: string) {
     this.dialog.open(EditComponent, {
-      width: '500px',
+      width: '700px',
+      minWidth: '800px',
       data: { id: houseId },
       disableClose: true,
       autoFocus: false,

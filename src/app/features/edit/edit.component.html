@@ -1,9 +1,9 @@
 <mat-card class="edit-card">
   <mat-card-title>Edit house</mat-card-title>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
     <!-- Name -->
-    <mat-form-field class="full-width">
+    <mat-form-field class="full-width" appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
     </mat-form-field>
@@ -82,8 +82,12 @@
     </div>
 
     <div class="edit-file-upload">
-      <!-- classe atualizada -->
-      <button mat-icon-button type="button" (click)="fileInput.click()">
+      <button
+        mat-icon-button
+        class="upload-btn"
+        (click)="fileInput.click()"
+        aria-label="Upload image"
+      >
         <mat-icon>upload</mat-icon>
       </button>
       <span>Select image</span>
@@ -92,21 +96,41 @@
 
     <!-- Actions -->
     <div class="actions" *ngIf="canEditOrDelete()">
-      <button mat-raised-button color="warn" type="button" (click)="onDelete()">
-        Delete
-      </button>
+      <!-- DELETE -->
       <button
-        mat-raised-button
-        color="primary"
+        mat-icon-button
+        class="delete-btn"
+        (click)="onDelete()"
+        aria-label="Delete house"
+        matTooltip="Delete house"
+      >
+        <span class="material-symbols-outlined">delete</span>
+      </button>
+
+      <!-- SAVE -->
+      <button
+        mat-icon-button
+        class="save-btn"
         type="submit"
         [disabled]="form.invalid"
+        aria-label="Save changes"
+        matTooltip="Save changes"
+        [disabled]="form.invalid || !form.dirty"
       >
-        Save
+        <span class="material-symbols-outlined">save</span>
       </button>
-      <button mat-button type="button" (click)="onCancel()">Cancel</button>
-    </div>
-    <div class="actions" *ngIf="canEditOrDelete()">
-      <!-- botões de editar, deletar, etc -->
+
+      <!-- CANCEL -->
+      <button
+        mat-icon-button
+        type="button"
+        class="cancel-btn"
+        (click)="onCancel()"
+        aria-label="Cancel editing"
+        matTooltip="Cancel editing"
+      >
+        <span class="material-symbols-outlined">cancel</span>
+      </button>
     </div>
   </form>
 </mat-card>

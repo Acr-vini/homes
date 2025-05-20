@@ -1,0 +1,33 @@
+// src/styles/_mixins.scss
+
+/// Mixin para estilizar scrollbar em navegadores WebKit
+/// @param $width  Largura da barra de rolagem (px)
+/// @param $track  Cor do track (fundo da scrollbar)
+/// @param $thumb  Cor do thumb (a parte que desliza)
+/// @param $hover  Cor do thumb ao passar o mouse
+@mixin scrollBar(
+  $width: 12px,
+  $track: var
+    (
+      --purpleWeak,
+    ),
+  $thumb: #888,
+  $hover: #555
+) {
+  // seletor global WebKit
+  ::-webkit-scrollbar {
+    width: $width;
+    height: $width; // para scroll horizontal
+  }
+  ::-webkit-scrollbar-track {
+    background: $track;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: $thumb;
+    border-radius: $width;
+    border: 2px solid $track; // cria um “padded” no thumb
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: $hover;
+  }
+}

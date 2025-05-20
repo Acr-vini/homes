@@ -45,8 +45,6 @@ import { CreateComponent } from '../create/create.component';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  private housingService = inject(HousingService);
-
   // Lista completa e lista filtrada
   housingLocationList: HousingLocation[] = [];
   filteredLocationList: HousingLocation[] = [];
@@ -62,7 +60,10 @@ export class HomeComponent implements OnInit {
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
 
-  private dialog = inject(MatDialog);
+  constructor(
+    private dialog: MatDialog,
+    private housingService: HousingService
+  ) {}
 
   ngOnInit(): void {
     this.loadLocations();
@@ -130,10 +131,15 @@ export class HomeComponent implements OnInit {
   }
 
   openCreateHouse() {
-    this.dialog.open(CreateComponent, {
-      width: '500px',
+    const dialogRef = this.dialog.open(CreateComponent, {
+      width: '700px',
+      minWidth: '800px',
       disableClose: true,
       autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadLocations(); // Chame o método que recarrega a lista de casas
     });
   }
 }

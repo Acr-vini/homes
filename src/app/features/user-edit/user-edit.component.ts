@@ -22,6 +22,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, startWith, map } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject, Optional } from '@angular/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-user-edit',
@@ -40,6 +41,7 @@ import { Inject, Optional } from '@angular/core';
     MatSelectModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    MatTooltipModule,
   ],
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.scss',

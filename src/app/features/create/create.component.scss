@@ -20,14 +20,6 @@
   padding: 1rem;
   color: var(--text-color);
 
-  mat-card-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: var(--purpleBck);
-    text-align: center;
-  }
-
   .full-width {
     color: var(--text-color);
     width: 100%;
@@ -53,7 +45,6 @@
   }
 }
 
-/* Reaproveita seus estilos existentes */
 .alert {
   padding: 12px;
   margin-bottom: 16px;
@@ -114,8 +105,9 @@
   overflow-y: auto;
   margin: 0 auto;
   padding: 1.5rem 2rem 2rem 2rem;
-  border-radius: 16px;
+  border-radius: 8%;
   background: var(--cardBck, #fff);
+  border-radius: 24px;
   box-shadow: 0 4px 18px #381c9e33;
   color: var(--text-color, #222);
   display: flex;
@@ -139,6 +131,9 @@
   mat-form-field {
     width: 100%;
     margin-bottom: 1rem;
+    background-color: var(--purpleWeak);
+    border-color: black;
+    border-radius: 8px;
   }
 
   .actions {
