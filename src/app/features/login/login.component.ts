@@ -48,23 +48,21 @@ export class LoginComponent {
       next: (success) => {
         if (success) {
           this.router.navigate(['/home']);
-        } else {
-          this.snackBar.open('Invalid credentials', 'Close', {
-            duration: 3000,
-          });
         }
       },
       error: (err) => {
         if (err.message === 'disabled') {
           this.snackBar.open(
-            'Your user is disabled. Please contact support.',
+            'User disabled. Please contact the IT team.',
             'Close',
             { duration: 5000 }
           );
         } else {
-          this.snackBar.open('Error trying to login', 'Close', {
-            duration: 3000,
-          });
+          this.snackBar.open(
+            'Login failed. Please check your credentials.',
+            'Close',
+            { duration: 4000 }
+          );
         }
       },
     });

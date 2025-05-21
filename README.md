@@ -3,7 +3,11 @@
 ## terminal
 
 Create two terminals one to run: ng s
+
 an another to run: json-server --watch db.json
+
+an another go to /Desktop/homes-projeto/backend (dev)
+and run: npm start
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.13.
 

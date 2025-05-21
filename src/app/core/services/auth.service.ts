@@ -19,15 +19,17 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(email: string, password: string): Observable<boolean> {
-    // dentro de AuthService.login()
     return this.http
       .post<{ accessToken: string; user: User }>(
         'http://localhost:3000/login',
         { email, password }
       )
-
       .pipe(
         switchMap((response) => {
+          console.log('Login response:', response);
+          if (response && response.user.status === 'disabled') {
+            throw new Error('disabled');
+          }
           if (response && response.accessToken) {
             localStorage.setItem('token', response.accessToken);
             localStorage.setItem('currentUser', JSON.stringify(response.user));

@@ -270,46 +270,6 @@
       "location": "abc ab",
       "role": "Manager",
       "status": "active"
-    },
-    {
-      "id": "2496",
-      "name": "dasfasf",
-      "email": "afafasfa@dadadsadad",
-      "password": "asdasdsa",
-      "phone": "a12312414",
-      "location": "asdafsaf",
-      "role": "User",
-      "status": "active"
-    },
-    {
-      "id": "836a",
-      "name": "afasffa",
-      "email": "fadsafd@adadas",
-      "password": "1232131312",
-      "phone": "w21321314",
-      "location": "qwrqwrqr",
-      "role": "User",
-      "status": "active"
-    },
-    {
-      "id": "6d75",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "37d1",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "de25",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "f34c",
-      "email": "vini@example.com.br",
-      "password": "password123"
     }
   ],
   "reviews": [

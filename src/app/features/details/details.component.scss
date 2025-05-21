@@ -114,6 +114,7 @@ input {
   border-bottom: 2px solid var(--purpleBck);
   background: transparent;
   transition: border-color 0.3s ease;
+  color: var(--text-color);
 }
 
 input:focus {

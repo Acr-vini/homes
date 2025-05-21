@@ -55,7 +55,6 @@ const routes: Routes = [
         title: 'Edit User',
       },
 
-      // Exemplo de rota
       {
         path: 'favorites',
         loadComponent: () =>
