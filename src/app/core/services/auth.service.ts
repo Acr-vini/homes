@@ -18,36 +18,31 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  /** Consulta o db.json filtrando por email e password */
   login(email: string, password: string): Observable<boolean> {
-    // GET /users?email=xxx&password=yyy
+    // dentro de AuthService.login()
     return this.http
-      .get<User[]>(`${this.apiUrl}?email=${email}&password=${password}`)
+      .post<{ accessToken: string; user: User }>(
+        'http://localhost:3000/login',
+        { email, password }
+      )
+
       .pipe(
-        map((users) => {
-          const user = users[0];
-          if (user) {
-            if (user.role === 'disabled') {
-              throw new Error('disabled');
-            }
-            if (user.status === 'disabled') {
-              throw new Error('disabled');
-            }
-            localStorage.setItem('token', 'fake-jwt-token');
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            localStorage.setItem('isLoggedIn', 'true');
+        switchMap((response) => {
+          if (response && response.accessToken) {
+            localStorage.setItem('token', response.accessToken);
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
             this.loggedIn$.next(true);
-            return true;
-          } else {
-            return false;
+            return of(true);
           }
+          return of(false);
         })
       );
   }
 
   logout(): void {
+    localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('isLoggedIn');
+    this.loggedIn$.next(false);
     this.router.navigate(['/login']);
   }
 

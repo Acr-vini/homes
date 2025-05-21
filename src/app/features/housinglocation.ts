@@ -10,5 +10,5 @@ export interface HousingLocation {
   laundry: boolean;
   createdBy?: string;
   editedBy?: string;
-  deletedBy?: string; // novo campo
+  deletedBy?: string;
 }
