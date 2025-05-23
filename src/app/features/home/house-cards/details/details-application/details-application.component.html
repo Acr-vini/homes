@@ -1,0 +1,65 @@
+<article class="application-confirmation-container" *ngIf="data">
+  <mat-card class="confirmation-card">
+    <mat-card-title> Great news!! </mat-card-title>
+    <mat-card-content>
+      <!-- SELL -->
+      <ng-container *ngIf="data?.typeOfBusiness === 'sell'">
+        <p>
+          Your visit is scheduled for
+          <span class="highlight">{{ data.visitDate }}</span>
+          at
+          <span class="highlight">{{ data.visitTime }}</span>
+          <br />
+          at the house
+          <span class="highlight">"{{ data.houseName }}"</span> located in
+          <span class="highlight">{{ data.city }}, {{ data.state }}</span
+          >.
+        </p>
+        <div class="reminder">
+          <strong>Reminder:</strong><br />
+          Always arrive 10 minutes before your scheduled time. We look forward
+          to seeing you! If you need to change your date/time, use the button
+          below.
+        </div>
+        <div class="confirmation-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            class="action-btn"
+            (click)="changeDate()"
+          >
+            Change date/time
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- RENT -->
+      <ng-container *ngIf="data?.typeOfBusiness === 'rent'">
+        <p>
+          You rented the house
+          <span class="highlight">"{{ data.houseName }}"</span> located in
+          <span class="highlight">{{ data.city }}, {{ data.state }}</span>
+          <br />
+          from <span class="highlight">{{ data.checkInDate }}</span> to
+          <span class="highlight">{{ data.checkOutDate }}</span
+          >.
+        </p>
+        <div class="reminder">
+          <strong>Reminder:</strong><br />
+          Check-in for all houses is at <span class="highlight">08:00</span> and
+          check-out at <span class="highlight">18:00</span>.
+        </div>
+        <div class="confirmation-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            class="action-btn"
+            (click)="changeCheckIn()"
+          >
+            Change check-in and check-out
+          </button>
+        </div>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</article>

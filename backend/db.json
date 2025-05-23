@@ -10,6 +10,7 @@
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
+      "typeOfBusiness": "rent",
       "id": "1"
     },
     {
@@ -22,6 +23,7 @@
       "wifi": false,
       "laundry": true,
       "editedBy": "1",
+      "typeOfBusiness": "sell",
       "id": "2"
     },
     {

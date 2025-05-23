@@ -1,0 +1,142 @@
+<mat-card class="edit-card">
+  <mat-card-title>Create a new house</mat-card-title>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- House Name -->
+    <mat-form-field class="full-width">
+      <mat-label>House Name</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-error *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+        This field is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- State Autocomplete -->
+    <mat-form-field class="full-width">
+      <mat-label>State</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="stateControl"
+        [matAutocomplete]="autoState"
+        required
+      />
+      <mat-autocomplete #autoState="matAutocomplete" autoActiveFirstOption>
+        <mat-option *ngFor="let st of filteredStates | async" [value]="st.name">
+          {{ st.name }}
+        </mat-option>
+        <mat-option
+          *ngIf="stateControl.value && !(filteredStates | async)?.length"
+          [value]="stateControl.value"
+        >
+          Add "{{ stateControl.value }}"
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="stateControl.invalid && stateControl.touched">
+        State is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- City Autocomplete -->
+    <mat-form-field class="full-width">
+      <mat-label>City</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="cityControl"
+        [matAutocomplete]="autoCity"
+        required
+      />
+      <mat-autocomplete #autoCity="matAutocomplete" autoActiveFirstOption>
+        <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+          {{ city }}
+        </mat-option>
+        <mat-option
+          *ngIf="cityControl.value && !(filteredCities | async)?.length"
+          [value]="cityControl.value"
+        >
+          Add "{{ cityControl.value }}"
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="cityControl.invalid && cityControl.touched">
+        City is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Available Units -->
+    <mat-form-field class="full-width">
+      <mat-label>Available Units</mat-label>
+      <input matInput type="number" formControlName="availableUnits" required />
+      <mat-error
+        *ngIf="
+          form.get('availableUnits')?.invalid &&
+          form.get('availableUnits')?.touched
+        "
+      >
+        This field is required and must be greater than 0.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Type of Business -->
+    <mat-form-field class="full-width">
+      <mat-label>Type of Business</mat-label>
+      <mat-select formControlName="typeOfBusiness" required>
+        <mat-option value="sell">Sell</mat-option>
+        <mat-option value="rent">Rent</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          form.get('typeOfBusiness')?.invalid &&
+          form.get('typeOfBusiness')?.touched
+        "
+      >
+        This field is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Photo URL (optional) -->
+    <mat-form-field class="full-width">
+      <mat-label>Photo URL (optional)</mat-label>
+      <input matInput formControlName="imageUrl" />
+    </mat-form-field>
+
+    <!-- Wi-Fi Available -->
+    <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
+
+    <!-- Laundry Available -->
+    <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
+
+    <!-- Image Preview & Upload -->
+    <div *ngIf="imagePreview" class="image-preview">
+      <img [src]="imagePreview" alt="Image preview" />
+    </div>
+
+    <div class="create-file-upload">
+      <!-- classe atualizada -->
+      <button mat-icon-button type="button" (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon>
+      </button>
+      <span>Select image</span>
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        hidden
+        (change)="onImageSelected($event)"
+      />
+    </div>
+
+    <!-- Submit Button -->
+    <div class="actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Create
+      </button>
+      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</mat-card>

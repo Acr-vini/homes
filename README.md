@@ -4,8 +4,6 @@
 
 Create two terminals one to run: ng s
 
-an another to run: json-server --watch db.json
-
 an another go to /Desktop/homes-projeto/backend (dev)
 and run: npm start
 

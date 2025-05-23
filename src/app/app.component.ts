@@ -16,7 +16,6 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterLink,
     RouterOutlet,
     CommonModule,
     MatSelectModule,
@@ -34,28 +33,7 @@ import { MatInputModule } from '@angular/material/input';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'homes';
-
-  get isLoggedIn(): boolean {
-    return localStorage.getItem('isLoggedIn') === 'true';
-  }
-
-  isDarkMode = false; // Variável para rastrear o estado do tema
-
   ngOnInit(): void {
-    const darkMode = localStorage.getItem('darkMode') === 'true';
-    this.applyTheme(darkMode);
-  }
-
-  toggleDarkMode(isDarkMode: boolean): void {
-    this.isDarkMode = isDarkMode;
-    localStorage.setItem('darkMode', String(isDarkMode));
-    this.applyTheme(isDarkMode);
-  }
-
-  applyTheme(isDarkMode: boolean): void {
-    const body = document.body;
-    body.classList.remove('dark-theme', 'light-theme');
-    body.classList.add(isDarkMode ? 'dark-theme' : 'light-theme');
+    throw new Error('Method not implemented.');
   }
 }

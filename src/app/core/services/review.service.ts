@@ -2,14 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface Review {
-  id?: string;
-  housingLocationId: string;
-  userName: string;
-  rating: number;
-  comment: string;
-  date: string;
-}
+import { Review } from '../interfaces/review.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {

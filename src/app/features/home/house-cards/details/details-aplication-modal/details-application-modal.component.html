@@ -1,0 +1,114 @@
+<mat-card class="edit-card">
+  <mat-card-title>Edit your application</mat-card-title>
+  <form [formGroup]="form">
+    <!-- Name -->
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput [value]="data.name" disabled />
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput [value]="data.email" disabled />
+    </mat-form-field>
+
+    <!-- Phone -->
+    <mat-form-field class="full-width">
+      <mat-label>Phone</mat-label>
+      <input matInput [value]="data.phone" disabled />
+    </mat-form-field>
+
+    <!-- Location -->
+    <mat-form-field class="full-width">
+      <mat-label>Location</mat-label>
+      <input matInput [value]="data.city + ', ' + data.state" disabled />
+    </mat-form-field>
+
+    <!-- SELL -->
+    <ng-container *ngIf="data.typeOfBusiness === 'sell'">
+      <mat-form-field class="full-width">
+        <mat-label>Date of Visit</mat-label>
+        <input
+          matInput
+          [matDatepicker]="visitDatePicker"
+          formControlName="visitDate"
+          [min]="data.today"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="visitDatePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #visitDatePicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Visit Time</mat-label>
+        <mat-select formControlName="visitTime">
+          <mat-option value="" disabled>Select a time</mat-option>
+          <mat-option *ngFor="let hour of data.visitHours" [value]="hour">
+            {{ hour }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <!-- RENT -->
+    <ng-container *ngIf="data.typeOfBusiness === 'rent'">
+      <mat-form-field class="full-width">
+        <mat-label>Check-in Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="checkInPicker"
+          formControlName="checkInDate"
+          [min]="data.today"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="checkInPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #checkInPicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Check-out Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="checkOutPicker"
+          formControlName="checkOutDate"
+          [min]="form.get('checkInDate')?.value || data.today"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="checkOutPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #checkOutPicker></mat-datepicker>
+      </mat-form-field>
+    </ng-container>
+
+    <div class="actions">
+      <!-- SAVE -->
+      <button
+        mat-icon-button
+        class="save-btn"
+        type="button"
+        (click)="save()"
+        [disabled]="form.invalid"
+        aria-label="Save changes"
+        matTooltip="Save changes"
+      >
+        <span class="material-symbols-outlined">save</span>
+      </button>
+
+      <!-- CANCEL -->
+      <button
+        mat-icon-button
+        class="cancel-btn"
+        type="button"
+        (click)="close()"
+        aria-label="Cancel editing"
+        matTooltip="Cancel editing"
+      >
+        <span class="material-symbols-outlined">cancel</span>
+      </button>
+    </div>
+  </form>
+</mat-card>

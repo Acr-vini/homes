@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HousingLocation } from '../../features/housinglocation';
+import { HousingLocation } from '../interfaces/housinglocation.interface';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { HousingFormValues } from '../../features/housingformvalues';
+import { HousingFormValues } from '../interfaces/housingformvalues.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HousingService {
-  private readonly baseUrl = 'http://localhost:3000/locations';
+  private readonly baseUrl = 'http://localhost:3000/locations'; // https://api-homes-7kt5olzh4q-rj.a.run.app/api/homes
 
   constructor(private http: HttpClient) {}
 

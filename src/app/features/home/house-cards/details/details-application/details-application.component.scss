@@ -1,0 +1,80 @@
+.application-confirmation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 2rem;
+}
+
+.confirmation-card {
+  max-width: 600px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(80, 80, 120, 0.12);
+  padding: 1rem;
+  text-align: center;
+  background-color: var(--cardBck);
+}
+
+.confirmation-container {
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.gray-bg {
+  background: rgba(100, 100, 100, 0.08) !important;
+}
+
+mat-card-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--titleAC);
+  text-align: center;
+}
+
+mat-card-content p {
+  font-size: 1.25rem;
+  color: var(--text-color, #222);
+  margin-bottom: 1.5rem;
+}
+
+.highlight {
+  color: var(--purpleBck, #6c4ad6);
+  font-weight: 600;
+}
+
+.reminder {
+  margin-top: 1.5rem;
+  background: rgba(100, 100, 100, 0.349);
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 1.1em;
+  color: #444;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.action-btn {
+  min-width: 180px;
+  height: 48px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: #381c9e;
+  color: #fff;
+  box-shadow: 0 2px 8px #381c9e22;
+  transition: background 0.2s;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    background-color: #2a1575;
+    color: #fff;
+  }
+}

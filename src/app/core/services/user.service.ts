@@ -3,16 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  status: string;
-  role: string;
-  phone: string;
-  location: string;
-}
+import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
