@@ -151,3 +151,36 @@
     color: #e53935;
   }
 }
+
+// Base de estilo para o label
+.home-listing__type-label {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  margin-left: 3%;
+}
+
+// Modificador SELL
+.home-listing__type-label--sell {
+  background-color: rgb(167, 214, 176);
+  color: var(--purpleBrdr);
+}
+
+// Modificador RENT
+.home-listing__type-label--rent {
+  background-color: #add8e6;
+  color: var(--purpleBrdr);
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}

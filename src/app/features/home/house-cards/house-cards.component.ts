@@ -6,15 +6,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateComponent } from '../../home/SCF/create/create.component';
 import { EditComponent } from '../../home/house-cards/edit/edit.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
-  selector: 'app-house-cards.',
+  selector: 'app-house-cards',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatIconModule, MatChipsModule],
   templateUrl: './house-cards.component.html',
   styleUrls: ['./house-cards.component.scss'],
 })
-export class housecardsComponent {
+export class HouseCardsComponent {
   @Input() housingLocation!: HousingLocation;
 
   constructor(private dialog: MatDialog) {}

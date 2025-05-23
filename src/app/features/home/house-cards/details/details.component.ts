@@ -19,6 +19,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { ApplicationService } from '../../../../core/services/application.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-details',
@@ -32,6 +34,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatDividerModule,
     MatTooltipModule,
     MatSelectModule,
+    MatSnackBarModule,
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
@@ -40,7 +43,10 @@ export class DetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);
   housingService = inject(HousingService);
+  applicationService = inject(ApplicationService);
   housingLocation: HousingLocation | undefined;
+  snackBar = inject(MatSnackBar);
+  appService = inject(ApplicationService);
 
   applyForm = new FormGroup({
     name: new FormControl(''),
@@ -65,8 +71,6 @@ export class DetailsComponent {
   reviewService = inject(ReviewService);
 
   currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-
-  snackBar = inject(MatSnackBar);
 
   today = new Date().toISOString().split('T')[0];
   visitHours = [
@@ -125,25 +129,53 @@ export class DetailsComponent {
 
   submitApplication(): void {
     if (this.applyForm.valid) {
+      // 1. Abre SnackBar de confirmação
       const snackBarRef = this.snackBar.open(
         'Are you sure you want to apply?',
         'Yes',
         { duration: 5000 }
       );
+
+      // 2. Se clicar em "Yes", entra aqui
       snackBarRef.onAction().subscribe(() => {
+        // Simula resultado (você pode fazer chamada real aqui)
         const success = true;
+
         if (success) {
+          // 3a. Salva a aplicação no localStorage via ApplicationService
+          const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+          // dentro de submitApplication(), na hora de this.appService.add(...)
+          this.appService.add({
+            userId: user.id,
+            houseId: this.housingLocation!.id,
+            typeOfBusiness: this.housingLocation!.typeOfBusiness,
+            houseName: this.housingLocation!.name,
+            city: this.housingLocation!.city,
+            state: this.housingLocation!.state,
+            visitDate: this.applyForm.get('visitDate')?.value ?? undefined,
+            visitTime: this.applyForm.get('visitTime')?.value ?? undefined,
+            checkInDate: this.applyForm.get('checkInDate')?.value ?? undefined,
+            checkOutDate:
+              this.applyForm.get('checkOutDate')?.value ?? undefined,
+            timestamp: new Date().toISOString(),
+          });
+
+          // 4a. Feedback de sucesso
           this.snackBar.open('✅ Application completed successfully', '', {
             duration: 3000,
           });
+
+          // 5a. Navega para tela de confirmação
           this.goToConfirmationScreen();
         } else {
+          // 4b. Feedback de falha
           this.snackBar.open('❌ Unsuccessful application', '', {
             duration: 3000,
           });
         }
       });
     } else {
+      // 6. Caso o form não seja válido
       this.snackBar.open('Please fill all required fields.', 'Close', {
         duration: 3000,
       });

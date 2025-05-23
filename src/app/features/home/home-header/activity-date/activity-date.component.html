@@ -1,0 +1,40 @@
+<h2>My Applications</h2>
+<div class="activity-container">
+  <section class="home-listing" *ngFor="let app of applications">
+    <a class="home-listing-link" (click)="viewDetails(app)">
+      <!-- House photo -->
+      <img
+        class="home-listing-photo"
+        [src]="app.photoUrl"
+        [alt]="'Photo of ' + app.houseName"
+      />
+
+      <!-- House name -->
+      <h2 class="home-listing-heading">{{ app.houseName }}</h2>
+
+      <!-- Type label -->
+      <span
+        class="home-listing__type-label"
+        [ngClass]="{
+          'home-listing__type-label--sell': app.typeOfBusiness === 'sell',
+          'home-listing__type-label--rent': app.typeOfBusiness === 'rent'
+        }"
+      >
+        {{ app.typeOfBusiness | titlecase }}
+      </span>
+
+      <!-- Visit / Stay message -->
+      <div class="home-listing-row">
+        <mat-icon>event</mat-icon>
+        <h5 class="home-listing-location">
+          <ng-container *ngIf="app.typeOfBusiness === 'sell'; else rentMsg">
+            Visit on {{ app.visitDate }} at {{ app.visitTime }}
+          </ng-container>
+          <ng-template #rentMsg>
+            Stay from {{ app.checkInDate }} to {{ app.checkOutDate }}
+          </ng-template>
+        </h5>
+      </div>
+    </a>
+  </section>
+</div>

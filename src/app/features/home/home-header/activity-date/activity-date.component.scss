@@ -1,0 +1,95 @@
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--titleAC);
+  text-align: center;
+}
+/* src/app/features/home/home-header/activity-date/activity-date.component.scss */
+.activity-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Reuse house-cards styling */
+.home-listing {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--purpleWeak);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  width: 300px; // fixed width for cards
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  &-photo {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 30px 30px 0 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &-heading {
+    color: var(--card-title-color);
+    padding: 10px 20px 0;
+    font-size: 1.25rem;
+  }
+
+  &-link {
+    text-decoration: none;
+    color: var(--card-title-color);
+    cursor: pointer;
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 8px;
+
+    mat-icon {
+      color: var(--purpleBrdr);
+    }
+  }
+
+  &-location {
+    font-size: 0.9rem;
+    color: var(--card-title-color);
+    margin: 0;
+  }
+}
+
+/* Type label styling */
+.home-listing__type-label {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  margin: 10px 20px 0;
+}
+
+.home-listing__type-label--sell {
+  background-color: rgb(167, 214, 176);
+  color: var(--purpleBrdr);
+}
+
+.home-listing__type-label--rent {
+  background-color: #add8e6;
+  color: var(--purpleBrdr);
+}

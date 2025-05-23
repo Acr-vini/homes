@@ -2,12 +2,12 @@
   <button
     class="favorite-icon-button"
     (click)="toggleFavorite(housingLocation)"
-    [ngClass]="{'favorited': isFavorited(housingLocation)}"
+    [ngClass]="{ favorited: isFavorited(housingLocation) }"
     aria-label="Favorite"
     type="button"
   >
     <mat-icon>
-      {{ isFavorited(housingLocation) ? 'favorite' : 'favorite_border' }}
+      {{ isFavorited(housingLocation) ? "favorite" : "favorite_border" }}
     </mat-icon>
   </button>
   <a class="home-listing-link" [routerLink]="['/details', housingLocation.id]">
@@ -16,7 +16,25 @@
       [src]="housingLocation.imageUrl || housingLocation.photo"
       alt="Exterior photo of {{ housingLocation.name }}"
     />
+
     <h2 class="home-listing-heading">{{ housingLocation.name }}</h2>
+
+    <span
+      class="home-listing__type-label"
+      role="text"
+      [attr.aria-label]="
+        'Tipo de negócio: ' + (housingLocation.typeOfBusiness | titlecase)
+      "
+      [ngClass]="{
+        'home-listing__type-label--sell':
+          housingLocation.typeOfBusiness === 'sell',
+        'home-listing__type-label--rent':
+          housingLocation.typeOfBusiness === 'rent'
+      }"
+    >
+      {{ housingLocation.typeOfBusiness | titlecase }}
+    </span>
+
     <div class="home-listing-row">
       <img class="home-listing-pin" src="../../assets/pin2.webp" alt="pin" />
       <h5 class="home-listing-location">

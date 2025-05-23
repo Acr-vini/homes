@@ -13,11 +13,7 @@
   </section>
 
   <div class="create-wrapper">
-    <button
-      *ngIf="currentUserRole === 'Admin' || currentUserRole === 'Manager'"
-      class="create-button"
-      (click)="openCreateHouse()"
-    >
+    <button class="create-button" (click)="openCreateHouse()">
       + Create a House
     </button>
     <button
@@ -42,7 +38,7 @@
 <mat-paginator
   [length]="filteredLocationList.length"
   [pageSize]="pageSize"
-  [pageSizeOptions]="[20, 30, 50]"
+  [pageSizeOptions]="[8, 16, 20, 30, 50]"
   (page)="onPageChange($event)"
 >
 </mat-paginator>

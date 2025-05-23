@@ -3,7 +3,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../core/services/housing.service';
 import { HttpClientModule } from '@angular/common/http';
-import { housecardsComponent } from '../../home/house-cards/house-cards.component';
+import { HouseCardsComponent } from '../../home/house-cards/house-cards.component';
 import { HousingLocation } from '../../../core/interfaces/housinglocation.interface';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
@@ -22,11 +22,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateComponent } from '../../home/SCF/create/create.component';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-SCF',
   standalone: true,
   imports: [
     CommonModule,
-    housecardsComponent,
+    HouseCardsComponent,
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,

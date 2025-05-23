@@ -17,7 +17,7 @@ import { UsersComponent } from './features/home/home-header/users/users.componen
 import { UserCreateComponent } from './features/home/home-header/users/user-create/user-create.component';
 import { UserEditComponent } from './features/home/home-header/users/user-edit/user-edit.component';
 import { DetailsApplicationComponent } from './features/home/house-cards/details/details-application/details-application.component';
-
+import { ActivityDateComponent } from './features/home/home-header/activity-date/activity-date.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
@@ -47,12 +47,15 @@ const routes: Routes = [
         title: 'Home details',
       },
 
-      // Sobre e Contato
+      // users | about | contact | activity-date
+      { path: 'users', component: UsersComponent, title: 'Users' },
       { path: 'about', component: AboutComponent, title: 'About' },
       { path: 'contact', component: ContactComponent, title: 'Contact' },
-
-      // CRUD de Usuários
-      { path: 'users', component: UsersComponent, title: 'Users' },
+      {
+        path: 'activity-date',
+        component: ActivityDateComponent,
+        title: 'Activity Date',
+      },
 
       {
         path: 'users/edit/:id',
