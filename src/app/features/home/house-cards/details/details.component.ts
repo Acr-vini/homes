@@ -21,6 +21,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { ApplicationService } from '../../../../core/services/application.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({
   selector: 'app-details',
@@ -35,6 +36,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatTooltipModule,
     MatSelectModule,
     MatSnackBarModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
@@ -161,6 +163,7 @@ export class DetailsComponent implements OnInit {
           const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
           // dentro de submitApplication(), na hora de this.appService.add(...)
           this.appService.add({
+            id: '',
             userId: user.id,
             houseId: this.housingLocation!.id,
             typeOfBusiness: this.housingLocation!.typeOfBusiness,

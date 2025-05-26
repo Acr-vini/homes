@@ -17,13 +17,13 @@
       "name": "A113 Transitional Housing",
       "state": "CA",
       "city": "Acalanes Ridge",
-      "availableUnits": 1231233333333,
+      "availableUnits": 123123333333,
       "photo": "https://angular.io/assets/images/tutorials/faa/brandon-griggs-wR11KBaB86U-unsplash.jpg",
       "imageUrl": "",
       "wifi": false,
       "laundry": true,
       "editedBy": "1",
-      "typeOfBusiness": "sell",
+      "typeOfBusiness": "rent",
       "id": "2"
     },
     {

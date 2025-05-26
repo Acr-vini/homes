@@ -24,6 +24,7 @@
     "country-state-city": "^3.2.1",
     "json-server-auth": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
+    "ngx-spinner": "^16.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"

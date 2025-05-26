@@ -4,7 +4,7 @@
       mat-icon-button
       class="close-button"
       aria-label="Close"
-      (click)="goToHome()"
+      (click)="close()"
     >
       <mat-icon>close</mat-icon>
     </button>
@@ -30,16 +30,6 @@
           to seeing you! If you need to change your date/time, use the button
           below.
         </div>
-        <div class="confirmation-actions">
-          <button
-            mat-flat-button
-            color="primary"
-            class="action-btn"
-            (click)="changeDate()"
-          >
-            Change date/time
-          </button>
-        </div>
       </ng-container>
 
       <!-- RENT -->
@@ -57,16 +47,6 @@
           <strong>Reminder:</strong><br />
           Check-in for all houses is at <span class="highlight">08:00</span> and
           check-out at <span class="highlight">18:00</span>.
-        </div>
-        <div class="confirmation-actions">
-          <button
-            mat-flat-button
-            color="primary"
-            class="action-btn"
-            (click)="changeCheckIn()"
-          >
-            Change check-in and check-out
-          </button>
         </div>
       </ng-container>
     </mat-card-content>

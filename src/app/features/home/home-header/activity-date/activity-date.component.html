@@ -36,5 +36,42 @@
         </h5>
       </div>
     </a>
+
+    <!-- Application actions -->
+    <div class="application-actions">
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="confirmDeleteApplication(app)"
+        [matTooltip]="'Delete application'"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="confirmCancelApplication(app)"
+        [matTooltip]="'Cancel application'"
+      >
+        <mat-icon>event_busy</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="openEditApplication(app)"
+        [matTooltip]="'Edit application'"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
   </section>
 </div>
+
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.3)"
+  size="medium"
+  color="#381c9e"
+  type="ball-spin-clockwise"
+  [fullScreen]="true"
+  *ngIf="loading"
+></ngx-spinner>

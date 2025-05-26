@@ -34,6 +34,5 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class AppComponent implements OnInit {
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 }

@@ -8,7 +8,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
-import { DetailsModalAplicationComponent } from '../../details/details-aplication-modal/details-application-modal.component';
+import { DetailsModalAplicationComponent } from '../../../home-header/activity-date/activity-date-modal/activity-date-modal.component';
 
 @Component({
   selector: 'app-details-application',
@@ -97,7 +97,8 @@ export class DetailsApplicationComponent {
     this.changeCheckIn();
   }
 
-  goToHome() {
-    this.router.navigate(['/home']); // Navega para a rota /home
+  close() {
+    this.dialog.closeAll();
+    this.router.navigate(['/activity-date']);
   }
 }

@@ -33,7 +33,7 @@
           matInput
           [matDatepicker]="visitDatePicker"
           formControlName="visitDate"
-          [min]="data.today"
+          [min]="today"
         />
         <mat-datepicker-toggle
           matSuffix
@@ -60,7 +60,7 @@
           matInput
           [matDatepicker]="checkInPicker"
           formControlName="checkInDate"
-          [min]="data.today"
+          [min]="today"
         />
         <mat-datepicker-toggle
           matSuffix
@@ -74,7 +74,7 @@
           matInput
           [matDatepicker]="checkOutPicker"
           formControlName="checkOutDate"
-          [min]="form.get('checkInDate')?.value || data.today"
+          [min]="form.get('checkInDate')?.value || today"
         />
         <mat-datepicker-toggle
           matSuffix

@@ -17,12 +17,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router'; // ✅ Importação do Router adicionada
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-details-modal-aplication',
+  selector: 'app-activity-date-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -37,8 +37,8 @@ import { Router } from '@angular/router'; // ✅ Importação do Router adiciona
     MatNativeDateModule,
     MatIconModule,
   ],
-  templateUrl: './details-application-modal.component.html',
-  styleUrls: ['./details-application-modal.component.scss'],
+  templateUrl: './activity-date-modal.component.html',
+  styleUrls: ['./activity-date-modal.component.scss'],
 })
 export class DetailsModalAplicationComponent {
   form: FormGroup;
