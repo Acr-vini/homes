@@ -1,5 +1,14 @@
 <article class="application-confirmation-container" *ngIf="data">
   <mat-card class="confirmation-card">
+    <button
+      mat-icon-button
+      class="close-button"
+      aria-label="Close"
+      (click)="goToHome()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+
     <mat-card-title> Great news!! </mat-card-title>
     <mat-card-content>
       <!-- SELL -->

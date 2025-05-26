@@ -10,10 +10,22 @@
   max-width: 600px;
   width: 100%;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(80, 80, 120, 0.12);
+  box-shadow: 0 8px 32px rgba(80, 80, 120, 0.596);
   padding: 1rem;
   text-align: center;
   background-color: var(--cardBck);
+  position: relative;
+  .close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    color: #9e9e9e; // cor cinza (Material padrão)
+
+    &:hover {
+      color: #f44336; // vermelho quando passar o mouse
+    }
+  }
 }
 
 .confirmation-container {
@@ -23,7 +35,7 @@
 }
 
 .gray-bg {
-  background: rgba(100, 100, 100, 0.08) !important;
+  background: rgba(68, 68, 68, 0.068) !important;
 }
 
 mat-card-title {

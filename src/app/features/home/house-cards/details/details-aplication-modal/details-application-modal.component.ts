@@ -19,6 +19,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router'; // ✅ Importação do Router adicionada
 
 @Component({
   selector: 'app-details-modal-aplication',
@@ -44,12 +45,14 @@ export class DetailsModalAplicationComponent {
   today: Date = new Date();
   applyForm: any;
 
+  // ✅ Constructor recebe Router e corrigimos a vírgula
   constructor(
     public dialogRef: MatDialogRef<DetailsModalAplicationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
-    // Inicializa o form apenas com os campos editáveis
+    // ✅ Inicializa o formulário baseado no tipo de negociação
     if (data.typeOfBusiness === 'sell') {
       this.form = this.fb.group({
         visitDate: [
@@ -72,12 +75,14 @@ export class DetailsModalAplicationComponent {
     }
   }
 
+  // ✅ Salva os dados e fecha o modal, retornando os dados preenchidos
   save() {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value);
     }
   }
 
+  // ✅ Fecha o modal sem salvar
   close() {
     this.dialogRef.close();
   }

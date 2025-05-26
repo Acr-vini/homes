@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../../core/services/housing.service';
@@ -39,7 +39,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit {
   route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);
   housingService = inject(HousingService);
@@ -114,7 +114,22 @@ export class DetailsComponent {
     });
   }
 
-  ngOnInit() {
+  /**
+   * English: Prefill the form with the logged-in user's data
+   * e load reviews if housingLocation já foi carregada.
+   */
+  ngOnInit(): void {
+    // 1) Preencher name, email, phone e location
+    if (this.currentUser) {
+      this.applyForm.patchValue({
+        name: this.currentUser.name,
+        email: this.currentUser.email,
+        phone: this.currentUser.phone,
+        location: this.currentUser.location,
+      });
+    }
+
+    // 2) Carregar reviews se a housingLocation já estiver definida
     if (this.housingLocation) {
       this.loadReviews();
     }
