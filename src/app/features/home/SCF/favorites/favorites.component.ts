@@ -61,4 +61,17 @@ export class FavoritesComponent implements OnInit, DoCheck {
       this.snackBar.open('✅ Favorites cleared!', '', { duration: 2000 });
     });
   }
+  isFavorited(house: HousingLocation): boolean {
+    const userId = this.currentUserId;
+    const ids: string[] = userId
+      ? JSON.parse(localStorage.getItem(`favoriteHouses_${userId}`) || '[]')
+      : [];
+    return ids.includes(String(house.id));
+  }
+
+  getFavoriteAriaLabel(house: HousingLocation): string {
+    return this.isFavorited(house)
+      ? 'Remove from favorites'
+      : 'Add to favorites';
+  }
 }

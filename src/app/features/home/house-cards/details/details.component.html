@@ -110,7 +110,7 @@
   <mat-card-title>Reviews</mat-card-title>
   <mat-card-content>
     <div *ngIf="reviews.length; else noReviews">
-      <div *ngFor="let review of reviews" class="review">
+      <div *ngFor="let review of reviews$ | async" class="review">
         <div class="review-header">
           <strong>{{ review.userName }}</strong>
           <span class="review-rating">
@@ -162,7 +162,7 @@
         <mat-icon
           *ngFor="let star of [1, 2, 3, 4, 5]"
           (click)="setRating(star)"
-          [ngClass]="{ active: star <= (reviewForm.get('rating')?.value ?? 0) }"
+          [ngClass]="{ active: isStarActive(star) }"
           >star</mat-icon
         >
       </div>

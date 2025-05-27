@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NgModule } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import {
   ApplicationService,
   Application,
 } from '../../../../core/services/application.service';
 import { HousingService } from '../../../../core/services/housing.service';
-import { DetailsModalAplicationComponent } from './activity-date-modal/activity-date-modal.component';
+import { ActivityDateModalComponent } from './activity-date-modal/activity-date-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-activity-date',
@@ -22,11 +20,9 @@ import { MatDialog } from '@angular/material/dialog';
   imports: [
     CommonModule,
     RouterModule,
-    MatListModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    NgxSpinnerModule,
   ],
   templateUrl: './activity-date.component.html',
   styleUrls: ['./activity-date.component.scss'],
@@ -53,20 +49,25 @@ export class ActivityDateComponent implements OnInit {
       return;
     }
 
-    this.applications = this.applicationService.getByUser(this.currentUserId);
+    this.applicationService
+      .getByUser(this.currentUserId)
+      .subscribe((apps: Array<Application & { houseId: string }>) => {
+        this.applications = apps;
+        let pending: number = this.applications.length;
+        if (pending === 0) this.loading = false;
 
-    let pending = this.applications.length;
-    if (pending === 0) this.loading = false;
-
-    this.applications.forEach((app) => {
-      this.housingService
-        .getHousingLocationById(app.houseId)
-        .subscribe((location) => {
-          app.photoUrl = location.imageUrl || location.photo;
-          pending--;
-          if (pending === 0) this.loading = false;
-        });
-    });
+        this.applications.forEach(
+          (app: Application & { houseId: string; photoUrl?: string }) => {
+            this.housingService
+              .getHousingLocationById(app.houseId)
+              .subscribe((location: { imageUrl?: string; photo?: string }) => {
+                app.photoUrl = location.imageUrl || location.photo;
+                pending--;
+                if (pending === 0) this.loading = false;
+              });
+          }
+        );
+      });
   }
 
   viewDetails(app: Application): void {
@@ -122,7 +123,7 @@ export class ActivityDateComponent implements OnInit {
   }
 
   openEditApplication(app: Application): void {
-    const dialogRef = this.dialog.open(DetailsModalAplicationComponent, {
+    const dialogRef = this.dialog.open(ActivityDateModalComponent, {
       data: app,
       width: '500px',
       disableClose: true,

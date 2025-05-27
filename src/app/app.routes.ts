@@ -37,29 +37,45 @@ const routes: Routes = [
       {
         path: 'home',
         component: SCFComponent,
-        title: 'search/create/favorite',
+        title: 'Home',
       },
 
       // CRUD de Houses
       {
         path: 'details/:id',
-        component: DetailsComponent,
-        title: 'Home details',
+        loadComponent: () =>
+          import('./features/home/house-cards/details/details.component').then(
+            (m) => m.DetailsComponent
+          ),
+        title: 'Details',
       },
 
       // users | about | contact | activity-date
-      { path: 'users', component: UsersComponent, title: 'Users' },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./features/home/home-header/users/users.component').then(
+            (m) => m.UsersComponent
+          ),
+        title: 'Users',
+      },
       { path: 'about', component: AboutComponent, title: 'About' },
       { path: 'contact', component: ContactComponent, title: 'Contact' },
       {
         path: 'activity-date',
-        component: ActivityDateComponent,
+        loadComponent: () =>
+          import(
+            './features/home/home-header/activity-date/activity-date.component'
+          ).then((m) => m.ActivityDateComponent),
         title: 'Activity Date',
       },
 
       {
         path: 'users/edit/:id',
-        component: UserEditComponent,
+        loadComponent: () =>
+          import(
+            './features/home/home-header/users/user-edit/user-edit.component'
+          ).then((m) => m.UserEditComponent),
         title: 'Edit User',
       },
 
@@ -69,11 +85,16 @@ const routes: Routes = [
           import('./features/home/SCF/favorites/favorites.component').then(
             (m) => m.FavoritesComponent
           ),
+        title: 'Favorites',
       },
 
       {
         path: 'details-application',
-        component: DetailsApplicationComponent,
+        loadComponent: () =>
+          import(
+            './features/home/house-cards/details/details-application/details-application.component'
+          ).then((m) => m.DetailsApplicationComponent),
+        title: 'Application Details',
       },
     ],
   },

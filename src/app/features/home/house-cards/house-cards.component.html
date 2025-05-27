@@ -1,11 +1,3 @@
-<ngx-spinner
-  bdColor="rgba(0,0,0,0.3)"
-  size="medium"
-  color="#381c9e"
-  type="ball-spin-clockwise"
-  [fullScreen]="true"
-  *ngIf="loading"
-></ngx-spinner>
 <section class="home-listing">
   <button
     class="favorite-icon-button"
@@ -23,6 +15,9 @@
       class="home-listing-photo"
       [src]="housingLocation.imageUrl || housingLocation.photo"
       alt="Exterior photo of {{ housingLocation.name }}"
+      width="300"
+      height="180"
+      loading="lazy"
     />
 
     <h2 class="home-listing-heading">{{ housingLocation.name }}</h2>
@@ -58,7 +53,8 @@
     <button
       class="edit-button"
       (click)="openEditHouse(housingLocation.id)"
-      aria-label="Edit housing"
+      aria-label="Edit house"
+      [matTooltip]="'Edit house'"
     >
       <span class="material-icons">edit</span>
     </button>

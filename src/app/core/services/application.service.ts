@@ -44,8 +44,8 @@ export class ApplicationService {
   }
 
   // Retorna só as aplicações do usuário atual
-  getByUser(userId: string): Application[] {
-    return this.getAll().filter((a) => a.userId === userId);
+  getByUser(userId: string): Observable<Application[]> {
+    return of(this.getAll().filter((a) => a.userId === userId));
   }
 
   update(applicationId: string, updatedApp: Application): Observable<void> {

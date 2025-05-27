@@ -4,19 +4,19 @@
     <!-- Name -->
     <mat-form-field class="full-width">
       <mat-label>Name</mat-label>
-      <input matInput [value]="data.name" disabled />
+      <input matInput [value]="data.name" />
     </mat-form-field>
 
     <!-- Email -->
     <mat-form-field class="full-width">
       <mat-label>Email</mat-label>
-      <input matInput [value]="data.email" disabled />
+      <input matInput [value]="data.email" />
     </mat-form-field>
 
     <!-- Phone -->
     <mat-form-field class="full-width">
       <mat-label>Phone</mat-label>
-      <input matInput [value]="data.phone" disabled />
+      <input matInput [value]="data.phone" />
     </mat-form-field>
 
     <!-- Location -->
@@ -89,11 +89,12 @@
       <button
         mat-icon-button
         class="save-btn"
-        type="button"
+        type="submit"
         (click)="save()"
         [disabled]="form.invalid"
         aria-label="Save changes"
-        matTooltip="Save changes"
+        [matTooltip]="'Save changes'"
+        [disabled]="form.invalid || !form.dirty"
       >
         <span class="material-symbols-outlined">save</span>
       </button>
@@ -101,11 +102,11 @@
       <!-- CANCEL -->
       <button
         mat-icon-button
-        class="cancel-btn"
         type="button"
+        class="cancel-btn"
         (click)="close()"
         aria-label="Cancel editing"
-        matTooltip="Cancel editing"
+        [matTooltip]="'Cancel editing'"
       >
         <span class="material-symbols-outlined">cancel</span>
       </button>

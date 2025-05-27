@@ -3,25 +3,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../../core/services/housing.service';
 import { HousingLocation } from '../../../../core/interfaces/housinglocation.interface';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Review } from '../../../../core/interfaces/review.interface';
 import { ReviewService } from '../../../../core/services/review.service';
 import { MatIconModule } from '@angular/material/icon';
-import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectModule } from '@angular/material/select';
 import { ApplicationService } from '../../../../core/services/application.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -32,11 +28,12 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatDividerModule,
     MatTooltipModule,
-    MatSelectModule,
     MatSnackBarModule,
     NgxSpinnerModule,
+    MatDividerModule,
+    MatSelectModule,
+    MatOptionModule,
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
@@ -61,7 +58,9 @@ export class DetailsComponent implements OnInit {
     location: new FormControl(''),
   });
 
+  reviews$!: Observable<Review[]>;
   reviews: Review[] = [];
+
   reviewForm = new FormGroup({
     userName: new FormControl(''),
     rating: new FormControl(5),
@@ -135,6 +134,10 @@ export class DetailsComponent implements OnInit {
     if (this.housingLocation) {
       this.loadReviews();
     }
+
+    this.reviews$ = this.reviewService.getReviewsByLocation(
+      this.housingLocation!.id
+    );
   }
 
   loadReviews() {
@@ -263,5 +266,9 @@ export class DetailsComponent implements OnInit {
         checkOutDate: this.applyForm.get('checkOutDate')?.value,
       },
     });
+  }
+
+  isStarActive(star: number): boolean {
+    return star <= (this.reviewForm.get('rating')?.value ?? 0);
   }
 }

@@ -5,25 +5,26 @@ h2 {
   color: var(--titleAC);
   text-align: center;
 }
-/* src/app/features/home/home-header/activity-date/activity-date.component.scss */
 .activity-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: stretch; // Garante que todos os cards tenham a mesma altura
 }
 
 /* Reuse house-cards styling */
 .home-listing {
-  margin: 20px;
   display: flex;
   flex-direction: column;
   background-color: var(--purpleWeak);
   border-radius: 16px;
-  overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
-  width: 300px; // fixed width for cards
+  min-width: 300px; // fixed width for cards
+  gap: 20px;
+  height: 100%;
+  margin: 0 12px 24px 12px; // <-- Updated margin
 
   &:hover {
     transform: translateY(-4px);
@@ -37,11 +38,6 @@ h2 {
     border-radius: 30px 30px 0 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
   }
 
   &-heading {
@@ -96,7 +92,29 @@ h2 {
 
 .application-actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
   justify-content: flex-end;
+}
+.edit-button {
+  background-color: var(--purpleBck);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .material-icons,
+  mat-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: rgba(56, 28, 158, 0.8);
+  }
+}
+.mat-mdc-button-touch-target {
+  min-width: 20px; // Ensures the button has a minimum width
+  min-height: 20px; // Ensures the button has a minimum height
 }

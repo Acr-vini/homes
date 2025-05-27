@@ -8,8 +8,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
-import { DetailsModalAplicationComponent } from '../../../home-header/activity-date/activity-date-modal/activity-date-modal.component';
-
+import { ActivityDateModalComponent } from '../../../home-header/activity-date/activity-date-modal/activity-date-modal.component';
 @Component({
   selector: 'app-details-application',
   standalone: true,
@@ -36,7 +35,7 @@ export class DetailsApplicationComponent {
 
   // Abre o modal para alterar data e hora
   changeDate() {
-    const dialogRef = this.dialog.open(DetailsModalAplicationComponent, {
+    const dialogRef = this.dialog.open(ActivityDateModalComponent, {
       data: {
         ...this.data,
         today: new Date(),
@@ -77,7 +76,7 @@ export class DetailsApplicationComponent {
   // Abre o modal para alterar check-in e check-out (reutiliza o mesmo modal)
   changeCheckIn() {
     this.dialog
-      .open(DetailsModalAplicationComponent, {
+      .open(ActivityDateModalComponent, {
         data: {
           ...this.data,
           today: new Date().toISOString().split('T')[0],

@@ -7,6 +7,9 @@
         class="home-listing-photo"
         [src]="app.photoUrl"
         [alt]="'Photo of ' + app.houseName"
+        width="300"
+        height="180"
+        loading="lazy"
       />
 
       <!-- House name -->
@@ -36,8 +39,6 @@
         </h5>
       </div>
     </a>
-
-    <!-- Application actions -->
     <div class="application-actions">
       <button
         mat-icon-button
@@ -49,29 +50,12 @@
       </button>
       <button
         mat-icon-button
-        color="primary"
-        (click)="confirmCancelApplication(app)"
-        [matTooltip]="'Cancel application'"
-      >
-        <mat-icon>event_busy</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        color="primary"
         (click)="openEditApplication(app)"
         [matTooltip]="'Edit application'"
+        class="edit-button"
       >
         <mat-icon>edit</mat-icon>
       </button>
     </div>
   </section>
 </div>
-
-<ngx-spinner
-  bdColor="rgba(0,0,0,0.3)"
-  size="medium"
-  color="#381c9e"
-  type="ball-spin-clockwise"
-  [fullScreen]="true"
-  *ngIf="loading"
-></ngx-spinner>
