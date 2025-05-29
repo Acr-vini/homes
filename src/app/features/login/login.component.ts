@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -9,10 +9,11 @@ import {
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,8 @@ import { AuthService } from '../../core/services/auth.service';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
+    NgxSpinnerModule,
+    MatIconButton,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
@@ -34,23 +37,34 @@ export class LoginComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
+  private spinner = inject(NgxSpinnerService);
 
+  // define the reactive form
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
 
   hidePassword = true;
+  loading = signal(false);
 
+  /** called on form submit */
   onSubmit(): void {
+    this.spinner.show();
+    this.loading.set(true);
     const { email, password } = this.loginForm.value;
     this.authService.login(email, password).subscribe({
       next: (success) => {
+        console.log('Component login success flag:', success);
         if (success) {
+          this.loading.set(false);
           this.router.navigate(['/home']);
         }
       },
-      error: (err) => {
+      error: (err: Error) => {
+        this.loading.set(false);
+        console.error('Component login error:', err);
+
         if (err.message === 'disabled') {
           this.snackBar.open(
             'User disabled. Please contact the IT team.',
@@ -58,16 +72,15 @@ export class LoginComponent {
             { duration: 5000 }
           );
         } else {
-          this.snackBar.open(
-            'Login failed. Please check your credentials.',
-            'Close',
-            { duration: 4000 }
-          );
+          this.snackBar.open(err.message, 'Close', {
+            duration: 4000,
+          });
         }
       },
     });
   }
 
+  /** called when Forgot Password link is clicked */
   onForgotPassword(event: Event): void {
     event.preventDefault();
     const email = this.loginForm.get('email')?.value;
@@ -75,13 +88,10 @@ export class LoginComponent {
       this.snackBar.open(
         'Please enter a valid email to reset your password.',
         'Close',
-        {
-          duration: 4000,
-        }
+        { duration: 4000 }
       );
       return;
     }
-    // Mock envio de e-mail
     this.snackBar.open(
       `A password reset link was sent to ${email} (mocked).`,
       'Close',

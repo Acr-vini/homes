@@ -9,7 +9,8 @@ import { HousingFormValues } from '../interfaces/housingformvalues.interface';
   providedIn: 'root',
 })
 export class HousingService {
-  private readonly baseUrl = 'http://localhost:3000/locations'; // https://api-homes-7kt5olzh4q-rj.a.run.app/api/homes
+  private readonly baseUrl =
+    'https://api-homes-7kt5olzh4q-rj.a.run.app/api/homes'; // https://api-homes-7kt5olzh4q-rj.a.run.app/api/homes
 
   constructor(private http: HttpClient) {}
 

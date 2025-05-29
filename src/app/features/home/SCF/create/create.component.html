@@ -129,14 +129,23 @@
     <!-- Submit Button -->
     <div class="actions">
       <button
-        mat-raised-button
-        color="primary"
+        mat-icon-button
+        class="save-btn"
         type="submit"
-        [disabled]="form.invalid"
+        aria-label="Save"
+        matTooltip="Save"
       >
-        Create
+        <span class="material-symbols-outlined">save</span>
       </button>
-      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      <button
+        mat-icon-button
+        class="cancel-btn"
+        (click)="onCancel()"
+        aria-label="Cancel"
+        matTooltip="Cancel"
+      >
+        <span class="material-symbols-outlined">cancel</span>
+      </button>
     </div>
   </form>
 </mat-card>

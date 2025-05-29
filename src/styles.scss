@@ -9,7 +9,9 @@ body {
   font-weight: 400;
   font-style: normal;
 }
-
+ngx-spinner {
+  z-index: 1000 !important;
+}
 :root {
   --purpleBrdr: #0e052c;
   --purpleBck: #381c9e;

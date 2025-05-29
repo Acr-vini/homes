@@ -8,11 +8,11 @@
   color: var(--text-color);
 
   ul {
-    list-style-position: inside; // Faz o bullet vir para dentro, alinhado com o texto
-    padding: 0; // Remove padding padrão
-    margin: 0 auto; // Centraliza horizontalmente
-    display: inline-block; // Faz o UL se comportar como bloco centrado
-    text-align: left; // Alinha o texto da lista à esquerda para melhor leitura
+    list-style-position: inside;
+    padding: 0;
+    margin: 0 auto;
+    display: inline-block;
+    text-align: left;
   }
 }
 

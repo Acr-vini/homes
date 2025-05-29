@@ -28,6 +28,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./activity-date.component.scss'],
 })
 export class ActivityDateComponent implements OnInit {
+  [x: string]: any;
   applications: Array<Application & { photoUrl?: string }> = [];
   currentUserId: string | null = null;
   loading = false;

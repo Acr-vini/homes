@@ -1,3 +1,9 @@
+@if(loading()){
+<ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+}
+
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
   <!-- Email field -->
   <mat-form-field appearance="fill" class="login-form-field">

@@ -1,4 +1,4 @@
-<h2>My Applications</h2>
+<h2 class="title-h2">My Applications</h2>
 <div class="activity-container">
   <section class="home-listing" *ngFor="let app of applications">
     <a class="home-listing-link" (click)="viewDetails(app)">
@@ -44,9 +44,10 @@
         mat-icon-button
         color="warn"
         (click)="confirmDeleteApplication(app)"
-        [matTooltip]="'Delete application'"
+        [matTooltip]="'Uncheck application'"
+        class="uncheck-button"
       >
-        <mat-icon>delete</mat-icon>
+        <mat-icon>event_busy</mat-icon>
       </button>
       <button
         mat-icon-button

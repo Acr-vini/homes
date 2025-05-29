@@ -73,3 +73,29 @@
     padding: 1rem;
   }
 }
+button.mat-icon-button {
+  padding: 6px;
+  width: auto;
+  height: auto;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+.save-btn {
+  background-color: #381c9e;
+  color: #fff;
+
+  &:hover {
+    background-color: #2a1575;
+  }
+}
+.cancel-btn {
+  background-color: #e0e0e0;
+  color: #424242;
+
+  &:hover {
+    background-color: #afafaf;
+  }
+}
