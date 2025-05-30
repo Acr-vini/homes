@@ -13,6 +13,7 @@ import { HousingService } from '../../../../core/services/housing.service';
 import { ActivityDateModalComponent } from './activity-date-modal/activity-date-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-activity-date',
@@ -20,6 +21,7 @@ import { Observable } from 'rxjs';
   imports: [
     CommonModule,
     RouterModule,
+    NgxSpinnerModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
@@ -31,22 +33,23 @@ export class ActivityDateComponent implements OnInit {
   [x: string]: any;
   applications: Array<Application & { photoUrl?: string }> = [];
   currentUserId: string | null = null;
-  loading = false;
 
   constructor(
     private applicationService: ApplicationService,
     private housingService: HousingService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit(): void {
-    this.loading = true;
+    this.spinner.show(); // Mostra o spinner
+
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
     this.currentUserId = user?.id ?? null;
     if (!this.currentUserId) {
-      this.loading = false;
+      this.spinner.hide();
       return;
     }
 
@@ -55,7 +58,7 @@ export class ActivityDateComponent implements OnInit {
       .subscribe((apps: Array<Application & { houseId: string }>) => {
         this.applications = apps;
         let pending: number = this.applications.length;
-        if (pending === 0) this.loading = false;
+        if (pending === 0) this.spinner.hide();
 
         this.applications.forEach(
           (app: Application & { houseId: string; photoUrl?: string }) => {
@@ -64,7 +67,7 @@ export class ActivityDateComponent implements OnInit {
               .subscribe((location: { imageUrl?: string; photo?: string }) => {
                 app.photoUrl = location.imageUrl || location.photo;
                 pending--;
-                if (pending === 0) this.loading = false;
+                if (pending === 0) this.spinner.hide();
               });
           }
         );
@@ -100,16 +103,15 @@ export class ActivityDateComponent implements OnInit {
   }
 
   deleteApplication(app: Application): void {
-    this.loading = true;
+    this.spinner.show(); // Mostra o spinner
     this.applicationService.delete(app.id).subscribe(() => {
       this.applications = this.applications.filter((a) => a.id !== app.id);
-      this.loading = false;
+      this.spinner.hide(); // Esconde o spinner
       this.snackBar.open('✅ Application deleted!', '', { duration: 2000 });
     });
   }
 
   cancelApplication(app: Application): void {
-    this.loading = true;
     if (app.typeOfBusiness === 'sell') {
       app.visitDate = '';
       app.visitTime = '';
@@ -118,7 +120,6 @@ export class ActivityDateComponent implements OnInit {
       app.checkOutDate = '';
     }
     this.applicationService.update(app.id, app).subscribe(() => {
-      this.loading = false;
       this.snackBar.open('✅ Visit or stay canceled!', '', { duration: 2000 });
     });
   }

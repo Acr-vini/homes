@@ -23,6 +23,7 @@ import { Observable, startWith, map } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject, Optional } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-user-edit',
@@ -42,6 +43,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatTooltipModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.scss',
@@ -67,6 +69,7 @@ export class UserEditComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private fb: FormBuilder,
+    private spinner: NgxSpinnerService,
     @Optional() public dialogRef?: MatDialogRef<UserEditComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
@@ -98,9 +101,12 @@ export class UserEditComponent implements OnInit {
 
   onSave(): void {
     if (this.userForm.valid) {
+      this.spinner.show(); // Mostra o spinner
+
       const updatedUser = { ...this.user, ...this.userForm.value };
       this.userService.updateUser(updatedUser).subscribe({
         next: () => {
+          this.spinner.hide(); // Esconde o spinner
           if (this.dialogRef) {
             this.dialogRef.close();
           } else {
@@ -108,6 +114,7 @@ export class UserEditComponent implements OnInit {
           }
         },
         error: () => {
+          this.spinner.hide(); // Esconde o spinner em caso de erro
           // Exiba um erro se necessário
         },
       });

@@ -6,7 +6,7 @@ import { Review } from '../interfaces/review.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
-  private apiUrl = 'http://localhost:3000/reviews';
+  private apiUrl = 'https://api-homes-7kt5olzh4q-rj.a.run.app/api/Review';
 
   constructor(private http: HttpClient) {}
 
@@ -20,7 +20,7 @@ export class ReviewService {
     return this.http.post<Review>(this.apiUrl, review);
   }
 
-  deleteReview(id: string) {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteReview(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

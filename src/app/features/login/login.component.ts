@@ -46,23 +46,21 @@ export class LoginComponent {
   });
 
   hidePassword = true;
-  loading = signal(false);
 
   /** called on form submit */
   onSubmit(): void {
     this.spinner.show();
-    this.loading.set(true);
     const { email, password } = this.loginForm.value;
     this.authService.login(email, password).subscribe({
       next: (success) => {
         console.log('Component login success flag:', success);
         if (success) {
-          this.loading.set(false);
+          this.spinner.hide();
           this.router.navigate(['/home']);
         }
       },
       error: (err: Error) => {
-        this.loading.set(false);
+        this.spinner.hide();
         console.error('Component login error:', err);
 
         if (err.message === 'disabled') {

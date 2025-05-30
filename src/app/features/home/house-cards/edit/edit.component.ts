@@ -25,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { map, Observable, startWith } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-edit',
@@ -42,6 +43,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatTooltipModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
@@ -73,6 +75,7 @@ export class EditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
+    private spinner: NgxSpinnerService,
     @Optional() public dialogRef?: MatDialogRef<EditComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
@@ -191,6 +194,8 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid || !this.housingLocation.id) return;
 
+    this.spinner.show(); // Mostra o spinner
+
     const iso =
       this._findStateIso(this.stateControl.value) || this.housingLocation.state;
 
@@ -219,7 +224,7 @@ export class EditComponent implements OnInit {
             horizontalPosition: 'center',
             verticalPosition: 'top',
           });
-
+          this.spinner.hide(); // Esconde o spinner
           if (this.dialogRef) {
             this.dialogRef.close();
             setTimeout(() => window.location.reload(), 200);
@@ -227,12 +232,14 @@ export class EditComponent implements OnInit {
             this.router.navigateByUrl('/').then(() => window.location.reload());
           }
         },
-        error: () =>
+        error: () => {
           this.snackBar.open('❌ Failed to update the house.', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
-          }),
+          });
+          this.spinner.hide(); // Esconde o spinner em caso de erro
+        },
       });
   }
 

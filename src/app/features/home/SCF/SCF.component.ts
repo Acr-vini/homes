@@ -73,7 +73,6 @@ export class SCFComponent implements OnInit {
   loadLocations(): void {
     this.housingService.getAllHousingLocations().subscribe({
       next: (list) => {
-        // Só mostra casas que NÃO foram deletadas
         this.housingLocationList = list.filter((h) => !h.deletedBy);
         this.filteredLocationList = this.housingLocationList;
         this.updatePagedList();

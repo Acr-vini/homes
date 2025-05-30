@@ -224,3 +224,18 @@ mat-card-title {
 .full-width {
   margin-top: 12px;
 }
+button.submit-review {
+  background-color: var(--purpleBck);
+  color: white;
+  font-size: 16pt;
+  padding: 12px 575px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button.primary:hover {
+  background-color: #5e34b1;
+}

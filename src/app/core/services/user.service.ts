@@ -9,7 +9,7 @@ import { User } from '../interfaces/user.interface';
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:3000/users';
+  private baseUrl = 'https://api-homes-7kt5olzh4q-rj.a.run.app/api/User';
 
   constructor(private http: HttpClient) {}
 
@@ -39,9 +39,9 @@ export class UserService {
   }
 
   // Busca usuário por email e senha
-  authenticate(email: string, password: string): Observable<any | null> {
+  authenticate(email: string, password: string): Observable<User | null> {
     return this.http
-      .get<any[]>(`${this.baseUrl}?email=${email}&password=${password}`)
+      .get<User[]>(`${this.baseUrl}?email=${email}&password=${password}`)
       .pipe(map((users) => (users.length ? users[0] : null)));
   }
 }

@@ -24,6 +24,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, startWith, map } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-create',
@@ -41,13 +42,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatTooltipModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
   form: FormGroup;
-  // Configura FormControls como non-nullable para emitirem apenas string
   stateControl = new FormControl<string>('', {
     nonNullable: true,
     validators: [Validators.required],
@@ -70,6 +71,7 @@ export class CreateComponent implements OnInit {
     private housingService: HousingService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private spinner: NgxSpinnerService, // Corrija aqui
     @Optional() public dialogRef?: MatDialogRef<CreateComponent>
   ) {
     this.form = this.fb.group({
@@ -131,35 +133,43 @@ export class CreateComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) return;
 
+    this.spinner.show();
+
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
     const payload = {
       ...this.form.value,
-      createdBy: currentUser?.id,
+      createBy: currentUser?.id,
+      editedBy: '',
+      deletedBy: '',
     };
+    delete payload.createdBy;
 
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {
         this.snackBar.open('✅ House created!', 'Close', {
           duration: 3000,
-          horizontalPosition: 'center', // centralizado na horizontal
-          verticalPosition: 'top', // fixado no topo da tela
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
         });
         this.form.reset();
         this.imagePreview = null;
+        this.spinner.hide();
         if (this.dialogRef) {
           this.dialogRef.close();
         } else {
           setTimeout(() => this.router.navigate(['/']), 100);
         }
       },
-      error: () =>
+      error: () => {
         this.snackBar.open('❌ Error creating house', 'Close', {
           duration: 3000,
-          horizontalPosition: 'center', // centralizado também no erro
+          horizontalPosition: 'center',
           verticalPosition: 'top',
-        }),
+        });
+        this.spinner.hide();
+      },
     });
   }
 

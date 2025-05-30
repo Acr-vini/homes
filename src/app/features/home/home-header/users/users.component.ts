@@ -17,6 +17,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UserDetailsModalComponent } from '../users/user-edit/user-details-modal.component';
 import { UserCreateComponent } from '../users/user-create/user-create.component';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-users',
@@ -33,6 +34,7 @@ import { UserCreateComponent } from '../users/user-create/user-create.component'
     MatInputModule,
     MatPaginator,
     MatTooltipModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
@@ -42,6 +44,7 @@ export class UsersComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private spinner = inject(NgxSpinnerService);
 
   dataSource = new MatTableDataSource<User>();
   displayedColumns: string[] = [
@@ -67,15 +70,20 @@ export class UsersComponent implements OnInit {
 
   /** Carrega os usuários */
   loadUsers(): void {
+    this.spinner.show(); // Mostra o spinner
+
     this.userService.getUsers().subscribe({
       next: (users) => {
         this.dataSource.data = users;
         this.dataSource.paginator = this.paginator;
+        this.spinner.hide(); // Esconde o spinner após carregar
       },
-      error: () =>
+      error: () => {
         this.snackBar.open('Erro ao carregar usuários', 'Close', {
           duration: 2000,
-        }),
+        });
+        this.spinner.hide(); // Esconde o spinner em caso de erro
+      },
     });
   }
 

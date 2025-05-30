@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-user-create',
@@ -30,6 +31,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
@@ -44,6 +46,7 @@ export class UserCreateComponent {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
+    private spinner: NgxSpinnerService,
     @Optional() public dialogRef?: MatDialogRef<UserCreateComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {
@@ -78,13 +81,15 @@ export class UserCreateComponent {
 
   onSave(): void {
     if (this.userForm.valid) {
+      this.spinner.show(); // Mostra o spinner
+
       this.userService.createUser(this.userForm.value).subscribe({
         next: () => {
           // ✅ Mensagem de sucesso centralizada no topo (posição já configurada no app.config.ts)
           this.snackBar.open('✅ User successfully created!', 'Close', {
             panelClass: ['snackbar-success'], // opcional: classe para customizar estilo
           });
-
+          this.spinner.hide(); // Esconde o spinner
           // ✅ Redireciona para a listagem após salvar
           if (this.dialogRef) {
             this.dialogRef.close();
@@ -97,6 +102,7 @@ export class UserCreateComponent {
           this.snackBar.open('❌ Error creating user', 'Close', {
             panelClass: ['snackbar-error'], // opcional: estilo diferenciado para erros
           });
+          this.spinner.hide(); // Esconde o spinner em caso de erro
         },
       });
     }
