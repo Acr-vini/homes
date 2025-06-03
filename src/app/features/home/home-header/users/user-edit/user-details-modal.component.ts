@@ -191,9 +191,9 @@ export class UserDetailsModalComponent {
     private housingService: HousingService
   ) {
     this.housingService.getAllHousingLocations().subscribe((houses) => {
-      this.createdHouses = houses.filter((h) => h.createdBy === data.user.id);
+      this.createdHouses = houses.filter((h) => h.createBy === data.user.id);
       this.editedHouses = houses.filter(
-        (h) => h.editedBy === data.user.id && h.createdBy !== data.user.id
+        (h) => h.editedBy === data.user.id && h.createBy !== data.user.id
       );
       this.deletedHouses = houses.filter((h) => h.deletedBy === data.user.id);
     });

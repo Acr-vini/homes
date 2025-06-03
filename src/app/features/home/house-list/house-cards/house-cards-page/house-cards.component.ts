@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { HousingLocation } from '../../../core/interfaces/housinglocation.interface';
+import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateComponent } from '../../home/SCF/create/create.component';
-import { EditComponent } from '../../home/house-cards/edit/edit.component';
+import { CreateComponent } from '../../../../home/SCF/create/create.component';
+import { EditComponent } from '../../house-cards/edit/edit.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 

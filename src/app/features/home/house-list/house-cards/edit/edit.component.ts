@@ -9,9 +9,9 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { City, State } from 'country-state-city';
-import { HousingService } from '../../../../core/services/housing.service';
-import { HousingFormValues } from '../../../../core/interfaces/housingformvalues.interface';
-import { HousingLocation } from '../../../../core/interfaces/housinglocation.interface';
+import { HousingService } from '../../../../../core/services/housing.service';
+import { HousingFormValues } from '../../../../../core/interfaces/housingformvalues.interface';
+import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -107,8 +107,14 @@ export class EditComponent implements OnInit {
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
         });
 
-        // Pegamos o nome do estado com base no ISO vindo da API
-        // Se house.state for ISO, tenta achar o nome, senão usa o próprio valor
+        // Atualize os campos explicitamente
+        this.form.patchValue({
+          name: house.name || '',
+          photo: house.photo || '',
+          imageUrl: house.imageUrl || '',
+        });
+
+        // Atualize os controles de estado e cidade
         const stateName = this._findStateName(house.state) || house.state || '';
         this.stateControl.setValue(stateName);
 
@@ -293,7 +299,7 @@ export class EditComponent implements OnInit {
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
-    return this.housingLocation?.createdBy === currentUser?.id;
+    return this.housingLocation?.createBy === currentUser?.id;
   }
 
   onCancel(): void {

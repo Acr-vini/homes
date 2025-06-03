@@ -83,6 +83,7 @@ export class CreateComponent implements OnInit {
       laundry: [false],
       imageUrl: [''],
       typeOfBusiness: ['sell', Validators.required],
+      createBy: [''],
     });
   }
 
@@ -139,12 +140,19 @@ export class CreateComponent implements OnInit {
       localStorage.getItem('currentUser') || 'null'
     );
     const payload = {
-      ...this.form.value,
+      id: 0,
+      name: this.form.value.name,
+      city: this.form.value.city,
+      state: this.form.value.state,
+      imageUrl: this.form.value.imageUrl || this.imagePreview || '',
+      availableUnits: this.form.value.availableUnits,
+      wifi: this.form.value.wifi,
+      laundry: this.form.value.laundry,
+      typeOfBusiness: this.form.value.typeOfBusiness,
       createBy: currentUser?.id,
       editedBy: '',
       deletedBy: '',
     };
-    delete payload.createdBy;
 
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {

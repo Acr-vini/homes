@@ -2,16 +2,17 @@ import { Component, OnInit, DoCheck, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../../core/services/housing.service';
 import { HousingLocation } from '../../../../core/interfaces/housinglocation.interface';
-import { HouseCardsComponent } from '../../house-cards/house-cards.component';
+import { HouseCardsComponent } from '../../../home/house-list/house-cards/house-cards-page/house-cards.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.scss'],
-  imports: [CommonModule, HouseCardsComponent, MatIconModule],
+  imports: [CommonModule, HouseCardsComponent, MatIconModule, MatCardModule],
 })
 export class FavoritesComponent implements OnInit, DoCheck {
   private housingService = inject(HousingService);

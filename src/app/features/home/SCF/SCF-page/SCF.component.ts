@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HousingService } from '../../../core/services/housing.service';
+import { HousingService } from '../../../../core/services/housing.service';
 import { HttpClientModule } from '@angular/common/http';
-import { HouseCardsComponent } from '../../home/house-cards/house-cards.component';
-import { HousingLocation } from '../../../core/interfaces/housinglocation.interface';
+import { HouseCardsComponent } from '../../house-list/house-cards/house-cards-page/house-cards.component';
+import { HousingLocation } from '../../../../core/interfaces/housinglocation.interface';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
@@ -15,11 +15,11 @@ import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { LegalInfoComponent } from '../../home/legal-info/legal-info.component';
+import { LegalInfoComponent } from '../../legal-info/legal-info-page/legal-info.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateComponent } from '../../home/SCF/create/create.component';
+import { CreateComponent } from '../../../home/SCF/create/create.component';
 
 @Component({
   selector: 'app-SCF',

@@ -8,7 +8,7 @@ export interface HousingLocation {
   availableUnits: number;
   wifi: boolean;
   laundry: boolean;
-  createdBy?: string;
+  createBy?: string;
   editedBy?: string;
   deletedBy?: string;
   typeOfBusiness: 'sell' | 'rent';

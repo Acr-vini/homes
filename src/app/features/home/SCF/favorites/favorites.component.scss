@@ -47,3 +47,19 @@
 mat-icon {
   margin-right: 0.5rem;
 }
+.no-favs-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.no-favs-card {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: var(--cardBck, #fff);
+  border-radius: 16px;
+  box-shadow: 0 4px 10px #381c9e49;
+  text-align: center;
+}

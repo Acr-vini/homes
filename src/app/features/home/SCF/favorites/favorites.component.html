@@ -1,18 +1,19 @@
 <h2 class="favorites-title">Your Favorite Houses</h2>
 
-<!-- Botão para limpar todos os favoritos -->
-<button class="clear-favorites-btn" (click)="clearFavorites()">
+<button
+  class="clear-favorites-btn"
+  (click)="clearFavorites()"
+  *ngIf="favoriteHouses.length"
+>
   <mat-icon>delete_sweep</mat-icon>
   Clear All Favorites
 </button>
 
-<!-- Lista de favoritos -->
 <div
   *ngIf="favoriteHouses.length; else noFavs"
   class="housing-location-container"
 >
   <div *ngFor="let house of favoriteHouses" class="favorite-card">
-    <!-- Reutiliza o componente existente -->
     <app-house-cards
       [housingLocation]="house"
       [attr.aria-label]="getFavoriteAriaLabel(house)"
@@ -20,7 +21,13 @@
   </div>
 </div>
 
-<!-- Caso não tenha favoritos -->
 <ng-template #noFavs>
-  <p>You have no favorites yet.</p>
+  <div class="no-favs-container">
+    <mat-card class="no-favs-card">
+      <mat-card-title>❌</mat-card-title>
+      <mat-card-content>
+        <p>You have no favorites yet.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </ng-template>

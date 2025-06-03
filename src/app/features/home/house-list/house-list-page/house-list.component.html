@@ -1,0 +1,10 @@
+<ngx-spinner size="medium" color="#381c9e" type="ball-spin-clockwise">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+
+<div class="houses-list">
+  <app-house-cards
+    *ngFor="let house of houses"
+    [housingLocation]="house"
+  ></app-house-cards>
+</div>

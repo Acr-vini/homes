@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({

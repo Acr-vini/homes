@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HousingLocation } from '../interfaces/housinglocation.interface';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { HousingFormValues } from '../interfaces/housingformvalues.interface';
 
@@ -23,22 +23,9 @@ export class HousingService {
   }
 
   createHousingLocation(
-    housingLocation: HousingLocation
+    housingLocation: Omit<HousingLocation, 'id'>
   ): Observable<HousingLocation> {
-    return this.getAllHousingLocations().pipe(
-      map((houses) => {
-        const ids = houses
-          .map((h) => parseInt(String(h.id), 10))
-          .filter((id) => !isNaN(id));
-
-        const maxId = Math.max(...ids, 0);
-        const newId = String(maxId + 1);
-        return { ...housingLocation, id: newId };
-      }),
-      switchMap((houseWithId) => {
-        return this.http.post<HousingLocation>(this.baseUrl, houseWithId);
-      })
-    );
+    return this.http.post<HousingLocation>(this.baseUrl, housingLocation);
   }
 
   updateHousingLocation(
