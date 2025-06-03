@@ -118,3 +118,44 @@ button.mat-icon-button .material-symbols-outlined {
     background-color: #6b6b6b49;
   }
 }
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+
+  img {
+    max-width: 350px;
+    max-height: 350px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #0002;
+    background: #f5f5f5;
+    display: block;
+  }
+}
+
+.edit-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+
+  button {
+    background-color: var(--purpleBck);
+    color: #ffffff;
+    border-radius: 4px;
+
+    mat-icon {
+      color: #ffffff;
+    }
+  }
+
+  span {
+    font-size: 14px;
+    color: black;
+  }
+}

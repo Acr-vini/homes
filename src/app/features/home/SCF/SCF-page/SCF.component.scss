@@ -114,24 +114,12 @@
   gap: 20px;
   padding: 20px;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(3, 1fr); // 3 colunas em telas médias
-  }
-
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr); // 2 colunas em tablets
-  }
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr; // 1 coluna em celulares
-
-    .create-button {
-      bottom: 24px;
-      right: 24px;
-      z-index: 10;
-      border-radius: 50%;
-      padding: 16px;
-    }
+  .create-button {
+    bottom: 24px;
+    right: 24px;
+    z-index: 10;
+    border-radius: 50%;
+    padding: 16px;
   }
 }
 
@@ -156,4 +144,16 @@ mat-card {
     transform: scale(1.02);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   }
+}
+.mat-paginator {
+  background-color: var(--purpleBck);
+}
+.mat-mdc-paginator-container {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .mat-mdc-paginator {
+  background: transparent !important;
+  box-shadow: none !important;
 }

@@ -86,12 +86,25 @@ export class EditComponent implements OnInit {
       this.router.navigateByUrl('/');
       return;
     }
+
+    this.spinner.show(); // Mostra o spinner antes de buscar os dados
+
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
         this.housingLocation = house;
         this.imagePreview = house.imageUrl ?? house.photo ?? null;
 
-        // Montagem do formulário com valores iniciais
+        // Atualize os controles de estado e cidade ANTES de criar o form
+        const stateName = this._findStateName(house.state) || house.state || '';
+        this.stateControl.setValue(stateName);
+
+        const iso = house.state || '';
+        this.allCities = iso
+          ? City.getCitiesOfState('US', iso).map((c) => c.name)
+          : [];
+        this.cityControl.setValue(house.city || '');
+
+        // Agora crie o form, os controles já estão com os valores corretos
         this.form = this.fb.group({
           name: [house.name || '', Validators.required],
           state: this.stateControl,
@@ -107,26 +120,13 @@ export class EditComponent implements OnInit {
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
         });
 
-        // Atualize os campos explicitamente
-        this.form.patchValue({
-          name: house.name || '',
-          photo: house.photo || '',
-          imageUrl: house.imageUrl || '',
-        });
-
-        // Atualize os controles de estado e cidade
-        const stateName = this._findStateName(house.state) || house.state || '';
-        this.stateControl.setValue(stateName);
-
-        const iso = house.state || '';
-        this.allCities = iso
-          ? City.getCitiesOfState('US', iso).map((c) => c.name)
-          : [];
-        this.cityControl.setValue(house.city || '');
-
         this._setupFilters();
+        this.spinner.hide(); // Esconde o spinner após carregar
       },
-      error: () => this.router.navigateByUrl('/'),
+      error: () => {
+        this.spinner.hide(); // Esconde o spinner em caso de erro
+        this.router.navigateByUrl('/');
+      },
     });
 
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');

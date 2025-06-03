@@ -42,10 +42,10 @@
 
 <mat-paginator
   [length]="filteredLocationList.length"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[8, 16, 20, 30, 50]"
+  [pageSize]="8"
+  [pageSizeOptions]="[4, 8, 16, 20, 30, 50]"
   (page)="onPageChange($event)"
->
-</mat-paginator>
+  showFirstLastButtons
+></mat-paginator>
 
 <app-legal-info></app-legal-info>

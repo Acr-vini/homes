@@ -58,10 +58,10 @@ export class HouseCardsComponent {
       if (this.isFavorited(house)) {
         ids = ids.filter((favId) => favId !== id);
       } else {
-        ids = [...ids, id]; // Use spread para criar novo array
+        ids = [...ids, id];
       }
       localStorage.setItem(this.favoriteKey, JSON.stringify(ids));
-    }, 500); // Simule um pequeno delay
+    }, 500);
   }
 
   openCreateHouse() {
@@ -73,10 +73,8 @@ export class HouseCardsComponent {
     });
   }
 
-  // Exemplo de uso do spinner em uma ação demorada:
   openEditHouse(houseId: string) {
     setTimeout(() => {
-      // Simule carregamento, troque por sua lógica real
       this.dialog.open(EditComponent, {
         width: '700px',
         minWidth: '800px',
