@@ -67,13 +67,12 @@
             class="add_button"
             mat-stroked-button
             color="primary"
-            style="min-width: 0; padding: 0 8px; font-size: 0.9rem"
             [matTooltip]="'New User'"
             aria-label="New User"
             (click)="openCreateUser()"
           >
-            <mat-icon>add</mat-icon>
-            <span style="margin-left: 4px">New user</span>
+            <mat-icon>person_add</mat-icon>
+            <span style="margin-left: 2px">New user</span>
           </button>
         </th>
         <td mat-cell *matCellDef="let user">

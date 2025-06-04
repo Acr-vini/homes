@@ -92,7 +92,7 @@ export class EditComponent implements OnInit {
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
         this.housingLocation = house;
-        this.imagePreview = house.imageUrl ?? house.photo ?? null;
+        this.imagePreview = house.imageUrl ?? null;
 
         // Atualize os controles de estado e cidade ANTES de criar o form
         const stateName = this._findStateName(house.state) || house.state || '';
@@ -113,7 +113,6 @@ export class EditComponent implements OnInit {
             house.availableUnits || '',
             [Validators.required, Validators.min(1)],
           ],
-          photo: [house.photo || ''],
           imageUrl: [house.imageUrl || ''],
           wifi: [house.wifi || false],
           laundry: [house.laundry || false],
@@ -200,7 +199,7 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid || !this.housingLocation.id) return;
 
-    this.spinner.show(); // Mostra o spinner
+    this.spinner.show();
 
     const iso =
       this._findStateIso(this.stateControl.value) || this.housingLocation.state;
@@ -208,17 +207,20 @@ export class EditComponent implements OnInit {
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
-    const payload: HousingFormValues = {
+
+    const payload = {
+      id: this.housingLocation.id,
       name: this.form.value.name,
-      state: iso,
       city: this.cityControl.value,
+      state: iso,
+      imageUrl: this.form.value.imageUrl || this.imagePreview || '',
       availableUnits: this.form.value.availableUnits,
-      photo: this.form.value.photo || '',
-      imageUrl: this.form.value.imageUrl || '',
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
-      editedBy: currentUser?.id,
       typeOfBusiness: this.form.value.typeOfBusiness,
+      createBy: this.housingLocation.createBy ?? String(currentUser?.id ?? ''),
+      editedBy: String(currentUser?.id ?? ''),
+      deletedBy: this.housingLocation.deletedBy ?? '',
     };
 
     this.housingService
@@ -230,7 +232,7 @@ export class EditComponent implements OnInit {
             horizontalPosition: 'center',
             verticalPosition: 'top',
           });
-          this.spinner.hide(); // Esconde o spinner
+          this.spinner.hide();
           if (this.dialogRef) {
             this.dialogRef.close();
             setTimeout(() => window.location.reload(), 200);
@@ -244,7 +246,7 @@ export class EditComponent implements OnInit {
             horizontalPosition: 'center',
             verticalPosition: 'top',
           });
-          this.spinner.hide(); // Esconde o spinner em caso de erro
+          this.spinner.hide();
         },
       });
   }
@@ -257,16 +259,9 @@ export class EditComponent implements OnInit {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      const currentUser = JSON.parse(
-        localStorage.getItem('currentUser') || 'null'
-      );
-      const payload = {
-        ...this.housingLocation,
-        deletedBy: currentUser?.id,
-        deletedAt: new Date().toISOString(), // opcional
-      };
+      this.spinner.show();
       this.housingService
-        .updateHousingLocation(this.housingLocation.id, payload)
+        .deleteHousingLocation(this.housingLocation.id)
         .subscribe({
           next: () => {
             this.snackBar.open('✅ House deleted successfully!', 'Close', {
@@ -274,6 +269,10 @@ export class EditComponent implements OnInit {
               horizontalPosition: 'center',
               verticalPosition: 'top',
             });
+            this.spinner.hide();
+            if (this.dialogRef) {
+              this.dialogRef.close();
+            }
             this.router.navigateByUrl('/');
           },
           error: () => {
@@ -282,6 +281,7 @@ export class EditComponent implements OnInit {
               horizontalPosition: 'center',
               verticalPosition: 'top',
             });
+            this.spinner.hide();
           },
         });
     });

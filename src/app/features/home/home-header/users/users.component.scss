@@ -54,11 +54,10 @@ mat-card-title {
   color: white;
   border-color: var(--titleAC);
   border-radius: 5px;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.3rem;
   font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   transition: background-color 0.3s;
 }
 .users-user-filter {

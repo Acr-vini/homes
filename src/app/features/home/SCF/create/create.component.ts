@@ -140,7 +140,6 @@ export class CreateComponent implements OnInit {
       localStorage.getItem('currentUser') || 'null'
     );
     const payload = {
-      id: 0,
       name: this.form.value.name,
       city: this.form.value.city,
       state: this.form.value.state,
@@ -149,7 +148,7 @@ export class CreateComponent implements OnInit {
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
-      createBy: currentUser?.id,
+      createBy: String(currentUser?.id ?? ''), // Garante string
       editedBy: '',
       deletedBy: '',
     };
