@@ -7,17 +7,6 @@ import { LoginComponent } from './features/login/login.component';
 import { homeheaderComponent } from './features/home/home-header/home-header-page/home-header.component';
 
 // Páginas protegidas
-import { SCFComponent } from './features/home/SCF/SCF-page/SCF.component';
-import { DetailsComponent } from './features/home/house-list/house-cards/details/details.component';
-import { CreateComponent } from './features/home/SCF/create/create.component';
-import { EditComponent } from './features/home/house-list/house-cards/edit/edit.component';
-import { AboutComponent } from './features/home/home-header/about/about.component';
-import { ContactComponent } from './features/home/home-header/contact/contact.component';
-import { UsersComponent } from './features/home/home-header/users/users.component';
-import { UserCreateComponent } from './features/home/home-header/users/user-create/user-create.component';
-import { UserEditComponent } from './features/home/home-header/users/user-edit/user-edit.component';
-import { DetailsApplicationComponent } from './features/home/house-list/house-cards/details/details-application/details-application.component';
-import { ActivityDateComponent } from './features/home/home-header/activity-date/activity-date.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
@@ -36,7 +25,10 @@ const routes: Routes = [
       // Dashboard / Home
       {
         path: 'home',
-        component: SCFComponent,
+        loadComponent: () =>
+          import('./features/home/SCF/SCF-page/SCF.component').then(
+            (m) => m.SCFComponent
+          ),
         title: 'Home',
       },
 
@@ -59,8 +51,22 @@ const routes: Routes = [
           ),
         title: 'Users',
       },
-      { path: 'about', component: AboutComponent, title: 'About' },
-      { path: 'contact', component: ContactComponent, title: 'Contact' },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./features/home/home-header/about/about.component').then(
+            (m) => m.AboutComponent
+          ), 
+        title: 'About',
+      },
+      {
+        path: 'contact',
+        loadComponent: () =>
+          import('./features/home/home-header/contact/contact.component').then(
+            (m) => m.ContactComponent
+          ), 
+        title: 'Contact',
+      },
       {
         path: 'activity-date',
         loadComponent: () =>
@@ -69,7 +75,6 @@ const routes: Routes = [
           ).then((m) => m.ActivityDateComponent),
         title: 'Activity Date',
       },
-
       {
         path: 'users/edit/:id',
         loadComponent: () =>
@@ -78,7 +83,6 @@ const routes: Routes = [
           ).then((m) => m.UserEditComponent),
         title: 'Edit User',
       },
-
       {
         path: 'favorites',
         loadComponent: () =>
@@ -87,7 +91,6 @@ const routes: Routes = [
           ),
         title: 'Favorites',
       },
-
       {
         path: 'details-application',
         loadComponent: () =>

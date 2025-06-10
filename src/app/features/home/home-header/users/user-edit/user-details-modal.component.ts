@@ -1,92 +1,90 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { HousingService } from '../../../../../core/services/housing.service';
+import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface'; // Certifique-se que está importado
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-user-details-modal',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatDividerModule,
+    MatProgressSpinnerModule,
+    DatePipe,
+  ],
   template: `
-    <div class="user-details-modal">
-      <h2 class="modal-title">
-        <mat-icon
-          style="vertical-align: middle; margin-right: 8px; color: var(--purpleBck);"
-          >person</mat-icon
+    <h2 mat-dialog-title>User Activity Details: {{ data.user.name }}</h2>
+    <mat-dialog-content class="mat-typography">
+      <div *ngIf="isLoading" class="loading-indicator">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading activity...</p>
+      </div>
+
+      <div *ngIf="!isLoading">
+        <section *ngIf="createdHouses.length > 0">
+          <h3>Houses Created by User</h3>
+          <ul>
+            <li *ngFor="let house of createdHouses; trackBy: trackByHouseId">
+              {{ house.name }} (ID: {{ house.id }}) - Created on:
+              {{ house.createdAt | date : 'short' }}
+            </li>
+          </ul>
+        </section>
+        <mat-divider
+          *ngIf="
+            createdHouses.length > 0 &&
+            (editedHouses.length > 0 || deletedHouses.length > 0)
+          "
+        ></mat-divider>
+
+        <section *ngIf="editedHouses.length > 0">
+          <h3>Houses Edited by User</h3>
+          <ul>
+            <li *ngFor="let house of editedHouses; trackBy: trackByHouseId">
+              {{ house.name }} (ID: {{ house.id }}) - Last edited on:
+              {{ house.updatedAt | date : 'short' }}
+            </li>
+          </ul>
+        </section>
+        <mat-divider
+          *ngIf="editedHouses.length > 0 && deletedHouses.length > 0"
+        ></mat-divider>
+
+        <section *ngIf="deletedHouses.length > 0">
+          <h3>Houses Deleted by User</h3>
+          <ul>
+            <li *ngFor="let house of deletedHouses; trackBy: trackByHouseId">
+              {{ house.name }} (ID: {{ house.id }}) - Deleted on:
+              {{ house.deletedAt | date : 'short' }}
+            </li>
+          </ul>
+        </section>
+
+        <p
+          *ngIf="
+            !createdHouses.length &&
+            !editedHouses.length &&
+            !deletedHouses.length
+          "
         >
-        {{ data.user.name }}
-      </h2>
-      <div class="modal-section">
-        <p>
-          <mat-icon>email</mat-icon> <strong>Email:</strong>
-          {{ data.user.email }}
-        </p>
-        <p *ngIf="data.user.location">
-          <mat-icon>location_on</mat-icon> <strong>Location:</strong>
-          {{ data.user.location }}
-        </p>
-        <p *ngIf="data.user.role">
-          <mat-icon>badge</mat-icon> <strong>Role:</strong> {{ data.user.role }}
+          No house creation, edit, or deletion activity found for this user.
         </p>
       </div>
-      <div class="modal-section">
-        <h3><mat-icon>home</mat-icon> Houses created:</h3>
-        <ul *ngIf="createdHouses.length; else noCreated">
-          <li *ngFor="let house of createdHouses">
-            <mat-icon
-              style="font-size: 18px; color: var(--purpleBck); vertical-align: middle;"
-              >house</mat-icon
-            >
-            <span style="margin-left: 6px;">{{ house.name }}</span>
-          </li>
-        </ul>
-        <ng-template #noCreated>
-          <p style="color: #888; margin-top: 8px;">
-            No houses created by this user.
-          </p>
-        </ng-template>
-      </div>
-      <div class="modal-section">
-        <h3><mat-icon>edit</mat-icon> Houses edited:</h3>
-        <ul *ngIf="editedHouses.length; else noEdited">
-          <li *ngFor="let house of editedHouses">
-            <mat-icon
-              style="font-size: 18px; color: var(--purpleBck); vertical-align: middle;"
-              >edit</mat-icon
-            >
-            <span style="margin-left: 6px;">{{ house.name }}</span>
-          </li>
-        </ul>
-        <ng-template #noEdited>
-          <p style="color: #888; margin-top: 8px;">
-            No houses edited by this user.
-          </p>
-        </ng-template>
-      </div>
-      <div class="modal-section">
-        <h3><mat-icon>delete</mat-icon> Houses deleted:</h3>
-        <ul *ngIf="deletedHouses.length; else noDeleted">
-          <li *ngFor="let house of deletedHouses">
-            <mat-icon
-              style="font-size: 18px; color: #e53935; vertical-align: middle;"
-              >delete</mat-icon
-            >
-            <span style="margin-left: 6px;">{{ house.name }}</span>
-          </li>
-        </ul>
-        <ng-template #noDeleted>
-          <p style="color: #888; margin-top: 8px;">
-            No houses deleted by this user.
-          </p>
-        </ng-template>
-      </div>
-      <div class="modal-actions">
-        <button mat-stroked-button color="primary" mat-dialog-close>
-          Close
-        </button>
-      </div>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
   `,
   styles: [
     `
@@ -181,21 +179,34 @@ import { HousingService } from '../../../../../core/services/housing.service';
     `,
   ],
 })
-export class UserDetailsModalComponent {
-  createdHouses: any[] = [];
-  editedHouses: any[] = [];
-  deletedHouses: any[] = [];
+export class UserDetailsModalComponent implements OnInit {
+  createdHouses: HousingLocation[] = [];
+  editedHouses: HousingLocation[] = [];
+  deletedHouses: HousingLocation[] = [];
+  isLoading = true;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private housingService: HousingService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.housingService.getAllHousingLocations().subscribe((houses) => {
-      this.createdHouses = houses.filter((h) => h.createBy === data.user.id);
-      this.editedHouses = houses.filter(
-        (h) => h.editedBy === data.user.id && h.createBy !== data.user.id
+      this.createdHouses = houses.filter(
+        (h) => h.createBy === this.data.user.id
       );
-      this.deletedHouses = houses.filter((h) => h.deletedBy === data.user.id);
+      this.editedHouses = houses.filter(
+        (h) =>
+          h.editedBy === this.data.user.id && h.createBy !== this.data.user.id
+      );
+      this.deletedHouses = houses.filter(
+        (h) => h.deletedBy === this.data.user.id
+      );
+      this.isLoading = false;
     });
+  }
+
+  trackByHouseId(index: number, house: HousingLocation): string {
+    return house.id;
   }
 }

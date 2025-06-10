@@ -147,4 +147,8 @@ export class ActivityDateComponent implements OnInit {
       }
     });
   }
+
+  trackByApplicationId(index: number, app: Application): string {
+    return app.id;
+  }
 }

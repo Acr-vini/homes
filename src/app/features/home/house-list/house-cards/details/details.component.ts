@@ -251,4 +251,8 @@ export class DetailsComponent implements OnInit {
       },
     });
   }
+
+  trackByReviewId(index: number, review: Review): string | number {
+    return review.id || index;
+  }
 }

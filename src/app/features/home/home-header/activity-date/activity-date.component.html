@@ -3,7 +3,10 @@
 </ngx-spinner>
 <h2 class="title-h2">My Applications</h2>
 <div class="activity-container">
-  <section class="home-listing" *ngFor="let app of applications">
+  <section
+    class="home-listing"
+    *ngFor="let app of applications; trackBy: trackByApplicationId"
+  >
     <a class="home-listing-link" (click)="viewDetails(app)">
       <!-- House photo -->
       <img

@@ -4,12 +4,7 @@
 <mat-card class="edit-card">
   <mat-card-title>Edit house</mat-card-title>
 
-  <form
-    class="form"
-    *ngIf="form"
-    [formGroup]="form"
-    (ngSubmit)="onSubmit()"
-  >
+  <form class="form" *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
@@ -22,15 +17,12 @@
         [formControl]="stateControl"
         [matAutocomplete]="autoState"
       />
-      <mat-autocomplete #autoState="matAutocomplete" autoActiveFirstOption>
-        <mat-option *ngFor="let st of filteredStates | async" [value]="st.name">
-          {{ st.name }}
-        </mat-option>
+      <mat-autocomplete #autoState="matAutocomplete">
         <mat-option
-          *ngIf="stateControl.value && !(filteredStates | async)?.length"
-          [value]="stateControl.value"
+          *ngFor="let st of filteredStates | async; trackBy: trackByStateId"
+          [value]="st.name"
         >
-          Add "{{ stateControl.value }}"
+          {{ st.name }}
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
@@ -42,15 +34,12 @@
         [formControl]="cityControl"
         [matAutocomplete]="autoCity"
       />
-      <mat-autocomplete #autoCity="matAutocomplete" autoActiveFirstOption>
-        <mat-option *ngFor="let city of filteredCities | async" [value]="city">
-          {{ city }}
-        </mat-option>
+      <mat-autocomplete #autoCity="matAutocomplete">
         <mat-option
-          *ngIf="cityControl.value && !(filteredCities | async)?.length"
-          [value]="cityControl.value"
+          *ngFor="let city of filteredCities | async; trackBy: trackByCityId"
+          [value]="city"
         >
-          Add "{{ cityControl.value }}"
+          {{ city }}
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>

@@ -3,12 +3,16 @@ export interface HousingLocation {
   name: string;
   city: string;
   state: string;
-  imageUrl?: string;
+  photo: string;
   availableUnits: number;
   wifi: boolean;
   laundry: boolean;
+  typeOfBusiness: 'rent' | 'sell';
   createBy?: string;
   editedBy?: string;
   deletedBy?: string;
-  typeOfBusiness: 'sell' | 'rent';
+  isFavorite?: boolean;
+  createdAt?: string | Date; // Adicionado - pode ser string (ISO) ou Date
+  updatedAt?: string | Date; // Adicionado
+  deletedAt?: string | Date; // Adicionado
 }

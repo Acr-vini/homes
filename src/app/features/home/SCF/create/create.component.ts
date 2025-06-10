@@ -71,7 +71,7 @@ export class CreateComponent implements OnInit {
     private housingService: HousingService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private spinner: NgxSpinnerService, // Corrija aqui
+    private spinner: NgxSpinnerService,
     @Optional() public dialogRef?: MatDialogRef<CreateComponent>
   ) {
     this.form = this.fb.group({
@@ -81,7 +81,7 @@ export class CreateComponent implements OnInit {
       availableUnits: [0, [Validators.required, Validators.min(1)]],
       wifi: [false],
       laundry: [false],
-      imageUrl: [''],
+      photo: [''], // CORRIGIDO de imageUrl para photo
       typeOfBusiness: ['sell', Validators.required],
       createBy: [''],
     });
@@ -139,18 +139,21 @@ export class CreateComponent implements OnInit {
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
-    const payload = {
+    const payload: Omit<HousingLocation, 'id'> = {
+      // Tipando o payload para melhor verificação
       name: this.form.value.name,
       city: this.form.value.city,
-      state: this.form.value.state,
-      imageUrl: this.form.value.imageUrl || this.imagePreview || '',
+      state: this.form.value.state, // Certifique-se que this.form.value.state é o isoCode
+      photo: this.form.value.photo || (this.imagePreview as string) || '', // CORRIGIDO de imageUrl para photo
       availableUnits: this.form.value.availableUnits,
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
-      createBy: String(currentUser?.id ?? ''), // Garante string
+      createBy: String(currentUser?.id ?? ''),
       editedBy: '',
       deletedBy: '',
+      // Adicione createdAt, updatedAt, deletedAt se forem obrigatórios e não opcionais
+      // createdAt: new Date().toISOString(), // Exemplo
     };
 
     this.housingService.createHousingLocation(payload).subscribe({
@@ -186,7 +189,7 @@ export class CreateComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
-        this.form.get('imageUrl')?.setValue(reader.result as string);
+        this.form.get('photo')?.setValue(reader.result as string); // CORRIGIDO de imageUrl para photo
       };
       reader.readAsDataURL(input.files[0]);
     }

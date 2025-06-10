@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { City, State } from 'country-state-city';
+import { City, State } from 'country-state-city'; // Apenas State e City para os métodos da biblioteca
 import { HousingService } from '../../../../../core/services/housing.service';
 import { HousingFormValues } from '../../../../../core/interfaces/housingformvalues.interface';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
@@ -87,14 +87,13 @@ export class EditComponent implements OnInit {
       return;
     }
 
-    this.spinner.show(); // Mostra o spinner antes de buscar os dados
+    this.spinner.show();
 
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
         this.housingLocation = house;
-        this.imagePreview = house.imageUrl ?? null;
+        this.imagePreview = house.photo ?? null; // CORRIGIDO de imageUrl para photo
 
-        // Atualize os controles de estado e cidade ANTES de criar o form
         const stateName = this._findStateName(house.state) || house.state || '';
         this.stateControl.setValue(stateName);
 
@@ -104,7 +103,6 @@ export class EditComponent implements OnInit {
           : [];
         this.cityControl.setValue(house.city || '');
 
-        // Agora crie o form, os controles já estão com os valores corretos
         this.form = this.fb.group({
           name: [house.name || '', Validators.required],
           state: this.stateControl,
@@ -113,14 +111,14 @@ export class EditComponent implements OnInit {
             house.availableUnits || '',
             [Validators.required, Validators.min(1)],
           ],
-          imageUrl: [house.imageUrl || ''],
+          photo: [house.photo || ''], // CORRIGIDO de imageUrl para photo
           wifi: [house.wifi || false],
           laundry: [house.laundry || false],
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
         });
 
         this._setupFilters();
-        this.spinner.hide(); // Esconde o spinner após carregar
+        this.spinner.hide();
       },
       error: () => {
         this.spinner.hide(); // Esconde o spinner em caso de erro
@@ -187,12 +185,12 @@ export class EditComponent implements OnInit {
       reader.onload = () => {
         this.imagePreview = reader.result;
         this.form.patchValue({
-          photo: file.name,
-          imageUrl: reader.result,
+          // photo: file.name, // Se você quiser guardar o nome do arquivo, crie outro formControl
+          photo: reader.result, // CORRIGIDO de imageUrl para photo (para preview e envio)
         });
       };
 
-      reader.readAsDataURL(file); // Converte a imagem para base64
+      reader.readAsDataURL(file);
     }
   }
 
@@ -208,12 +206,13 @@ export class EditComponent implements OnInit {
       localStorage.getItem('currentUser') || 'null'
     );
 
-    const payload = {
+    const payload: HousingLocation = {
+      // Tipando o payload para garantir conformidade
       id: this.housingLocation.id,
       name: this.form.value.name,
       city: this.cityControl.value,
       state: iso,
-      imageUrl: this.form.value.imageUrl || this.imagePreview || '',
+      photo: this.form.value.photo || this.imagePreview || '', // CORRIGIDO de imageUrl para photo
       availableUnits: this.form.value.availableUnits,
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
@@ -221,6 +220,9 @@ export class EditComponent implements OnInit {
       createBy: this.housingLocation.createBy ?? String(currentUser?.id ?? ''),
       editedBy: String(currentUser?.id ?? ''),
       deletedBy: this.housingLocation.deletedBy ?? '',
+      // Adicione createdAt, updatedAt, deletedAt se necessário e se existirem no HousingLocation
+      // createdAt: this.housingLocation.createdAt,
+      // updatedAt: new Date().toISOString(), // Exemplo para updatedAt
     };
 
     this.housingService
@@ -308,5 +310,17 @@ export class EditComponent implements OnInit {
     } else {
       this.router.navigateByUrl('/');
     }
+  }
+  trackByStateId(
+    index: number,
+    state: { name: string; isoCode: string }
+  ): string {
+    // CORRIGIDO para IState e tipo de retorno para string (isoCode) ou number (id)
+    return state.isoCode; // Ou state.name se for um identificador melhor/único
+  }
+
+  trackByCityId(index: number, city: string): string {
+    // CORRIGIDO para city: string, pois filteredCities é string[]
+    return city; // Retorna a própria string da cidade como identificador
   }
 }

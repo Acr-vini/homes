@@ -2,8 +2,9 @@
   <!-- Seção da imagem e descrição -->
   <img
     class="listing-photo housing-image"
-    [src]="housingLocation.imageUrl"
-    [alt]="'Exterior photo of ' + housingLocation.name"
+    [src]="housingLocation.photo"
+    alt="Exterior photo of {{ housingLocation.name }}"
+  />
   />
 
   <section class="listing-description" *ngIf="housingLocation">
@@ -110,7 +111,10 @@
   <mat-card-title>Reviews</mat-card-title>
   <mat-card-content>
     <div *ngIf="(reviews$ | async)?.length; else noReviews">
-      <div *ngFor="let review of reviews$ | async" class="review">
+      <div
+        *ngFor="let review of reviews$ | async; trackBy: trackByReviewId"
+        class="review"
+      >
         <div class="review-header">
           <strong>{{ review.userName }}</strong>
           <span class="review-rating">
