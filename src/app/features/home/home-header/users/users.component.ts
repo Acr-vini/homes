@@ -66,6 +66,10 @@ export class UsersComponent implements OnInit {
     );
     this.dataSource.filterPredicate = this.createFilter();
     this.loadUsers();
+    this.userService.getUsers().subscribe((users) => {
+      this.dataSource.data = users;
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
   /** Carrega os usuários */

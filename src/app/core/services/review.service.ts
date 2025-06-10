@@ -6,7 +6,7 @@ import { Review } from '../interfaces/review.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
-  private apiUrl = 'https://api-homes-7kt5olzh4q-rj.a.run.app/api/Review';
+  private apiUrl = 'http://localhost:3000/reviews';
 
   constructor(private http: HttpClient) {}
 
@@ -22,5 +22,10 @@ export class ReviewService {
 
   deleteReview(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  updateReview(id: string, review: Partial<Review>): Observable<Review> {
+    // This method will perform a PATCH request to update the review
+    return this.http.patch<Review>(`${this.apiUrl}/${id}`, review);
   }
 }

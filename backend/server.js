@@ -17,29 +17,30 @@ const middlewares = jsonServer.defaults();
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
-// 4) Rota de login — chama seu backend real
-server.post("/auth/login", async (req, res) => {
+// 4) Rota de login — autentica usando o db.json local
+server.post("/auth/login", (req, res) => {
   const { email, password } = req.body;
-
-  try {
-    // Faz login no seu backend e obtém token + user
-    const response = await axios.post(
-      "https://api-homes-7kt5olzh4q-rj.a.run.app/api/auth/login",
-      {
-        email,
-        password,
-      }
-    );
-
-    const { accessToken, user } = response.data;
-
-    // Retorna exatamente o que veio do backend
-    return res.json({ accessToken, user });
-  } catch (err) {
-    const status = err.response?.status || 500;
-    const message = err.response?.data?.message || "Erro no servidor";
-    return res.status(status).json({ message });
+  // Sempre leia o db.json atualizado
+  const db = JSON.parse(fs.readFileSync(dbPath, "UTF-8"));
+  const users = db.users || [];
+  const user = users.find((u) => u.email === email && u.password === password);
+  if (!user) {
+    return res.status(401).json({ message: "E-mail ou senha inválidos" });
   }
+  if (user.status === "disabled") {
+    return res.status(403).json({ message: "Usuário desabilitado" });
+  }
+
+  const accessToken = jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    "secret",
+    { expiresIn: "1h" }
+  );
+
+  // Não envie a senha de volta!
+  const { password: _, ...userWithoutPassword } = user;
+
+  return res.json({ accessToken, user: userWithoutPassword });
 });
 
 // 5) Middleware de proteção — todas as outras rotas exigem token

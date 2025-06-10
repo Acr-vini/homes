@@ -10,7 +10,7 @@ export class AuthService {
   private loggedIn$ = new BehaviorSubject<boolean>(this.checkTokenExists());
 
   // authentication endpoint URL
-  private apiUrl = 'https://api-homes-7kt5olzh4q-rj.a.run.app/api/auth/login';
+  private apiUrl = 'http://localhost:3000/auth/login';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -19,46 +19,27 @@ export class AuthService {
    * returns Observable<boolean> indicating login result.
    */
   login(email: string, password: string): Observable<boolean> {
-    return this.http.post<any>(this.apiUrl, { email, password }).pipe(
-      switchMap((response) => {
-        // log raw response for inspection
-        console.log('Login response raw:', response);
-
-        // dynamic extraction of token and optional user
-        const token: string | undefined = response.token;
-        const user: any | undefined = response.user;
-
-        // guard: token must exist
-        if (!token) {
-          console.error('No access token in response');
-          return throwError(() => new Error('No access token in response'));
-        }
-
-        // optional guard: if user exists and is disabled
-        if (user && user.status === 'disabled') {
-          return throwError(() => new Error('disabled'));
-        }
-
-        // save token and optional user
-        localStorage.setItem('token', token);
-        if (user) {
+    return this.http
+      .post<any>('http://localhost:3000/auth/login', { email, password })
+      .pipe(
+        switchMap((response) => {
+          const token = response.accessToken;
+          const user = response.user;
+          if (!token) {
+            return throwError(() => new Error('No access token in response'));
+          }
+          if (user && user.status === 'disabled') {
+            return throwError(() => new Error('disabled'));
+          }
+          localStorage.setItem('token', token);
           localStorage.setItem('currentUser', JSON.stringify(user));
-        }
-        this.loggedIn$.next(true);
-
-        return of(true);
-      }),
-      catchError((err: any) => {
-        // log full error for debugging
-        console.error('Full login error:', err);
-
-        // extract backend message or fallback
-        const backendMsg =
-          err.error?.message ?? err.message ?? JSON.stringify(err);
-
-        return throwError(() => new Error(backendMsg));
-      })
-    );
+          this.loggedIn$.next(true);
+          return of(true);
+        }),
+        catchError((err) => {
+          return throwError(() => new Error(err.error?.message ?? err.message));
+        })
+      );
   }
 
   /** Clears token and user info, then navigates to login page */

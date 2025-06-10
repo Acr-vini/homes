@@ -5,8 +5,8 @@
       "state": "IL",
       "city": "Chicago",
       "availableUnits": 1,
-      "photo": "https://angular.io/assets/images/tutorials/faa/bernard-hermant-CLKGGwIBTaY-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/bernard-hermant-CLKGGwIBTaY-unsplash.jpg",
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
@@ -18,8 +18,8 @@
       "state": "CA",
       "city": "Acalanes Ridge",
       "availableUnits": 123123333333,
-      "photo": "https://angular.io/assets/images/tutorials/faa/brandon-griggs-wR11KBaB86U-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/brandon-griggs-wR11KBaB86U-unsplash.jpg",
       "wifi": false,
       "laundry": true,
       "editedBy": "1",
@@ -31,8 +31,8 @@
       "state": "AK",
       "city": "Juneau",
       "availableUnits": 1,
-      "photo": "https://angular.io/assets/images/tutorials/faa/i-do-nothing-but-love-lAyXdl1-Wmc-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/i-do-nothing-but-love-lAyXdl1-Wmc-unsplash.jpg",
       "wifi": false,
       "laundry": false,
       "editedBy": "1",
@@ -44,8 +44,8 @@
       "state": "IL",
       "city": "Chicago",
       "availableUnits": 1,
-      "photo": "https://angular.io/assets/images/tutorials/faa/ian-macdonald-W8z6aiwfi1E-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/ian-macdonald-W8z6aiwfi1E-unsplash.jpg",
       "wifi": true,
       "laundry": false,
       "editedBy": "1",
@@ -57,8 +57,8 @@
       "state": "IN",
       "city": "Gary",
       "availableUnits": 1,
-      "photo": "https://angular.io/assets/images/tutorials/faa/krzysztof-hepner-978RAXoXnH4-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/krzysztof-hepner-978RAXoXnH4-unsplash.jpg",
       "wifi": true,
       "laundry": false,
       "editedBy": "1",
@@ -70,8 +70,8 @@
       "state": "CA",
       "city": "Oakland",
       "availableUnits": 2,
-      "photo": "https://angular.io/assets/images/tutorials/faa/r-architecture-JvQ0Q5IkeMM-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/r-architecture-JvQ0Q5IkeMM-unsplash.jpg",
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
@@ -83,8 +83,8 @@
       "state": "CA",
       "city": "Oakland",
       "availableUnits": 5,
-      "photo": "https://angular.io/assets/images/tutorials/faa/phil-hearing-IYfp2Ixe9nM-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/phil-hearing-IYfp2Ixe9nM-unsplash.jpg",
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
@@ -96,8 +96,8 @@
       "state": "CA",
       "city": "Oakland",
       "availableUnits": 2,
-      "photo": "https://angular.io/assets/images/tutorials/faa/r-architecture-GGupkreKwxA-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/r-architecture-GGupkreKwxA-unsplash.jpg",
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
@@ -109,8 +109,8 @@
       "state": "CA",
       "city": "Oakland",
       "availableUnits": 10,
-      "photo": "https://angular.io/assets/images/tutorials/faa/saru-robert-9rP3mxf8qWI-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/saru-robert-9rP3mxf8qWI-unsplash.jpg",
       "wifi": false,
       "laundry": false,
       "editedBy": "1",
@@ -122,8 +122,8 @@
       "state": "OR",
       "city": "Portland",
       "availableUnits": 6,
-      "photo": "https://angular.io/assets/images/tutorials/faa/webaliser-_TPTXZd9mOo-unsplash.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://angular.io/assets/images/tutorials/faa/webaliser-_TPTXZd9mOo-unsplash.jpg",
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
@@ -135,13 +135,13 @@
       "state": "NY",
       "city": "Adams",
       "availableUnits": 1,
-      "photo": "https://admin.archshop.com.br/uploads/001_261511aea8.jpg",
-      "imageUrl": "",
+      "photo": "",
+      "imageUrl": "https://admin.archshop.com.br/uploads/001_261511aea8.jpg",
       "wifi": false,
       "laundry": false,
       "editedBy": "1",
       "typeOfBusiness": "sell",
-      "id": "13"
+      "id": "11"
     },
     {
       "name": "Garden house",
@@ -154,7 +154,7 @@
       "laundry": true,
       "editedBy": "1",
       "typeOfBusiness": "rent",
-      "id": "14"
+      "id": "12"
     },
     {
       "name": "sdasdadaaaaa",
@@ -319,183 +319,12 @@
   ],
   "reviews": [
     {
-      "id": "1",
-      "housingLocationId": "123",
-      "userName": "John Doe",
-      "rating": 4,
-      "comment": "Great place, very clean!",
-      "date": "2025-05-13"
-    },
-    {
-      "id": "734c",
-      "userName": "asdasd",
+      "userName": "Vini",
       "rating": 5,
-      "comment": "adsad",
+      "comment": "bbbbbbbbbbbbbbb2",
       "housingLocationId": "1",
-      "date": "2025-05-13"
-    }
-  ],
-  "login": [
-    {},
-    {
-      "id": "d48c",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "a7db",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "d785",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "6c5a",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "87df",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "2b14",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "eb8f",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "1575",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "71bf",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "b48f",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "6ac9",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "b25f",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "566a",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "f6e1",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "cc34",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "bd60",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "cfc0",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "2459",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "89d5",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "a972",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "116c",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "a69b",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "a15f",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "1deb",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "76b6",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "cf54",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "efde",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "2807",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "dacb",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "4685",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "1018",
-      "email": "vini@example.com.br",
-      "password": "password123"
-    },
-    {
-      "id": "e235",
-      "email": "vini@example.com.br",
-      "password": "password123"
+      "date": "2025-06-10",
+      "id": 1
     }
   ]
 }

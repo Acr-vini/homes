@@ -7,21 +7,19 @@
 }
 .activity-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Permite que os cards quebrem para a próxima linha em telas pequenas */
+  gap: 20px; // ou menos, ajuste conforme desejar
+  padding: 0 20px;
   justify-content: center;
-  align-items: stretch;
 }
 
 .home-listing {
   display: flex;
+  flex: 0 1 370px;
   flex-direction: column;
   overflow: hidden;
   position: relative;
   border-radius: 30px;
-  min-width: 300px;
-  gap: 20px;
-  height: 100%;
-  margin: 0 12px 24px 12px;
   background-color: var(--purpleWeak);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -101,7 +99,9 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 8px 14px;
+  padding: 4px 14px;
+  padding-bottom: 0px;
+
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -120,7 +120,9 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 8px 14px;
+  padding: 4px 14px;
+  padding-bottom: 0px;
+
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -133,8 +135,4 @@
   &:hover {
     background-color: rgba(38, 20, 105, 0.8);
   }
-}
-.mat-mdc-button-touch-target {
-  min-width: 20px;
-  min-height: 20px;
 }

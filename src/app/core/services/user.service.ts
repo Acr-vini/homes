@@ -9,7 +9,7 @@ import { User } from '../interfaces/user.interface';
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'https://api-homes-7kt5olzh4q-rj.a.run.app/api/User';
+  private baseUrl = 'http://localhost:3000/users';
 
   constructor(private http: HttpClient) {}
 

@@ -109,7 +109,7 @@
 <mat-card class="listing-reviews-card">
   <mat-card-title>Reviews</mat-card-title>
   <mat-card-content>
-    <div *ngIf="reviews.length; else noReviews">
+    <div *ngIf="(reviews$ | async)?.length; else noReviews">
       <div *ngFor="let review of reviews$ | async" class="review">
         <div class="review-header">
           <strong>{{ review.userName }}</strong>
