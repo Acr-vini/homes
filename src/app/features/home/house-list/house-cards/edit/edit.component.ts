@@ -8,11 +8,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { City, State } from 'country-state-city'; // Apenas State e City para os métodos da biblioteca
+import { City, State, IState } from 'country-state-city';
 import { HousingService } from '../../../../../core/services/housing.service';
-import { HousingFormValues } from '../../../../../core/interfaces/housingformvalues.interface';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
-
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -49,6 +47,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./edit.component.scss'],
 })
 export class EditComponent implements OnInit {
+  // SECTION: Properties
   form!: FormGroup;
   stateControl = new FormControl<string>('', {
     nonNullable: true,
@@ -59,16 +58,18 @@ export class EditComponent implements OnInit {
     validators: [Validators.required],
   });
 
-  allStates = State.getStatesOfCountry('US');
+  allStates: IState[] = State.getStatesOfCountry('US');
   allCities: string[] = [];
 
-  filteredStates!: Observable<{ name: string; isoCode: string }[]>;
+  filteredStates!: Observable<IState[]>;
   filteredCities!: Observable<string[]>;
 
   imagePreview: string | ArrayBuffer | null = null;
   housingLocation!: HousingLocation;
   currentUserRole: string | null = null;
+  canPerformActions = false;
 
+  // SECTION: Constructor
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -80,6 +81,7 @@ export class EditComponent implements OnInit {
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
 
+  // SECTION: Lifecycle Hooks
   ngOnInit(): void {
     const id = this.data?.id || this.route.snapshot.paramMap.get('id') || '';
     if (!id) {
@@ -88,15 +90,27 @@ export class EditComponent implements OnInit {
     }
 
     this.spinner.show();
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    this.currentUserRole = user?.role || null;
 
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
         this.housingLocation = house;
-        this.imagePreview = house.photo ?? null; // CORRIGIDO de imageUrl para photo
+        this.imagePreview = house.photo ?? null;
 
+        // Lógica de permissão para exibir botões de ação
+        if (
+          this.currentUserRole === 'Admin' ||
+          this.currentUserRole === 'Manager'
+        ) {
+          this.canPerformActions = true;
+        } else {
+          this.canPerformActions = house.createBy === user?.id;
+        }
+
+        // Preenche o formulário com os dados da casa
         const stateName = this._findStateName(house.state) || house.state || '';
         this.stateControl.setValue(stateName);
-
         const iso = house.state || '';
         this.allCities = iso
           ? City.getCitiesOfState('US', iso).map((c) => c.name)
@@ -111,7 +125,7 @@ export class EditComponent implements OnInit {
             house.availableUnits || '',
             [Validators.required, Validators.min(1)],
           ],
-          photo: [house.photo || ''], // CORRIGIDO de imageUrl para photo
+          photo: [house.photo || ''],
           wifi: [house.wifi || false],
           laundry: [house.laundry || false],
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
@@ -121,29 +135,132 @@ export class EditComponent implements OnInit {
         this.spinner.hide();
       },
       error: () => {
-        this.spinner.hide(); // Esconde o spinner em caso de erro
+        this.spinner.hide();
         this.router.navigateByUrl('/');
       },
     });
-
-    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-    this.currentUserRole = user?.role || null;
   }
 
+  // SECTION: Form and Submission Logic
+  onSubmit(): void {
+    if (this.form.invalid || !this.housingLocation.id) return;
+    this.spinner.show();
+
+    const iso =
+      this._findStateIso(this.stateControl.value) || this.housingLocation.state;
+    const currentUser = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    );
+
+    const payload = {
+      id: this.housingLocation.id,
+      name: this.form.value.name,
+      city: this.cityControl.value,
+      state: iso,
+      photo: this.form.value.photo || this.imagePreview || '',
+      availableUnits: this.form.value.availableUnits,
+      wifi: this.form.value.wifi,
+      laundry: this.form.value.laundry,
+      typeOfBusiness: this.form.value.typeOfBusiness,
+      createBy: this.housingLocation.createBy ?? String(currentUser?.id ?? ''),
+      editedBy: String(currentUser?.id ?? ''),
+      deletedBy: this.housingLocation.deletedBy ?? '',
+    };
+
+    this.housingService
+      .updateHousingLocation(this.housingLocation.id, payload)
+      .subscribe({
+        next: () => {
+          this.snackBar.open('✅ House updated successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.spinner.hide();
+
+          this.housingService.notifyHouseListUpdated();
+
+          if (this.dialogRef) {
+            this.dialogRef.close(true);
+          } else {
+            this.router.navigate(['/details', this.housingLocation.id]);
+          }
+        },
+        error: () => {
+          this.snackBar.open('❌ Failed to update the house.', 'Close', {
+            duration: 3000,
+          });
+          this.spinner.hide();
+        },
+      });
+  }
+
+  onDelete(): void {
+    const snackBarRef = this.snackBar.open(
+      'Are you sure you want to delete this house?',
+      'Yes',
+      { duration: 5000 }
+    );
+    snackBarRef.onAction().subscribe(() => {
+      this.spinner.show();
+      const currentUserId = JSON.parse(
+        localStorage.getItem('currentUser') || 'null'
+      )?.id;
+      if (!currentUserId) {
+        this.snackBar.open('❌ User not identified for deletion.', 'Close', {
+          duration: 3000,
+        });
+        this.spinner.hide();
+        return;
+      }
+      this.housingService
+        .deleteHousingLocation(this.housingLocation.id, currentUserId)
+        .subscribe({
+          next: () => {
+            this.snackBar.open('✅ House marked as deleted!', 'Close', {
+              duration: 3000,
+            });
+            this.spinner.hide();
+
+            this.housingService.notifyHouseListUpdated();
+
+            if (this.dialogRef) {
+              this.dialogRef.close(true);
+            }
+            this.router.navigateByUrl('/');
+          },
+          error: () => {
+            this.snackBar.open('❌ Failed to delete the house.', 'Close', {
+              duration: 3000,
+            });
+            this.spinner.hide();
+          },
+        });
+    });
+  }
+
+  onCancel(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      if (this.housingLocation?.id) {
+        this.router.navigate(['/details', this.housingLocation.id]);
+      } else {
+        this.router.navigateByUrl('/');
+      }
+    }
+  }
+
+  // SECTION: Private Helpers and Utilities
   private _setupFilters(): void {
-    // Autocomplete para estados
     this.filteredStates = this.stateControl.valueChanges.pipe(
       startWith<string>(this.stateControl.value),
       map((val: string) => this._filterStates(val))
     );
 
-    // Autocomplete para cidades
     this.filteredCities = this.cityControl.valueChanges.pipe(
       startWith<string>(this.cityControl.value),
       map((v: string) => this._filterCities(v))
     );
 
-    // Quando estado mudar, recarrega cidades
     this.stateControl.valueChanges.subscribe((val: string) => {
       const iso = this._findStateIso(val);
       this.allCities = iso
@@ -157,7 +274,7 @@ export class EditComponent implements OnInit {
     });
   }
 
-  private _filterStates(value: string): { name: string; isoCode: string }[] {
+  private _filterStates(value: string): IState[] {
     const filter = value.toLowerCase();
     return this.allStates.filter((s) => s.name.toLowerCase().includes(filter));
   }
@@ -177,150 +294,24 @@ export class EditComponent implements OnInit {
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-
     if (input.files?.[0]) {
       const file = input.files[0];
       const reader = new FileReader();
-
       reader.onload = () => {
         this.imagePreview = reader.result;
         this.form.patchValue({
-          // photo: file.name, // Se você quiser guardar o nome do arquivo, crie outro formControl
-          photo: reader.result, // CORRIGIDO de imageUrl para photo (para preview e envio)
+          photo: reader.result as string,
         });
       };
-
       reader.readAsDataURL(file);
     }
   }
 
-  onSubmit(): void {
-    if (this.form.invalid || !this.housingLocation.id) return;
-
-    this.spinner.show();
-
-    const iso =
-      this._findStateIso(this.stateControl.value) || this.housingLocation.state;
-
-    const currentUser = JSON.parse(
-      localStorage.getItem('currentUser') || 'null'
-    );
-
-    const payload: HousingLocation = {
-      // Tipando o payload para garantir conformidade
-      id: this.housingLocation.id,
-      name: this.form.value.name,
-      city: this.cityControl.value,
-      state: iso,
-      photo: this.form.value.photo || this.imagePreview || '', // CORRIGIDO de imageUrl para photo
-      availableUnits: this.form.value.availableUnits,
-      wifi: this.form.value.wifi,
-      laundry: this.form.value.laundry,
-      typeOfBusiness: this.form.value.typeOfBusiness,
-      createBy: this.housingLocation.createBy ?? String(currentUser?.id ?? ''),
-      editedBy: String(currentUser?.id ?? ''),
-      deletedBy: this.housingLocation.deletedBy ?? '',
-      // Adicione createdAt, updatedAt, deletedAt se necessário e se existirem no HousingLocation
-      // createdAt: this.housingLocation.createdAt,
-      // updatedAt: new Date().toISOString(), // Exemplo para updatedAt
-    };
-
-    this.housingService
-      .updateHousingLocation(this.housingLocation.id, payload)
-      .subscribe({
-        next: () => {
-          this.snackBar.open('✅ House updated successfully!', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-          });
-          this.spinner.hide();
-          if (this.dialogRef) {
-            this.dialogRef.close();
-            setTimeout(() => window.location.reload(), 200);
-          } else {
-            this.router.navigateByUrl('/').then(() => window.location.reload());
-          }
-        },
-        error: () => {
-          this.snackBar.open('❌ Failed to update the house.', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-          });
-          this.spinner.hide();
-        },
-      });
-  }
-
-  onDelete(): void {
-    const snackBarRef = this.snackBar.open(
-      'Are you sure you want to delete this house?',
-      'Yes',
-      { duration: 5000 }
-    );
-
-    snackBarRef.onAction().subscribe(() => {
-      this.spinner.show();
-      this.housingService
-        .deleteHousingLocation(this.housingLocation.id)
-        .subscribe({
-          next: () => {
-            this.snackBar.open('✅ House deleted successfully!', 'Close', {
-              duration: 3000,
-              horizontalPosition: 'center',
-              verticalPosition: 'top',
-            });
-            this.spinner.hide();
-            if (this.dialogRef) {
-              this.dialogRef.close();
-            }
-            this.router.navigateByUrl('/');
-          },
-          error: () => {
-            this.snackBar.open('❌ Failed to delete the house.', 'Close', {
-              duration: 3000,
-              horizontalPosition: 'center',
-              verticalPosition: 'top',
-            });
-            this.spinner.hide();
-          },
-        });
-    });
-  }
-
-  canEditOrDelete(): boolean {
-    // Admin e Manager podem editar qualquer casa
-    if (
-      this.currentUserRole === 'Admin' ||
-      this.currentUserRole === 'Manager'
-    ) {
-      return true;
-    }
-    // Usuário comum só pode editar se for o criador
-    const currentUser = JSON.parse(
-      localStorage.getItem('currentUser') || 'null'
-    );
-    return this.housingLocation?.createBy === currentUser?.id;
-  }
-
-  onCancel(): void {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-    } else {
-      this.router.navigateByUrl('/');
-    }
-  }
-  trackByStateId(
-    index: number,
-    state: { name: string; isoCode: string }
-  ): string {
-    // CORRIGIDO para IState e tipo de retorno para string (isoCode) ou number (id)
-    return state.isoCode; // Ou state.name se for um identificador melhor/único
+  trackByStateId(index: number, state: IState): string {
+    return state.isoCode;
   }
 
   trackByCityId(index: number, city: string): string {
-    // CORRIGIDO para city: string, pois filteredCities é string[]
-    return city; // Retorna a própria string da cidade como identificador
+    return city;
   }
 }

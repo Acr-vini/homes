@@ -1,11 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../../core/services/housing.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HouseCardsComponent } from '../../house-list/house-cards/house-cards-page/house-cards.component';
 import { HousingLocation } from '../../../../core/interfaces/housinglocation.interface';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -20,6 +20,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateComponent } from '../../../home/SCF/create/create.component';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-SCF',
@@ -44,7 +45,10 @@ import { CreateComponent } from '../../../home/SCF/create/create.component';
   templateUrl: './SCF.component.html',
   styleUrls: ['./SCF.component.scss'],
 })
-export class SCFComponent implements OnInit {
+export class SCFComponent implements OnInit, OnDestroy {
+  private housingService = inject(HousingService);
+  private destroy$ = new Subject<void>();
+
   // Lista completa e lista filtrada
   housingLocationList: HousingLocation[] = [];
   filteredLocationList: HousingLocation[] = [];
@@ -60,14 +64,23 @@ export class SCFComponent implements OnInit {
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
 
-  constructor(
-    private dialog: MatDialog,
-    private housingService: HousingService
-  ) {}
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
+    // 1. Carrega a lista de casas inicial
     this.loadLocations();
-    this.setupSearchListener();
+
+    // 2. "Escuta" as notificações de atualização do serviço
+    this.housingService.houseListUpdates
+      .pipe(
+        // 'takeUntil' garante que a inscrição será finalizada quando o componente for destruído
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        console.log('Notificação recebida! Recarregando a lista de casas.');
+        // 3. Ao receber uma notificação, chama o método para carregar as casas novamente
+        this.loadLocations();
+      });
   }
 
   loadLocations(): void {
@@ -140,5 +153,9 @@ export class SCFComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.loadLocations(); // Chame o método que recarrega a lista de casas
     });
+  }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

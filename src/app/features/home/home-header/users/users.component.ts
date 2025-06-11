@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { User } from '../../../../core/interfaces/user.interface';
 import { UserService } from '../../../../core/services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
-import { UserDetailsModalComponent } from '../users/user-edit/user-details-modal.component';
+import { UserDetailsModalComponent } from './user-details-modal/user-details-modal.component';
 import { UserCreateComponent } from '../users/user-create/user-create.component';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 

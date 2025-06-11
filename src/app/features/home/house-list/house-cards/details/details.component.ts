@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../../../core/services/housing.service';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Review } from '../../../../../core/interfaces/review.interface';
-import { ReviewService } from '../../../../../core/services/review.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,7 +15,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { User } from '../../../../../core/interfaces/user.interface'; // Mantenha se usado para currentUser
+import { ReviewsComponent } from './reviews/reviews.component'; // Importe o novo componente
 
 @Component({
   selector: 'app-details',
@@ -34,6 +33,7 @@ import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
     MatDividerModule,
     MatSelectModule,
     MatOptionModule,
+    ReviewsComponent, // Adicione o novo componente aos imports
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
@@ -45,11 +45,8 @@ export class DetailsComponent implements OnInit {
   housingService = inject(HousingService);
   applicationService = inject(ApplicationService);
   snackBar = inject(MatSnackBar);
-  reviewService = inject(ReviewService);
 
   housingLocation: HousingLocation | undefined;
-  reviews$!: Observable<Review[]>;
-  private refreshReviews$ = new BehaviorSubject<void>(undefined);
 
   applyForm = new FormGroup({
     name: new FormControl(''),
@@ -62,15 +59,11 @@ export class DetailsComponent implements OnInit {
     location: new FormControl(''),
   });
 
-  reviewForm = new FormGroup({
-    userName: new FormControl(''),
-    rating: new FormControl(5),
-    comment: new FormControl(''),
-  });
-
-  editingReviewId: string | null = null;
-  currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  currentUser: User | null = JSON.parse(
+    localStorage.getItem('currentUser') || 'null'
+  ); // Mantenha currentUser
   today = new Date().toISOString().split('T')[0];
+
   visitHours = [
     '08:00',
     '09:00',
@@ -87,30 +80,24 @@ export class DetailsComponent implements OnInit {
     '20:00',
   ];
 
-  get canEditReviews(): boolean {
-    return (
-      this.currentUser?.role === 'Admin' || this.currentUser?.role === 'Manager'
-    );
-  }
-
   // SECTION: Lifecycle Hooks
   constructor() {
     const housingLocationId = String(this.route.snapshot.paramMap.get('id'));
     if (!housingLocationId) {
       console.error('ID inválido:', housingLocationId);
+      this.router.navigateByUrl('/'); // Redireciona se não houver ID
       return;
     }
 
     this.housingService.getHousingLocationById(housingLocationId).subscribe({
       next: (location) => {
         this.housingLocation = location;
-        this.reviews$ = this.refreshReviews$.pipe(
-          switchMap(() =>
-            this.reviewService.getReviewsByLocation(String(location.id))
-          )
-        );
+        // A lógica de carregar reviews foi movida para ReviewsComponent
       },
-      error: (err) => console.error('Erro ao carregar detalhes da casa:', err),
+      error: (err) => {
+        console.error('Erro ao carregar detalhes da casa:', err);
+        this.router.navigateByUrl('/'); // Redireciona em caso de erro
+      },
     });
   }
 
@@ -122,82 +109,8 @@ export class DetailsComponent implements OnInit {
         phone: this.currentUser.phone,
         location: this.currentUser.location,
       });
-      this.reviewForm.patchValue({ userName: this.currentUser.name });
+      // O patch do reviewForm foi movido para ReviewsComponent
     }
-  }
-
-  // SECTION: Review Methods
-  submitReview() {
-    if (!this.reviewForm.valid || !this.housingLocation) return;
-
-    const formValue = this.reviewForm.value;
-    const isEditing = !!this.editingReviewId;
-
-    const operation$ = isEditing
-      ? this.reviewService.updateReview(this.editingReviewId!, {
-          userName: formValue.userName ?? '',
-          rating: formValue.rating ?? 5,
-          comment: formValue.comment ?? '',
-        })
-      : this.reviewService.addReview({
-          userName: formValue.userName ?? '',
-          rating: formValue.rating ?? 5,
-          comment: formValue.comment ?? '',
-          housingLocationId: this.housingLocation.id,
-          date: new Date().toISOString().slice(0, 10),
-        });
-
-    operation$
-      .pipe(
-        tap(() => {
-          const message = isEditing
-            ? 'Review updated successfully!'
-            : 'Review added successfully!';
-          this.snackBar.open(message, '', { duration: 3000 });
-        })
-      )
-      .subscribe(() => {
-        this.refreshReviews$.next();
-        this.reviewForm.reset({
-          userName: this.currentUser?.name ?? '',
-          rating: 5,
-          comment: '',
-        });
-        this.editingReviewId = null;
-      });
-  }
-
-  editReview(review: Review) {
-    this.reviewForm.patchValue({
-      userName: review.userName,
-      rating: review.rating,
-      comment: review.comment,
-    });
-    this.editingReviewId = review.id ?? null;
-  }
-
-  deleteReview(review: Review) {
-    const snackBarRef = this.snackBar.open(
-      'Are you sure you want to delete this review?',
-      'Yes',
-      { duration: 5000 }
-    );
-    snackBarRef.onAction().subscribe(() => {
-      if (review.id) {
-        this.reviewService.deleteReview(review.id).subscribe(() => {
-          this.snackBar.open('Review deleted!', '', { duration: 2000 });
-          this.refreshReviews$.next();
-        });
-      }
-    });
-  }
-
-  setRating(star: number) {
-    this.reviewForm.get('rating')?.setValue(star);
-  }
-
-  isStarActive(star: number): boolean {
-    return star <= (this.reviewForm.get('rating')?.value ?? 0);
   }
 
   // SECTION: Application Methods
@@ -211,7 +124,7 @@ export class DetailsComponent implements OnInit {
       snackBarRef.onAction().subscribe(() => {
         const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
         this.applicationService.add({
-          id: '',
+          id: '', // O backend deve gerar
           userId: user.id,
           houseId: this.housingLocation!.id,
           typeOfBusiness: this.housingLocation!.typeOfBusiness,
@@ -250,9 +163,5 @@ export class DetailsComponent implements OnInit {
         checkOutDate: this.applyForm.get('checkOutDate')?.value,
       },
     });
-  }
-
-  trackByReviewId(index: number, review: Review): string | number {
-    return review.id || index;
   }
 }

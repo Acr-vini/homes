@@ -1,0 +1,120 @@
+:root {
+  --input-border-color: #ccc;
+}
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+.listing-reviews-card {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 100px;
+  margin: 5rem auto 0 auto;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  padding: 2rem 2rem 2rem 2rem;
+  border-radius: 20px;
+  overflow-x: auto;
+
+  .review {
+    border-bottom: 1px solid #eee;
+    padding: 1rem 0;
+    &:last-child {
+      border-bottom: none;
+    }
+    .review-header {
+      display: flex;
+      align-items: center;
+      .review-rating mat-icon {
+        color: gold;
+        font-size: 20px;
+      }
+      .review-date {
+        color: #888;
+        font-size: 0.9em;
+      }
+    }
+    .review-comment {
+      margin-top: 0.5rem;
+    }
+  }
+  .review-form {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.star-rating {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  min-width: 180px;
+
+  mat-icon {
+    font-size: 26px;
+    color: #ccc;
+    transition: color 0.2s;
+    cursor: pointer;
+
+    &.active {
+      color: gold;
+    }
+  }
+}
+
+mat-card-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--titleAC);
+  margin-bottom: 1rem;
+  text-align: center;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+.full-width {
+  margin-top: 12px;
+}
+button.submit-review {
+  background-color: var(--purpleBck);
+  color: white;
+  font-size: 16pt;
+  padding: 12px 575px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button.primary:hover {
+  background-color: #5e34b1;
+}
+label {
+  display: block;
+  color: var(--text-color);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12pt;
+  margin-top: 10px;
+}
+
+input {
+  font-size: 16pt;
+  margin-bottom: 15px;
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  border-bottom: 2px solid var(--purpleBck);
+  background: transparent;
+  transition: border-color 0.3s ease;
+  color: var(--text-color);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--text-color);
+}

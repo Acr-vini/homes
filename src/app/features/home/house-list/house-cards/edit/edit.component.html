@@ -104,11 +104,11 @@
     </div>
 
     <!-- Actions -->
-    <div class="actions" *ngIf="canEditOrDelete()">
-      <!-- DELETE -->
+    <div class="actions" *ngIf="canPerformActions">
       <button
         mat-icon-button
         class="delete-btn"
+        type="button"
         (click)="onDelete()"
         aria-label="Delete house"
         matTooltip="Delete house"
@@ -116,12 +116,10 @@
         <span class="material-symbols-outlined">delete</span>
       </button>
 
-      <!-- SAVE -->
       <button
         mat-icon-button
         class="save-btn"
         type="submit"
-        [disabled]="form.invalid"
         aria-label="Save changes"
         matTooltip="Save changes"
         [disabled]="form.invalid || !form.dirty"
@@ -129,7 +127,6 @@
         <span class="material-symbols-outlined">save</span>
       </button>
 
-      <!-- CANCEL -->
       <button
         mat-icon-button
         type="button"
