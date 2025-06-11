@@ -70,7 +70,10 @@ export class SCFComponent implements OnInit, OnDestroy {
     // 1. Carrega a lista de casas inicial
     this.loadLocations();
 
-    // 2. "Escuta" as notificações de atualização do serviço
+    // 2. "Liga" o listener para a pesquisa automática <<<<<<< ADICIONE ESTA LINHA
+    this.setupSearchListener();
+
+    // 3. "Escuta" as notificações de atualização do serviço (código existente)
     this.housingService.houseListUpdates
       .pipe(
         // 'takeUntil' garante que a inscrição será finalizada quando o componente for destruído
@@ -78,7 +81,7 @@ export class SCFComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         console.log('Notificação recebida! Recarregando a lista de casas.');
-        // 3. Ao receber uma notificação, chama o método para carregar as casas novamente
+        // Ao receber uma notificação, chama o método para carregar as casas novamente
         this.loadLocations();
       });
   }
@@ -151,7 +154,7 @@ export class SCFComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.loadLocations(); // Chame o método que recarrega a lista de casas
+      this.loadLocations();
     });
   }
   ngOnDestroy() {

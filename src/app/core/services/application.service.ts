@@ -1,58 +1,48 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-
-export interface Application {
-  id: string;
-  userId: string;
-  houseId: string;
-  typeOfBusiness: 'sell' | 'rent';
-  houseName: string;
-  city: string;
-  state: string;
-  visitDate?: string;
-  visitTime?: string;
-  checkInDate?: string;
-  checkOutDate?: string;
-  timestamp: string;
-}
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Application } from '../interfaces/application.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationService {
-  private storageKey = 'user_applications';
+  // Injeta o HttpClient para fazer chamadas de rede
+  private http = inject(HttpClient);
 
-  delete(applicationId: string): Observable<void> {
-    const apps = this.getAll().filter((app) => app.id !== applicationId);
-    localStorage.setItem(this.storageKey, JSON.stringify(apps));
-    return of(undefined);
-  }
+  // A URL agora aponta para o endpoint 'applications' no seu json-server
+  private readonly apiUrl = 'http://localhost:3000/applications';
 
-  // Recupera todas as aplicações do localStorage
-  getAll(): Application[] {
-    return JSON.parse(localStorage.getItem(this.storageKey) || '[]');
-  }
-
-  // Adiciona uma nova aplicação
-  add(app: Application): void {
-    const arr = this.getAll();
-    app.id = app.id || this.generateId();
-    arr.push(app);
-    localStorage.setItem(this.storageKey, JSON.stringify(arr));
-  }
-
-  private generateId(): string {
-    return Math.random().toString(36).substring(2, 12) + Date.now();
-  }
-
-  // Retorna só as aplicações do usuário atual
+  /**
+   * Busca todas as aplicações de um usuário específico do servidor.
+   * @param userId O ID do usuário para filtrar as aplicações.
+   */
   getByUser(userId: string): Observable<Application[]> {
-    return of(this.getAll().filter((a) => a.userId === userId));
+    return this.http.get<Application[]>(`${this.apiUrl}?userId=${userId}`);
   }
 
-  update(applicationId: string, updatedApp: Application): Observable<void> {
-    const apps = this.getAll().map((app) =>
-      app.id === applicationId ? { ...app, ...updatedApp } : app
-    );
-    localStorage.setItem(this.storageKey, JSON.stringify(apps));
-    return of(undefined);
+  /**
+   * Adiciona uma nova aplicação ao servidor.
+   * @param application O objeto da aplicação a ser criado.
+   */
+  add(application: Omit<Application, 'id'>): Observable<Application> {
+    return this.http.post<Application>(this.apiUrl, application);
+  }
+
+  /**
+   * ATUALIZA uma aplicação existente no servidor.
+   * @param id O ID da aplicação a ser atualizada.
+   * @param updates Os campos a serem modificados.
+   */
+  update(id: string, updates: Partial<Application>): Observable<Application> {
+    // Usa o método PATCH para enviar apenas os campos alterados,
+    // garantindo que os dados sejam salvos permanentemente.
+    return this.http.patch<Application>(`${this.apiUrl}/${id}`, updates);
+  }
+
+  /**
+   * DELETA uma aplicação do servidor.
+   * @param applicationId O ID da aplicação a ser deletada.
+   */
+  delete(applicationId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${applicationId}`);
   }
 }

@@ -15,4 +15,5 @@ export interface HousingLocation {
   createdAt?: string | Date; // Adicionado - pode ser string (ISO) ou Date
   updatedAt?: string | Date; // Adicionado
   deletedAt?: string | Date; // Adicionado
+  deleted: boolean; // Adicionado - indica se a localização foi deletada
 }

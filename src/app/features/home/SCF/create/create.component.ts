@@ -81,7 +81,7 @@ export class CreateComponent implements OnInit {
       availableUnits: [0, [Validators.required, Validators.min(1)]],
       wifi: [false],
       laundry: [false],
-      photo: [''], // CORRIGIDO de imageUrl para photo
+      photo: [''],
       typeOfBusiness: ['sell', Validators.required],
       createBy: [''],
     });
@@ -131,54 +131,79 @@ export class CreateComponent implements OnInit {
     return match?.isoCode;
   }
 
+  // Dentro da classe CreateComponent
+
   onSubmit(): void {
-    if (this.form.invalid) return;
+    // 1. Validação inicial do formulário
+    if (this.form.invalid) {
+      this.snackBar.open(
+        '❌ Please fill all required fields correctly.',
+        'Close',
+        { duration: 3000 }
+      );
+      return;
+    }
 
     this.spinner.show();
+
+    // 2. CORREÇÃO PRINCIPAL: Busca o código ISO a partir do nome do estado no formulário
+    const stateName = this.stateControl.value;
+    const stateIsoCode = this._findStateIso(stateName);
+
+    // 3. Validação para garantir que um estado válido foi selecionado
+    if (!stateIsoCode) {
+      this.snackBar.open(
+        '❌ Invalid state selected. Please choose from the list.',
+        'Close',
+        { duration: 4000 }
+      );
+      this.spinner.hide();
+      return;
+    }
 
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
+
+    // 4. Monta o payload com o código ISO do estado
     const payload: Omit<HousingLocation, 'id'> = {
-      // Tipando o payload para melhor verificação
       name: this.form.value.name,
-      city: this.form.value.city,
-      state: this.form.value.state, // Certifique-se que this.form.value.state é o isoCode
-      photo: this.form.value.photo || (this.imagePreview as string) || '', // CORRIGIDO de imageUrl para photo
+      city: this.cityControl.value,
+      state: stateIsoCode, // 👈 USA O CÓDIGO ISO CORRIGIDO
+      photo: this.form.value.photo || (this.imagePreview as string) || '',
       availableUnits: this.form.value.availableUnits,
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
       createBy: String(currentUser?.id ?? ''),
-      editedBy: '',
+      editedBy: '', // Em criação, estes campos ficam vazios
       deletedBy: '',
-      // Adicione createdAt, updatedAt, deletedAt se forem obrigatórios e não opcionais
-      // createdAt: new Date().toISOString(), // Exemplo
+      deleted: false, // Garante que a nova casa não nasça deletada
     };
 
+    // 5. Envia o payload para o serviço (sem alterações aqui)
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {
-        this.snackBar.open('✅ House created!', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-        });
+        this.snackBar.open('✅ House created!', 'Close', { duration: 3000 });
         this.form.reset();
         this.imagePreview = null;
         this.spinner.hide();
+
+        // Notifica outros componentes que a lista mudou
+        this.housingService.notifyHouseListUpdated();
+
         if (this.dialogRef) {
-          this.dialogRef.close();
+          this.dialogRef.close(true); // Fecha o dialog indicando sucesso
         } else {
-          setTimeout(() => this.router.navigate(['/']), 100);
+          this.router.navigate(['/home']);
         }
       },
-      error: () => {
+      error: (err) => {
         this.snackBar.open('❌ Error creating house', 'Close', {
           duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
         });
         this.spinner.hide();
+        console.error('Create house failed:', err);
       },
     });
   }
@@ -189,7 +214,7 @@ export class CreateComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
-        this.form.get('photo')?.setValue(reader.result as string); // CORRIGIDO de imageUrl para photo
+        this.form.get('photo')?.setValue(reader.result as string);
       };
       reader.readAsDataURL(input.files[0]);
     }

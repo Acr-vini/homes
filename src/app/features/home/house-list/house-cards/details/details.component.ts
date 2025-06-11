@@ -113,18 +113,22 @@ export class DetailsComponent implements OnInit {
     }
   }
 
-  // SECTION: Application Methods
   submitApplication(): void {
+    // 1. Verifica se o formulário é válido
     if (this.applyForm.valid) {
       const snackBarRef = this.snackBar.open(
         'Are you sure you want to apply?',
         'Yes',
         { duration: 5000 }
       );
+
+      // 2. Espera a confirmação do usuário no SnackBar
       snackBarRef.onAction().subscribe(() => {
         const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        this.applicationService.add({
-          id: '', // O backend deve gerar
+
+        // 3. Monta o objeto 'payload' com todos os dados da aplicação
+        // Note que não enviamos um 'id', pois o backend irá criá-lo.
+        const newApplicationPayload = {
           userId: user.id,
           houseId: this.housingLocation!.id,
           typeOfBusiness: this.housingLocation!.typeOfBusiness,
@@ -136,11 +140,25 @@ export class DetailsComponent implements OnInit {
           checkInDate: this.applyForm.get('checkInDate')?.value ?? undefined,
           checkOutDate: this.applyForm.get('checkOutDate')?.value ?? undefined,
           timestamp: new Date().toISOString(),
+        };
+
+        // 4. CHAVE DA QUESTÃO: Chama o método 'add' do serviço, passando o payload
+        this.applicationService.add(newApplicationPayload).subscribe({
+          next: () => {
+            // 5. Se tudo der certo, mostra a mensagem de sucesso e navega
+            this.snackBar.open('✅ Application completed successfully', '', {
+              duration: 3000,
+            });
+            this.goToConfirmationScreen();
+          },
+          error: (err) => {
+            // Se der erro na comunicação com o backend, avisa o usuário
+            console.error('Failed to add application', err);
+            this.snackBar.open('❌ Failed to submit application.', '', {
+              duration: 3000,
+            });
+          },
         });
-        this.snackBar.open('✅ Application completed successfully', '', {
-          duration: 3000,
-        });
-        this.goToConfirmationScreen();
       });
     } else {
       this.snackBar.open('Please fill all required fields.', 'Close', {
