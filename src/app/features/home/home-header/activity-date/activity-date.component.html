@@ -1,4 +1,4 @@
-<ngx-spinner size="medium" color="#381c9e" type="ball-spin-clockwise">
+<ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 <h2 class="title-h2">My Applications</h2>
@@ -55,7 +55,7 @@
       </button>
       <button
         mat-icon-button
-        (click)="openEditApplication(app)"
+        (click)="editApplication(app)"
         [matTooltip]="'Edit application'"
         class="edit-button"
       >

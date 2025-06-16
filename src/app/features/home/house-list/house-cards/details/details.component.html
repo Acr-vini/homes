@@ -1,3 +1,6 @@
+<ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
 <article class="page-container" *ngIf="housingLocation">
   <!-- Seção da imagem e descrição -->
   <img
@@ -68,15 +71,38 @@
           class="form-input"
           [min]="today"
         />
+        <!-- Adicionar mensagem de erro -->
+        <div
+          *ngIf="
+            applyForm.get('visitDate')?.invalid &&
+            (applyForm.get('visitDate')?.dirty ||
+              applyForm.get('visitDate')?.touched)
+          "
+          class="error-message"
+        >
+          <div *ngIf="applyForm.get('visitDate')?.hasError('required')">
+            Visit date is required.
+          </div>
+        </div>
 
         <label for="visit-time">Visit Time</label>
         <mat-form-field class="full-width">
-          <mat-select formControlName="visitTime" required>
+          <mat-select formControlName="visitTime">
+            <!-- Removido 'required' daqui, pois o Validators.required no formControl é o principal -->
             <mat-option value="" disabled>Select a time</mat-option>
             <mat-option *ngFor="let hour of visitHours" [value]="hour">
               {{ hour }}
             </mat-option>
           </mat-select>
+          <!-- Adicionar mensagem de erro para mat-select -->
+          <mat-error
+            *ngIf="
+              applyForm.get('visitTime')?.hasError('required') &&
+              applyForm.get('visitTime')?.touched
+            "
+          >
+            Visit time is required.
+          </mat-error>
         </mat-form-field>
       </ng-container>
 
@@ -90,6 +116,19 @@
           class="form-input"
           [min]="today"
         />
+        <!-- Adicionar mensagem de erro -->
+        <div
+          *ngIf="
+            applyForm.get('checkInDate')?.invalid &&
+            (applyForm.get('checkInDate')?.dirty ||
+              applyForm.get('checkInDate')?.touched)
+          "
+          class="error-message"
+        >
+          <div *ngIf="applyForm.get('checkInDate')?.hasError('required')">
+            Check-in date is required.
+          </div>
+        </div>
 
         <label for="check-out-date">Check-out Date</label>
         <input
@@ -99,6 +138,19 @@
           class="form-input"
           [min]="applyForm.get('checkInDate')?.value || today"
         />
+        <!-- Adicionar mensagem de erro -->
+        <div
+          *ngIf="
+            applyForm.get('checkOutDate')?.invalid &&
+            (applyForm.get('checkOutDate')?.dirty ||
+              applyForm.get('checkOutDate')?.touched)
+          "
+          class="error-message"
+        >
+          <div *ngIf="applyForm.get('checkOutDate')?.hasError('required')">
+            Check-out date is required.
+          </div>
+        </div>
       </ng-container>
 
       <button type="submit" class="primary">Apply now</button>
@@ -112,8 +164,3 @@
   [housingLocationId]="housingLocation!.id"
   [currentUser]="currentUser"
 ></app-reviews>
-
-<div *ngIf="!housingLocation" class="loading-details">
-  <p>Loading housing details...</p>
-  <!-- Você pode adicionar um spinner aqui se desejar -->
-</div>

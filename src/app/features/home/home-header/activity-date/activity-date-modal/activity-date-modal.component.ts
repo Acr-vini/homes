@@ -4,15 +4,25 @@ import {
   MatDialogRef,
   MatDialogModule,
 } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
+// ADD THIS IMPORT
+// Import the provider function for the date adapter.
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-activity-date-modal',
@@ -25,42 +35,79 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     MatSelectModule,
     MatCardModule,
-    MatDatepickerModule,
     MatTooltipModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule, // You had this listed twice, I removed the duplicate.
   ],
   templateUrl: './activity-date-modal.component.html',
   styleUrls: ['./activity-date-modal.component.scss'],
+
+  // ADD THIS PROVIDERS ARRAY
+  // This explicitly provides the NativeDateAdapter to this component's injector.
+  // It ensures that the MatDatepicker inside this dynamically created dialog
+  // can find the required DateAdapter.
+  providers: [provideNativeDateAdapter()],
 })
 export class ActivityDateModalComponent implements OnInit {
   form!: FormGroup;
-  today: Date = new Date();
-  applyForm: any;
+  today: string = new Date().toISOString().split('T')[0];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ActivityDateModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private router: Router
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      visitDate: [this.data.visitDate || ''],
+      name: [this.data.name || '', Validators.required],
+      email: [this.data.email || '', [Validators.required, Validators.email]],
+      phone: [this.data.phone || '', Validators.required],
+      visitDate: [this.data.visitDate ? new Date(this.data.visitDate) : ''],
       visitTime: [this.data.visitTime || ''],
-      checkInDate: [this.data.checkInDate || ''],
-      checkOutDate: [this.data.checkOutDate || ''],
-      // ...outros campos se necessário
+      checkInDate: [
+        this.data.checkInDate ? new Date(this.data.checkInDate) : '',
+      ],
+      checkOutDate: [
+        this.data.checkOutDate ? new Date(this.data.checkOutDate) : '',
+      ],
     });
-  }
 
-  // ✅ Salva os dados e fecha o modal, retornando os dados preenchidos
-  save() {
-    if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+    if (this.data.typeOfBusiness === 'rent') {
+      this.form.get('checkInDate')?.setValidators(Validators.required);
+      this.form.get('checkOutDate')?.setValidators(Validators.required);
+      this.form.get('checkInDate')?.updateValueAndValidity();
+      this.form.get('checkOutDate')?.updateValueAndValidity();
+    } else if (this.data.typeOfBusiness === 'sell') {
+      this.form.get('visitDate')?.setValidators(Validators.required);
+      this.form.get('visitTime')?.setValidators(Validators.required);
+      this.form.get('visitDate')?.updateValueAndValidity();
+      this.form.get('visitTime')?.updateValueAndValidity();
     }
   }
 
-  // ✅ Fecha o modal sem salvar
+  save() {
+    if (this.form.valid) {
+      const formData = { ...this.form.value };
+      if (formData.visitDate instanceof Date) {
+        formData.visitDate = formData.visitDate.toISOString().split('T')[0];
+      }
+      if (formData.checkInDate instanceof Date) {
+        formData.checkInDate = formData.checkInDate.toISOString().split('T')[0];
+      }
+      if (formData.checkOutDate instanceof Date) {
+        formData.checkOutDate = formData.checkOutDate
+          .toISOString()
+          .split('T')[0];
+      }
+      this.dialogRef.close(formData);
+    } else {
+      this.form.markAllAsTouched();
+      console.log('Form is invalid:', this.form.errors, this.form.value);
+    }
+  }
+
   close() {
     this.dialogRef.close();
   }

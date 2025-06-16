@@ -29,9 +29,24 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./activity-date.component.scss'],
 })
 export class ActivityDateComponent implements OnInit {
-  [x: string]: any;
   applications: Array<Application & { photoUrl?: string }> = [];
   currentUserId: string | null = null;
+
+  visitHoursArray = [
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+  ];
 
   constructor(
     private applicationService: ApplicationService,
@@ -42,61 +57,50 @@ export class ActivityDateComponent implements OnInit {
     private spinner: NgxSpinnerService
   ) {}
 
-  // Dentro da classe ActivityDateComponent
-
   ngOnInit(): void {
-    this.spinner.show(); // 1. Mostra o spinner no início
-
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
     this.currentUserId = user?.id ?? null;
 
     if (!this.currentUserId) {
-      this.spinner.hide();
+      // Não precisa mostrar spinner se não há usuário
       return;
     }
+    this.loadApplications(); // Chama o novo método
+  }
 
+  loadApplications(): void {
+    if (!this.currentUserId) {
+      console.warn('Cannot load applications without currentUserId.');
+      return;
+    }
+    this.spinner.show();
     this.applicationService
       .getByUser(this.currentUserId)
       .pipe(
-        // 2. `switchMap` pega a lista de 'apps' e a transforma em um novo Observable
         switchMap((apps) => {
-          // Se a lista de apps estiver vazia, retorna um Observable com um array vazio imediatamente
           if (apps.length === 0) {
             return of([]);
           }
-
-          // Para cada aplicação, cria um Observable que busca a foto correspondente
           const observablesComFoto = apps.map((app) =>
             this.housingService.getHousingLocationById(app.houseId).pipe(
-              // `map` transforma o resultado (location) para o formato que queremos:
-              // a aplicação original com a nova propriedade `photoUrl`.
               map((location) => ({
-                ...app, // Copia a aplicação original
-                photoUrl: location.photo || location.photo, // Adiciona a URL da foto
+                ...app,
+                photoUrl: location.photo || 'path/to/default/image.png', // Usar um fallback direto
               })),
-              // `catchError` garante que se UMA foto falhar, ela não quebre TODAS as outras.
-              // Retornamos a aplicação sem foto em caso de erro.
               catchError(() =>
                 of({ ...app, photoUrl: 'path/to/default/image.png' })
               )
             )
           );
-
-          // 3. `forkJoin` espera TODAS as buscas de foto terminarem
           return forkJoin(observablesComFoto);
         }),
-        // 4. `finalize` é GARANTIDO que será executado no final, com sucesso OU erro.
-        // É o lugar perfeito para esconder o spinner.
         finalize(() => this.spinner.hide())
       )
       .subscribe({
         next: (appsCompletas) => {
-          // 5. O subscribe agora recebe a lista final, já com as fotos.
           this.applications = appsCompletas;
         },
         error: (err) => {
-          // 6. Um erro na primeira chamada (getByUser) é tratado aqui.
-          // O `finalize` acima ainda garantirá que o spinner seja escondido.
           console.error('Falha ao buscar as aplicações do usuário', err);
           this.snackBar.open('❌ Failed to load applications.', 'Close', {
             duration: 3000,
@@ -104,6 +108,7 @@ export class ActivityDateComponent implements OnInit {
         },
       });
   }
+
   viewDetails(app: Application): void {
     this.router.navigate(['/details-application'], {
       state: { ...app },
@@ -154,25 +159,42 @@ export class ActivityDateComponent implements OnInit {
     });
   }
 
-  openEditApplication(app: Application): void {
+  editApplication(application: any) {
+    console.log('Dados da aplicação a serem editados:', application); // ADICIONE ESTE LOG
     const dialogRef = this.dialog.open(ActivityDateModalComponent, {
-      data: app,
-      width: '500px',
-      disableClose: true,
-      autoFocus: false,
+      width: '600px',
+      data: {
+        ...application,
+        visitHours: this.visitHoursArray, // Certifique-se que visitHoursArray está definido e populado
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Atualize a aplicação com os novos dados
+        console.log('Modal closed with data:', result);
+        const updatedApplicationData = {
+          ...application,
+          ...result,
+        };
+        this.spinner.show(); // Mostrar spinner antes da chamada de update
         this.applicationService
-          .update(app.id, { ...app, ...result })
-          .subscribe(() => {
-            // Atualize a lista local se necessário
-            Object.assign(app, result);
-            this.snackBar.open('✅ Application updated!', '', {
-              duration: 2000,
-            });
+          .update(updatedApplicationData.id, updatedApplicationData)
+          .pipe(finalize(() => this.spinner.hide())) // Esconder spinner após update
+          .subscribe({
+            next: () => {
+              this.snackBar.open(
+                '✅ Application updated successfully!',
+                'Close',
+                { duration: 3000 }
+              );
+              this.loadApplications(); // Agora este método existe
+            },
+            error: (err) => {
+              console.error('Error updating application', err);
+              this.snackBar.open('❌ Failed to update application.', 'Close', {
+                duration: 3000,
+              });
+            },
           });
       }
     });

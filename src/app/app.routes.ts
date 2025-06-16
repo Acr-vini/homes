@@ -56,7 +56,7 @@ const routes: Routes = [
         loadComponent: () =>
           import('./features/home/home-header/about/about.component').then(
             (m) => m.AboutComponent
-          ), 
+          ),
         title: 'About',
       },
       {
@@ -64,7 +64,7 @@ const routes: Routes = [
         loadComponent: () =>
           import('./features/home/home-header/contact/contact.component').then(
             (m) => m.ContactComponent
-          ), 
+          ),
         title: 'Contact',
       },
       {
@@ -90,14 +90,6 @@ const routes: Routes = [
             (m) => m.FavoritesComponent
           ),
         title: 'Favorites',
-      },
-      {
-        path: 'details-application',
-        loadComponent: () =>
-          import(
-            './features/home/house-list/house-cards/details/details-application/details-application.component'
-          ).then((m) => m.DetailsApplicationComponent),
-        title: 'Application Details',
       },
     ],
   },
