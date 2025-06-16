@@ -31,6 +31,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 export class ActivityDateComponent implements OnInit {
   applications: Array<Application & { photoUrl?: string }> = [];
   currentUserId: string | null = null;
+  isLoading: boolean = false; // Adicionar esta flag
 
   visitHoursArray = [
     '08:00',
@@ -70,9 +71,9 @@ export class ActivityDateComponent implements OnInit {
 
   loadApplications(): void {
     if (!this.currentUserId) {
-      console.warn('Cannot load applications without currentUserId.');
       return;
     }
+    this.isLoading = true; // Definir como true
     this.spinner.show();
     this.applicationService
       .getByUser(this.currentUserId)
@@ -94,17 +95,22 @@ export class ActivityDateComponent implements OnInit {
           );
           return forkJoin(observablesComFoto);
         }),
-        finalize(() => this.spinner.hide())
+        finalize(() => {
+          this.spinner.hide();
+          this.isLoading = false; // Definir como false
+        })
       )
       .subscribe({
         next: (appsCompletas) => {
           this.applications = appsCompletas;
+          this.isLoading = false; // Definir como false
         },
         error: (err) => {
           console.error('Falha ao buscar as aplicações do usuário', err);
           this.snackBar.open('❌ Failed to load applications.', 'Close', {
             duration: 3000,
           });
+          this.isLoading = false; // Definir como false
         },
       });
   }

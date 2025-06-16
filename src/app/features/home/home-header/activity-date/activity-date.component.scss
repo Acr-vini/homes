@@ -136,3 +136,29 @@
     background-color: rgba(38, 20, 105, 0.8);
   }
 }
+
+.activity-footer {
+  margin: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--purpleWeak);
+  text-align: center;
+  color: var(--text-color);
+
+  p {
+    margin-bottom: 8px; // Espaço entre os parágrafos no rodapé
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.no-applications-message {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  color: #777;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}

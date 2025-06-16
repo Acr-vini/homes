@@ -63,4 +63,21 @@
       </button>
     </div>
   </section>
+
+  <!-- Mensagem se não houver aplicações -->
+  <div
+    *ngIf="applications.length === 0 && currentUserId && !isLoading"
+    class="no-applications-message"
+  >
+    You have no applications yet.
+  </div>
+  <div *ngIf="!currentUserId && !isLoading" class="no-applications-message">
+    Please log in to see your applications.
+  </div>
 </div>
+
+<!-- Rodapé com informações adicionais -->
+<footer class="activity-footer">
+  <p>For property viewings and check-ins, please arrive 15 minutes early.</p>
+  <p>Rented properties have check-in at 08:00 AM and check-out at 06:00 PM.</p>
+</footer>
