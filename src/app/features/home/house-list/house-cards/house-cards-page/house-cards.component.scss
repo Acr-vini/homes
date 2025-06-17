@@ -51,7 +51,7 @@
     display: flex;
     align-items: center;
     padding: 0 20px;
-    gap: 8px;
+    gap: 2px;
   }
 
   &-pin {
@@ -148,12 +148,36 @@
 
 // Base de estilo para o label
 .home-listing__type-label {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
+  // Changes Start Here
+  display: inline-flex; // 1. Turns the span into a flex container
+  align-items: center; // 2. Vertically centers the items (icon and text)
+  gap: 0.4rem; // 3. Adds a consistent space between the icon and the text
+  // Changes End Here
+
+  // Unchanged styles
+  padding: 0.25rem 0.75rem; // Adjusted padding slightly for better visual balance
   font-size: 0.875rem;
   border-radius: 0.25rem;
   font-weight: 600;
-  margin-left: 3%;
+  margin-left: 20px;
+
+  // The mat-icon rule can now be simplified or adjusted if needed
+  mat-icon {
+    font-size: 1rem; // Matching icon size with text line-height is often a good practice
+    height: 1rem; // Explicitly set height
+    width: 1rem; // Explicitly set width
+  }
+}
+
+// You would also have your specific classes for colors
+.home-listing__type-label--sell {
+  background-color: #fde2e2; // Example color for sell
+  color: #9b2c2c; // Example text color for sell
+}
+
+.home-listing__type-label--rent {
+  background-color: #e6fffa; // Example color for rent
+  color: #2c7a7b; // Example text color for rent
 }
 
 // Modificador SELL

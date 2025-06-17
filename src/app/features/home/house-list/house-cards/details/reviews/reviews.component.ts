@@ -9,11 +9,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field'; // Necessário para o formulário
 import { MatInputModule } from '@angular/material/input'; // Necessário para o formulário
-
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { Review } from '../../../../../../core/interfaces/review.interface';
 import { User } from '../../../../../../core/interfaces/user.interface'; // Supondo que você tenha essa interface
 import { ReviewService } from '../../../../../../core/services/review.service';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, tap, finalize } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -30,6 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatFormFieldModule,
     MatInputModule,
     MatTooltipModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './reviews.component.html',
   styleUrls: ['./reviews.component.scss'],
@@ -40,6 +41,7 @@ export class ReviewsComponent implements OnInit {
 
   private reviewService = inject(ReviewService);
   private snackBar = inject(MatSnackBar);
+  private spinner = inject(NgxSpinnerService); // Injetar o serviço do spinner
 
   reviews$!: Observable<Review[]>;
   private refreshReviews$ = new BehaviorSubject<void>(undefined);
@@ -57,9 +59,12 @@ export class ReviewsComponent implements OnInit {
       return;
     }
 
+    this.spinner.show(); // Mostrar spinner ao carregar reviews
     this.reviews$ = this.refreshReviews$.pipe(
       switchMap(() =>
-        this.reviewService.getReviewsByLocation(this.housingLocationId)
+        this.reviewService.getReviewsByLocation(this.housingLocationId).pipe(
+          tap(() => this.spinner.hide()) // Esconder spinner após carregar
+        )
       )
     );
 
@@ -87,6 +92,7 @@ export class ReviewsComponent implements OnInit {
       comment: formValue.comment ?? '',
     };
 
+    this.spinner.show(); // Mostrar spinner ao submeter a review
     const operation$ = isEditing
       ? this.reviewService.updateReview(this.editingReviewId!, reviewData)
       : this.reviewService.addReview({
@@ -100,10 +106,11 @@ export class ReviewsComponent implements OnInit {
       .pipe(
         tap(() => {
           const message = isEditing
-            ? 'Review updated successfully!'
-            : 'Review added successfully!';
+            ? '✅ Review updated successfully!'
+            : '✅ Review added successfully!';
           this.snackBar.open(message, '', { duration: 3000 });
-        })
+        }),
+        finalize(() => this.spinner.hide()) // Esconder spinner após operação
       )
       .subscribe(() => {
         this.refreshReviews$.next();
@@ -133,10 +140,16 @@ export class ReviewsComponent implements OnInit {
     );
     snackBarRef.onAction().subscribe(() => {
       if (review.id) {
-        this.reviewService.deleteReview(review.id).subscribe(() => {
-          this.snackBar.open('Review deleted!', '', { duration: 2000 });
-          this.refreshReviews$.next();
-        });
+        this.spinner.show(); // Mostrar spinner ao deletar a review
+        this.reviewService
+          .deleteReview(review.id)
+          .pipe(
+            finalize(() => this.spinner.hide()) // Esconder spinner após operação
+          )
+          .subscribe(() => {
+            this.snackBar.open('✅ Review deleted!', '', { duration: 2000 });
+            this.refreshReviews$.next();
+          });
       }
     });
   }
