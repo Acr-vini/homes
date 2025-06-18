@@ -1,3 +1,5 @@
+// create.component.ts
+
 import { Component, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -25,6 +27,8 @@ import { Observable, startWith, map } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+// NOVO: Importe o MatProgressBarModule
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-create',
@@ -42,13 +46,16 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatTooltipModule,
-    NgxSpinnerModule,
+    NgxSpinnerModule, // NOVO: Adicione o MatProgressBarModule aos imports
+    MatProgressBarModule,
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
-  form: FormGroup;
+  form: FormGroup; // NOVO: Adicione a propriedade para controlar o progresso
+  progress = 0;
+
   stateControl = new FormControl<string>('', {
     nonNullable: true,
     validators: [Validators.required],
@@ -81,7 +88,7 @@ export class CreateComponent implements OnInit {
       availableUnits: [0, [Validators.required, Validators.min(1)]],
       wifi: [false],
       laundry: [false],
-      photo: [''],
+      photo: ['', Validators.required],
       typeOfBusiness: ['sell', Validators.required],
       createBy: [''],
     });
@@ -92,9 +99,8 @@ export class CreateComponent implements OnInit {
     this.filteredStates = this.stateControl.valueChanges.pipe(
       startWith(this.stateControl.value),
       map((value) => this._filterStates(value))
-    );
+    ); // Atualiza cidades quando estado muda
 
-    // Atualiza cidades quando estado muda
     this.stateControl.valueChanges.subscribe((val) => {
       const iso = this._findStateIso(val);
       this.allCities = iso
@@ -105,15 +111,38 @@ export class CreateComponent implements OnInit {
         map((v) => this._filterCities(v))
       );
       this.cityControl.setValue('');
-    });
+    }); // Filtra cidades conforme digita
 
-    // Filtra cidades conforme digita
     this.filteredCities = this.cityControl.valueChanges.pipe(
       startWith(this.cityControl.value),
       map((v) => this._filterCities(v))
-    );
-  }
+    ); // NOVO: Inscreva-se nas mudanças do formulário para calcular o progresso
 
+    this.form.valueChanges.subscribe(() => {
+      this.calculateProgress();
+    });
+  } // NOVO: Método para calcular o progresso do formulário
+  private calculateProgress(): void {
+    // Define quais campos são obrigatórios para o progresso
+    const requiredControls = [
+      'name',
+      'state',
+      'city',
+      'availableUnits',
+      'typeOfBusiness',
+      'photo',
+    ]; // Conta quantos campos obrigatórios estão válidos
+
+    const validControls = requiredControls.filter((controlName) => {
+      const control = this.form.get(controlName);
+      return control && control.valid;
+    });
+
+    const completedFields = validControls.length;
+    const totalFields = requiredControls.length; // Calcula a porcentagem e atualiza a propriedade 'progress'
+
+    this.progress = (completedFields / totalFields) * 100;
+  }
   private _filterStates(value: string): { name: string; isoCode: string }[] {
     const filter = value.toLowerCase();
     return this.allStates.filter((s) => s.name.toLowerCase().includes(filter));
@@ -129,13 +158,12 @@ export class CreateComponent implements OnInit {
       (s) => s.name.toLowerCase() === name.toLowerCase()
     );
     return match?.isoCode;
-  }
-
-  // Dentro da classe CreateComponent
+  } // Dentro da classe CreateComponent
 
   onSubmit(): void {
     // 1. Validação inicial do formulário
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       this.snackBar.open(
         '❌ Please fill all required fields correctly.',
         'Close',
@@ -144,13 +172,11 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    this.spinner.show();
+    this.spinner.show(); // 2. CORREÇÃO PRINCIPAL: Busca o código ISO a partir do nome do estado no formulário
 
-    // 2. CORREÇÃO PRINCIPAL: Busca o código ISO a partir do nome do estado no formulário
     const stateName = this.stateControl.value;
-    const stateIsoCode = this._findStateIso(stateName);
+    const stateIsoCode = this._findStateIso(stateName); // 3. Validação para garantir que um estado válido foi selecionado
 
-    // 3. Validação para garantir que um estado válido foi selecionado
     if (!stateIsoCode) {
       this.snackBar.open(
         '❌ Invalid state selected. Please choose from the list.',
@@ -163,9 +189,8 @@ export class CreateComponent implements OnInit {
 
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
-    );
+    ); // 4. Monta o payload com o código ISO do estado
 
-    // 4. Monta o payload com o código ISO do estado
     const payload: Omit<HousingLocation, 'id'> = {
       name: this.form.value.name,
       city: this.cityControl.value,
@@ -179,17 +204,15 @@ export class CreateComponent implements OnInit {
       editedBy: '', // Em criação, estes campos ficam vazios
       deletedBy: '',
       deleted: false, // Garante que a nova casa não nasça deletada
-    };
+    }; // 5. Envia o payload para o serviço (sem alterações aqui)
 
-    // 5. Envia o payload para o serviço (sem alterações aqui)
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {
         this.snackBar.open('✅ House created!', 'Close', { duration: 3000 });
         this.form.reset();
         this.imagePreview = null;
-        this.spinner.hide();
+        this.spinner.hide(); // Notifica outros componentes que a lista mudou
 
-        // Notifica outros componentes que a lista mudou
         this.housingService.notifyHouseListUpdated();
 
         if (this.dialogRef) {
@@ -210,6 +233,7 @@ export class CreateComponent implements OnInit {
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+    this.form.get('photo')?.markAsTouched();
     if (input.files?.[0]) {
       const reader = new FileReader();
       reader.onload = () => {

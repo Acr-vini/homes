@@ -5,6 +5,13 @@
 <mat-card class="edit-card">
   <mat-card-title>Create User</mat-card-title>
 
+  <mat-progress-bar
+    class="create-progress-bar"
+    mode="determinate"
+    [value]="progress"
+    color="primary"
+  ></mat-progress-bar>
+
   <form [formGroup]="userForm" (ngSubmit)="onSave()">
     <!-- Name -->
     <mat-form-field class="full-width">
@@ -93,6 +100,7 @@
       <button
         mat-icon-button
         class="cancel-btn"
+        type="button"
         (click)="onCancel()"
         aria-label="Cancel"
         matTooltip="Cancel"

@@ -4,8 +4,14 @@
 <mat-card class="edit-card">
   <mat-card-title>Create a new house</mat-card-title>
 
+  <mat-progress-bar
+    class="create-progress-bar"
+    mode="determinate"
+    [value]="progress"
+    color="primary"
+  ></mat-progress-bar>
+
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <!-- House Name -->
     <mat-form-field class="full-width">
       <mat-label>House Name</mat-label>
       <input matInput formControlName="name" required />
@@ -14,7 +20,6 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- State Autocomplete -->
     <mat-form-field class="full-width">
       <mat-label>States</mat-label>
       <input
@@ -40,7 +45,6 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- City Autocomplete -->
     <mat-form-field class="full-width">
       <mat-label>City</mat-label>
       <input
@@ -66,7 +70,6 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Available Units -->
     <mat-form-field class="full-width">
       <mat-label>Available Units</mat-label>
       <input matInput type="number" formControlName="availableUnits" required />
@@ -80,7 +83,6 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Type of Business -->
     <mat-form-field class="full-width">
       <mat-label>Type of Business</mat-label>
       <mat-select formControlName="typeOfBusiness" required>
@@ -97,39 +99,41 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Photo URL (optional) -->
     <mat-form-field class="full-width">
-      <mat-label>Photo URL (optional)</mat-label>
+      <mat-label>Photo URL</mat-label>
       <input matInput formControlName="photo" />
     </mat-form-field>
 
-    <!-- Wi-Fi Available -->
     <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
 
-    <!-- Laundry Available -->
     <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
 
-    <!-- Image Preview & Upload -->
     <div *ngIf="imagePreview" class="image-preview">
       <img [src]="imagePreview" alt="Image preview" />
     </div>
 
-    <div class="create-file-upload">
-      <!-- classe atualizada -->
-      <button mat-icon-button type="button" (click)="fileInput.click()">
-        <mat-icon>upload</mat-icon>
-      </button>
-      <span>Select image</span>
-      <input
-        #fileInput
-        type="file"
-        accept="image/*"
-        hidden
-        (change)="onImageSelected($event)"
-      />
+    <div class="create-file-upload-wrapper">
+      <div class="create-file-upload">
+        <button mat-icon-button type="button" (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+        </button>
+        <span>Select image (Required)</span>
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onImageSelected($event)"
+        />
+      </div>
+      <div
+        class="custom-mat-error"
+        *ngIf="form.get('photo')?.invalid && form.get('photo')?.touched"
+      >
+        A house photo is required.
+      </div>
     </div>
 
-    <!-- Submit Button -->
     <div class="actions">
       <button
         mat-icon-button
@@ -143,6 +147,7 @@
       <button
         mat-icon-button
         class="cancel-btn"
+        type="button"
         (click)="onCancel()"
         aria-label="Cancel"
         matTooltip="Cancel"

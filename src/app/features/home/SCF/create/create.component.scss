@@ -194,3 +194,42 @@ button.mat-icon-button {
     background-color: #afafaf;
   }
 }
+.create-progress-bar {
+  margin-bottom: 1.5rem; // Adiciona espaço abaixo da barra
+  border-radius: 5px; // Bordas arredondadas para um visual mais suave
+  height: 8px !important; // Torna a barra um pouco mais espessa e visível
+}
+.create-file-upload-wrapper {
+  display: flex;
+  flex-direction: column; // Empilha o botão e o erro verticalmente
+  margin-top: 16px; // Mantém o espaçamento
+}
+
+.custom-mat-error {
+  font-size: 75%; // Tamanho padrão para erros do Material
+  color: #f44336; // Cor padrão de erro do Material (vermelho)
+  margin-top: 4px;
+  margin-left: 4px;
+}
+// FIM da adição
+
+.create-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  button {
+    background-color: var(--purpleBck);
+    color: #ffffff;
+    border-radius: 4px;
+
+    mat-icon {
+      color: #ffffff;
+    }
+  }
+
+  span {
+    font-size: 14px;
+    color: black;
+  }
+}

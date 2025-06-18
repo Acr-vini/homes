@@ -99,3 +99,8 @@ button.mat-icon-button {
     background-color: #afafaf;
   }
 }
+.create-progress-bar {
+  margin-bottom: 1.5rem; // Adiciona espaço abaixo da barra
+  border-radius: 5px; // Bordas arredondadas para um visual mais suave
+  height: 8px !important; // Torna a barra um pouco mais espessa e visível
+}

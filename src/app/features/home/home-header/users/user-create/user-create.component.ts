@@ -1,4 +1,6 @@
-import { Component, Inject, Optional } from '@angular/core';
+// user-create.component.ts
+
+import { Component, Inject, Optional, OnInit } from '@angular/core'; // ALTERADO: Adicionado OnInit
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../../core/services/user.service';
 import {
@@ -17,6 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+// NOVO: Importe o MatProgressBarModule
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-user-create',
@@ -32,13 +36,18 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatSelectModule,
     MatSnackBarModule,
     NgxSpinnerModule,
+    // NOVO: Adicione o MatProgressBarModule aos imports
+    MatProgressBarModule,
   ],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
 })
-export class UserCreateComponent {
+// ALTERADO: Implemente a interface OnInit
+export class UserCreateComponent implements OnInit {
   userForm: FormGroup;
   userId?: string;
+  // NOVO: Adicione a propriedade para controlar o progresso
+  progress = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -50,11 +59,10 @@ export class UserCreateComponent {
     @Optional() public dialogRef?: MatDialogRef<UserCreateComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {
-    // ✅ Criação do formulário com validações
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required], // ✅ Novo campo obrigatório
+      password: ['', Validators.required],
       phone: [''],
       location: [''],
       role: ['', Validators.required],
@@ -66,46 +74,78 @@ export class UserCreateComponent {
     this.userId = this.data?.id || this.route.snapshot.paramMap.get('id')!;
     if (this.userId) {
       this.userService.getUserById(this.userId).subscribe((user) => {
-        this.userForm.patchValue({
-          name: user.name,
-          email: user.email,
-          password: user.password, // ✅ Novo campo obrigatório
-          phone: user.phone,
-          location: user.location,
-          role: user.role,
-          status: user.status,
-        });
+        this.userForm.patchValue(user);
+        // Desabilitamos o campo de senha na edição para evitar que seja alterada acidentalmente
+        this.userForm.get('password')?.disable();
       });
     }
+
+    // NOVO: Inscreva-se nas mudanças do formulário para calcular o progresso
+    this.userForm.valueChanges.subscribe(() => {
+      this.calculateProgress();
+    });
+  }
+
+  // NOVO: Método para calcular o progresso do formulário
+  private calculateProgress(): void {
+    // Define quais campos são obrigatórios para o progresso
+    const requiredControls = ['name', 'email', 'password', 'role', 'status'];
+
+    // Para edição, não contamos a senha (pois está desabilitada)
+    if (this.userId) {
+      const index = requiredControls.indexOf('password');
+      if (index > -1) {
+        requiredControls.splice(index, 1);
+      }
+    }
+
+    const validControls = requiredControls.filter((controlName) => {
+      const control = this.userForm.get(controlName);
+      return control && control.valid;
+    });
+
+    const completedFields = validControls.length;
+    const totalFields = requiredControls.length;
+
+    // Calcula a porcentagem e atualiza a propriedade 'progress'
+    this.progress = (completedFields / totalFields) * 100;
   }
 
   onSave(): void {
-    if (this.userForm.valid) {
-      this.spinner.show(); // Mostra o spinner
-
-      this.userService.createUser(this.userForm.value).subscribe({
-        next: () => {
-          // ✅ Mensagem de sucesso centralizada no topo (posição já configurada no app.config.ts)
-          this.snackBar.open('✅ User successfully created!', 'Close', {
-            panelClass: ['snackbar-success'], // opcional: classe para customizar estilo
-          });
-          this.spinner.hide(); // Esconde o spinner
-          // ✅ Redireciona para a listagem após salvar
-          if (this.dialogRef) {
-            this.dialogRef.close();
-          } else {
-            this.router.navigate(['/users']);
-          }
-        },
-        error: () => {
-          // ✅ Mensagem de erro
-          this.snackBar.open('❌ Error creating user', 'Close', {
-            panelClass: ['snackbar-error'], // opcional: estilo diferenciado para erros
-          });
-          this.spinner.hide(); // Esconde o spinner em caso de erro
-        },
-      });
+    // ALTERADO: Melhoria na validação para fornecer feedback ao usuário
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      this.snackBar.open(
+        '❌ Please fill all required fields correctly.',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
+      return;
     }
+
+    this.spinner.show();
+
+    this.userService.createUser(this.userForm.getRawValue()).subscribe({
+      next: () => {
+        this.snackBar.open('✅ User successfully created!', 'Close', {
+          panelClass: ['snackbar-success'],
+        });
+        this.spinner.hide();
+        if (this.dialogRef) {
+          this.dialogRef.close(true); // Indica sucesso ao fechar
+        } else {
+          this.router.navigate(['/users']);
+        }
+      },
+      error: () => {
+        this.snackBar.open('❌ Error creating user', 'Close', {
+          panelClass: ['snackbar-error'],
+        });
+        this.spinner.hide();
+      },
+    });
   }
 
   onCancel(): void {
