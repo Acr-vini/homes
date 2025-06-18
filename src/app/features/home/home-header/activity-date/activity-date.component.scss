@@ -8,8 +8,9 @@
 .activity-container {
   display: flex;
   flex-wrap: wrap; /* Permite que os cards quebrem para a próxima linha em telas pequenas */
-  gap: 20px; // ou menos, ajuste conforme desejar
+  gap: 46px; // ou menos, ajuste conforme desejar
   padding: 0 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   justify-content: center;
 }
 
@@ -161,4 +162,9 @@
   color: #777;
   border: 1px solid #ccc;
   border-radius: 8px;
+}
+.Tob {
+  font-size: 1rem; // Matching icon size with text line-height is often a good practice
+  height: 1rem; // Explicitly set height
+  width: 1rem; // Explicitly set width
 }
