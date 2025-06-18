@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, forkJoin, of } from 'rxjs';
 import { switchMap, map, finalize, catchError } from 'rxjs/operators';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-activity-date',
@@ -31,7 +32,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 export class ActivityDateComponent implements OnInit {
   applications: Array<Application & { photoUrl?: string }> = [];
   currentUserId: string | null = null;
-  isLoading: boolean = false; // Adicionar esta flag
+  isLoading: boolean = false;
 
   visitHoursArray = [
     '08:00',
@@ -55,7 +56,9 @@ export class ActivityDateComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    // 1. ADICIONAR O NotificationService AO CONSTRUCTOR PARA INJETÁ-LO
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -63,17 +66,21 @@ export class ActivityDateComponent implements OnInit {
     this.currentUserId = user?.id ?? null;
 
     if (!this.currentUserId) {
-      // Não precisa mostrar spinner se não há usuário
       return;
     }
-    this.loadApplications(); // Chama o novo método
+
+    this.loadApplications();
+
+    // 2. ADICIONAR A CHAMADA PARA O MÉTODO DE LIMPEZA
+    // Esta linha executa a limpeza da notificação.
+    this.notificationService.clearNotifications();
   }
 
   loadApplications(): void {
     if (!this.currentUserId) {
       return;
     }
-    this.isLoading = true; // Definir como true
+    this.isLoading = true;
     this.spinner.show();
     this.applicationService
       .getByUser(this.currentUserId)
@@ -86,7 +93,7 @@ export class ActivityDateComponent implements OnInit {
             this.housingService.getHousingLocationById(app.houseId).pipe(
               map((location) => ({
                 ...app,
-                photoUrl: location.photo || 'path/to/default/image.png', // Usar um fallback direto
+                photoUrl: location.photo || 'path/to/default/image.png',
               })),
               catchError(() =>
                 of({ ...app, photoUrl: 'path/to/default/image.png' })
@@ -97,23 +104,26 @@ export class ActivityDateComponent implements OnInit {
         }),
         finalize(() => {
           this.spinner.hide();
-          this.isLoading = false; // Definir como false
+          this.isLoading = false;
         })
       )
       .subscribe({
         next: (appsCompletas) => {
           this.applications = appsCompletas;
-          this.isLoading = false; // Definir como false
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Falha ao buscar as aplicações do usuário', err);
           this.snackBar.open('❌ Failed to load applications.', 'Close', {
             duration: 3000,
           });
-          this.isLoading = false; // Definir como false
+          this.isLoading = false;
         },
       });
   }
+
+  // ... O RESTO DO SEU CÓDIGO (viewDetails, editApplication, etc.) PERMANECE IGUAL ...
+  // ... Copiei o resto do seu código para garantir que nada mais se perca ...
 
   viewDetails(app: Application): void {
     this.router.navigate(['/details-application'], {
@@ -144,10 +154,10 @@ export class ActivityDateComponent implements OnInit {
   }
 
   deleteApplication(app: Application): void {
-    this.spinner.show(); // Mostra o spinner
+    this.spinner.show();
     this.applicationService.delete(app.id).subscribe(() => {
       this.applications = this.applications.filter((a) => a.id !== app.id);
-      this.spinner.hide(); // Esconde o spinner
+      this.spinner.hide();
       this.snackBar.open('✅ Application deleted!', '', { duration: 2000 });
     });
   }
@@ -166,26 +176,24 @@ export class ActivityDateComponent implements OnInit {
   }
 
   editApplication(application: any) {
-    console.log('Dados da aplicação a serem editados:', application); // ADICIONE ESTE LOG
     const dialogRef = this.dialog.open(ActivityDateModalComponent, {
       width: '600px',
       data: {
         ...application,
-        visitHours: this.visitHoursArray, // Certifique-se que visitHoursArray está definido e populado
+        visitHours: this.visitHoursArray,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Modal closed with data:', result);
         const updatedApplicationData = {
           ...application,
           ...result,
         };
-        this.spinner.show(); // Mostrar spinner antes da chamada de update
+        this.spinner.show();
         this.applicationService
           .update(updatedApplicationData.id, updatedApplicationData)
-          .pipe(finalize(() => this.spinner.hide())) // Esconder spinner após update
+          .pipe(finalize(() => this.spinner.hide()))
           .subscribe({
             next: () => {
               this.snackBar.open(
@@ -193,7 +201,7 @@ export class ActivityDateComponent implements OnInit {
                 'Close',
                 { duration: 3000 }
               );
-              this.loadApplications(); // Agora este método existe
+              this.loadApplications();
             },
             error: (err) => {
               console.error('Error updating application', err);

@@ -35,12 +35,14 @@
       "city": "Juneau",
       "availableUnits": 1,
       "photo": "https://angular.io/assets/images/tutorials/faa/i-do-nothing-but-love-lAyXdl1-Wmc-unsplash.jpg",
-      "wifi": false,
+      "wifi": true,
       "laundry": false,
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "3"
+      "id": "3",
+      "createBy": "1",
+      "deletedBy": ""
     },
     {
       "name": "Homesteady Housing",

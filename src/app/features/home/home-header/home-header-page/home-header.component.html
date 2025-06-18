@@ -50,7 +50,12 @@
     <span class="app-header-divider">|</span>
 
     <a mat-button [routerLink]="['/activity-date']" class="app-header-nav-link">
-      <mat-icon>event</mat-icon>
+      <mat-icon
+        [matBadge]="newApplicationCount > 0 ? newApplicationCount : null"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+        >event</mat-icon
+      >
       <span>Activity Date</span>
     </a>
   </div>
