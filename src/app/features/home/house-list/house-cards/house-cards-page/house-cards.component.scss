@@ -4,7 +4,7 @@
 }
 
 .home-listing {
-  margin: 20px;
+  margin: 0px;
   display: flex;
   flex-direction: column;
   background-color: var(--purpleWeak);
@@ -64,7 +64,6 @@
   }
 }
 
-// animação do pin
 @keyframes bounce {
   0%,
   100% {
@@ -146,66 +145,29 @@
   }
 }
 
-// Base de estilo para o label
 .home-listing__type-label {
-  // Changes Start Here
-  display: inline-flex; // 1. Turns the span into a flex container
-  align-items: center; // 2. Vertically centers the items (icon and text)
-  gap: 0.4rem; // 3. Adds a consistent space between the icon and the text
-  // Changes End Here
-
-  // Unchanged styles
-  padding: 0.25rem 0.75rem; // Adjusted padding slightly for better visual balance
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
   border-radius: 0.25rem;
   font-weight: 600;
   margin-left: 20px;
 
-  // The mat-icon rule can now be simplified or adjusted if needed
   mat-icon {
-    font-size: 1rem; // Matching icon size with text line-height is often a good practice
-    height: 1rem; // Explicitly set height
-    width: 1rem; // Explicitly set width
+    font-size: 1rem;
+    height: 1rem;
+    width: 1rem;
   }
 }
 
-// You would also have your specific classes for colors
-.home-listing__type-label--sell {
-  background-color: #fde2e2; // Example color for sell
-  color: #9b2c2c; // Example text color for sell
-}
-
-.home-listing__type-label--rent {
-  background-color: #e6fffa; // Example color for rent
-  color: #2c7a7b; // Example text color for rent
-}
-
-// Modificador SELL
 .home-listing__type-label--sell {
   background-color: rgb(167, 214, 176);
   color: var(--purpleBrdr);
 }
 
-// Modificador RENT
 .home-listing__type-label--rent {
   background-color: #add8e6;
   color: var(--purpleBrdr);
-}
-.visually-hidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  clip: rect(0 0 0 0);
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.houses-list,
-.housing-location-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
 }

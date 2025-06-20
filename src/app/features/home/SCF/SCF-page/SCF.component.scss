@@ -1,62 +1,117 @@
+@use "@angular/material" as mat; // Adicione esta linha no topo
 * {
   transition: background-color 0.3s ease, color 0.3s ease,
     border-color 0.3s ease;
 }
 
+.compact-form-field {
+  @include mat.form-field-density(-3);
+}
+
+// NOVO: Classe para diminuir a altura dos botões para combinar com os campos
+.compact-button {
+  height: 44px; // Altura que combina com a densidade -3
+}
+
+// Estilos para o container do Sidenav (sem alterações)
+.filter-sidenav-container {
+  width: 100%;
+  height: calc(100vh - 64px);
+}
+
+// Estilos para o painel lateral
+.filter-sidenav {
+  width: 320px;
+  padding: 24px;
+  background-color: var(--background);
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  // NOVO: Adicionado display flex para controlar o conteúdo interno
+  display: flex;
+  flex-direction: column;
+}
+
+// NOVO: Container para o conteúdo do painel (para empurrar o botão para baixo)
+.filters-panel-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; // Ocupa todo o espaço vertical disponível
+}
+
+// Cabeçalho do painel (sem alterações)
+.sidenav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
+// Formulário dentro do painel
+.filters-panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .mat-body-strong {
+    margin-bottom: -12px;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  // ALTERADO: Adicionado alinhamento para o toggle-group
+  .filtro-roxo-toggle {
+    align-self: center; // Centraliza o grupo de botões
+  }
+}
+
+// NOVO: Estilos para o container e o botão de limpar filtros no painel
+.clear-filters-wrapper {
+  margin-top: auto; // Mágica do Flexbox: empurra para o final do painel
+  padding-top: 24px; // Espaçamento acima do botão
+  display: flex;
+  justify-content: center; // Centraliza o botão
+}
+.clear-filters-button {
+  background-color: #d32f2f; // Vermelho
+  color: white;
+  width: 100%;
+}
+.clear-icon-button {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+// Barra superior
 .home-filter-wrapper {
   width: 100%;
   max-width: 1200px;
   padding: 24px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   margin: 0 auto;
 }
 
-.home-filter {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  min-width: 0;
-  margin: 2px 20px 2px 5px;
-
-  form {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-right: auto; // Isso empurra o form um pouco mais para a esquerda
-  }
-
-  input[type="text"] {
-    flex: 1;
-    padding: 16px;
-    border: 1px solid var(--purpleBrdr);
-    border-radius: 8px;
-  }
-
-  .search-button {
-    padding: 12px 5px;
-    background: var(--purpleBck);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-
-    &:hover {
-      background: #6b21a8;
-    }
-  }
+// Filtro de cidade
+.filters-form-container__city-filter {
+  min-width: 250px;
+  flex-grow: 1;
+  max-width: 500px;
 }
 
 .create-wrapper {
   display: flex;
   gap: 12px;
-  margin-left: auto; // Joga completamente pra direita
+  margin-left: auto;
 }
 
 .create-button {
@@ -72,7 +127,6 @@
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-  font-weight: 600;
   transition: background 0.3s;
 
   &:hover {
@@ -108,52 +162,24 @@
   }
 }
 
-.housing-location-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px;
-
-  .create-button {
-    bottom: 24px;
-    right: 24px;
-    z-index: 10;
-    border-radius: 50%;
-    padding: 16px;
-  }
-}
-
-section {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  padding: 2rem;
-  justify-content: center;
-  align-items: start;
-}
-
 .mat-icon {
   transition: background 0.3s;
   justify-content: center;
 }
+.housing-location-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 56px;
+  padding: 14px;
+  margin: 14px 14px;
 
-mat-card {
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
   }
-}
-.mat-paginator {
-  background-color: var(--purpleBck);
-}
-.mat-mdc-paginator-container {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-::ng-deep .mat-mdc-paginator {
-  background: transparent !important;
-  box-shadow: none !important;
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 }

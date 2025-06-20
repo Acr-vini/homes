@@ -48,6 +48,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatTooltipModule,
     NgxSpinnerModule, // NOVO: Adicione o MatProgressBarModule aos imports
     MatProgressBarModule,
+    MatTooltipModule,
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
@@ -73,6 +74,13 @@ export class CreateComponent implements OnInit {
 
   imagePreview: string | ArrayBuffer | null = null;
 
+  propertyTypes = [
+    { value: 'apartment', viewValue: 'apartment' },
+    { value: 'house', viewValue: 'house' },
+    { value: 'terrain', viewValue: 'terrain' },
+    { value: 'studio', viewValue: 'studio' },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -90,6 +98,7 @@ export class CreateComponent implements OnInit {
       laundry: [false],
       photo: ['', Validators.required],
       typeOfBusiness: ['sell', Validators.required],
+      propertyType: ['', Validators.required],
       createBy: [''],
     });
   }
@@ -116,12 +125,12 @@ export class CreateComponent implements OnInit {
     this.filteredCities = this.cityControl.valueChanges.pipe(
       startWith(this.cityControl.value),
       map((v) => this._filterCities(v))
-    ); // NOVO: Inscreva-se nas mudanças do formulário para calcular o progresso
+    ); // Inscreva-se nas mudanças do formulário para calcular o progresso
 
     this.form.valueChanges.subscribe(() => {
       this.calculateProgress();
     });
-  } // NOVO: Método para calcular o progresso do formulário
+  } //Método para calcular o progresso do formulário
   private calculateProgress(): void {
     // Define quais campos são obrigatórios para o progresso
     const requiredControls = [
@@ -131,7 +140,8 @@ export class CreateComponent implements OnInit {
       'availableUnits',
       'typeOfBusiness',
       'photo',
-    ]; // Conta quantos campos obrigatórios estão válidos
+      'propertyType',
+    ];
 
     const validControls = requiredControls.filter((controlName) => {
       const control = this.form.get(controlName);
@@ -200,11 +210,12 @@ export class CreateComponent implements OnInit {
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
+      propertyType: this.form.value.propertyType,
       createBy: String(currentUser?.id ?? ''),
-      editedBy: '', // Em criação, estes campos ficam vazios
+      editedBy: '',
       deletedBy: '',
-      deleted: false, // Garante que a nova casa não nasça deletada
-    }; // 5. Envia o payload para o serviço (sem alterações aqui)
+      deleted: false,
+    }; // Envia o payload para o serviço
 
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {

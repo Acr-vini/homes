@@ -100,6 +100,22 @@
     </mat-form-field>
 
     <mat-form-field class="full-width">
+      <mat-label>Property Type</mat-label>
+      <mat-select formControlName="propertyType" required>
+        @for (type of propertyTypes; track type.value) {
+        <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
+        }
+      </mat-select>
+      <mat-error
+        *ngIf="
+          form.get('propertyType')?.invalid && form.get('propertyType')?.touched
+        "
+      >
+        This field is required.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
       <mat-label>Photo URL</mat-label>
       <input matInput formControlName="photo" />
     </mat-form-field>

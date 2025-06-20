@@ -42,6 +42,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatCheckboxModule,
     MatTooltipModule,
     NgxSpinnerModule,
+    MatTooltipModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
@@ -69,7 +70,13 @@ export class EditComponent implements OnInit {
   currentUserRole: string | null = null;
   canPerformActions = false;
 
-  // SECTION: Constructor
+  propertyTypes = [
+    { value: 'apartment', viewValue: 'apartment' },
+    { value: 'house', viewValue: 'house' },
+    { value: 'terrain', viewValue: 'terrain' },
+    { value: 'studio', viewValue: 'studio' },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -131,6 +138,22 @@ export class EditComponent implements OnInit {
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
         });
 
+        this.form = this.fb.group({
+          name: [house.name || '', Validators.required],
+          state: this.stateControl,
+          city: this.cityControl,
+          availableUnits: [
+            house.availableUnits || '',
+            [Validators.required, Validators.min(1)],
+          ],
+          photo: [house.photo || ''],
+          wifi: [house.wifi || false],
+          laundry: [house.laundry || false],
+          typeOfBusiness: [house.typeOfBusiness, Validators.required],
+          // NOVO: Adicione o controle, populando com o dado existente
+          propertyType: [house.propertyType, Validators.required],
+        });
+
         this._setupFilters();
         this.spinner.hide();
       },
@@ -162,10 +185,13 @@ export class EditComponent implements OnInit {
       wifi: this.form.value.wifi,
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
+      propertyType: this.form.value.propertyType,
       createBy: this.housingLocation.createBy ?? String(currentUser?.id ?? ''),
       editedBy: String(currentUser?.id ?? ''),
       deletedBy: this.housingLocation.deletedBy ?? '',
     };
+
+    const finalPayload: Partial<HousingLocation> = { ...payload };
 
     this.housingService
       .updateHousingLocation(this.housingLocation.id, payload)

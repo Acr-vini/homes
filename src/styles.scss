@@ -1,17 +1,17 @@
+// ==========================================================================
+// 1. IMPORTS E DEFINIÇÕES GLOBAIS
+// ==========================================================================
 @use "@angular/material" as mat;
 @use "assets/styles/scrollBar.scss" as scrollBar;
+
 @include mat.core();
 @include scrollBar.scrollBar;
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-body {
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-ngx-spinner {
-  z-index: 1000 !important;
-}
+// ==========================================================================
+// 2. SISTEMA DE TEMA (CSS VARIABLES)
+// ==========================================================================
 :root {
   --purpleBrdr: #0e052c;
   --purpleBck: #381c9e;
@@ -19,6 +19,7 @@ ngx-spinner {
   --purpleHeader: #321c7f;
 }
 
+/* Tema claro */
 body.light-theme {
   --card-title-color: #0e052c;
   --background: #ffffff;
@@ -42,30 +43,28 @@ body.dark-theme {
   --mFF: #381c9e49;
 }
 
-/* Aplica variáveis */
-body {
-  background-color: var(--background);
-  color: var(--text-color);
-}
-
-mat-card {
-  background-color: var(--cardBck) !important;
-  color: var(--text-color) !important;
-}
-
-.card-title {
-  color: var(--titleAC);
-}
-
+// Estilos base e aplicação de variáveis
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Poppins", "Roboto", "Helvetica Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background-color: var(--background);
+  color: var(--text-color);
 }
 
+ngx-spinner {
+  z-index: 1000 !important;
+}
+
+// ==========================================================================
+// 3. TEMA ANGULAR MATERIAL (SCSS)
+// ==========================================================================
 $my-primary: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
 $my-accent: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
 $my-warn: mat.define-palette(mat.$red-palette);
@@ -82,81 +81,75 @@ $my-theme: mat.define-light-theme(
 
 @include mat.all-component-themes($my-theme);
 
-/* 2) Estilizar o wrapper inteiro (fundo, borda, radius) */
+// ==========================================================================
+// 4. SOBRESCRITAS GLOBAIS DE COMPONENTES MATERIAL
+// ==========================================================================
+
+/* Estilos Globais para MatCard */
+mat-card {
+  background-color: var(--cardBck) !important;
+  color: var(--text-color) !important;
+}
+.card-title {
+  color: var(--titleAC);
+}
+
+/* Estilos Globais para MatFormField */
 .mat-form-field-appearance-outline
   .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
   background-color: var(--cardBck) !important;
   border-radius: 4px !important;
 }
-
-/* 3) Label padrão */
 .mat-form-field-appearance-outline .mat-form-field-label {
   color: var(--text-color) !important;
 }
-
-/* 4) Placeholder */
 .mat-form-field-appearance-outline input::placeholder {
   color: var(--text-color) !important;
 }
-
-/* 5) Foco: muda a borda do wrapper e o label */
 .mat-form-field-appearance-outline.mat-focused
   .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
   border-color: var(--text-color) !important;
 }
-
 .mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
   color: var(--purpleBrdr) !important;
 }
-/* 6) Texto dentro do input (normal e em foco) */
 .mat-form-field-appearance-outline .mat-mdc-input-element {
-  color: var(--text-color) !important; /* texto normal */
+  color: var(--text-color) !important;
 }
-
 .mat-form-field-appearance-outline.mat-focused .mat-mdc-input-element {
-  color: var(--text-color) !important; /* texto ao focar */
+  color: var(--text-color) !important;
 }
-
-/* 7) Label flutuante (quando o texto “sai da linha”) */
 .mat-form-field-appearance-outline .mdc-floating-label {
-  color: var(--text-color) !important; /* cor antes de focar */
+  color: var(--text-color) !important;
 }
-
 .mat-form-field-appearance-outline.mat-focused .mdc-floating-label {
-  color: var(--text-color) !important; /* cor ao focar */
+  color: var(--text-color) !important;
 }
-
 .full-width {
   @include mat.form-field-density(-2);
   min-width: 0 !important;
 }
-/* Estilos globais para todo mat-form-field */
 .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
   margin: 0 !important;
   padding: 0 !important;
 }
-
 .mat-mdc-form-field-bottom-align::before {
   content: none !important;
 }
 
-/* 1) Fundo e texto do container do paginator */
+/* Estilos Globais para MatPaginator */
 .mat-paginator,
 .mat-mdc-paginator {
-  background-color: var(--cardBck) !important; /* mesmo fundo do card */
-  color: var(--text-color) !important; /* texto padrão */
-  padding: 0.5rem; /* um pouco de espaçamento */
+  background-color: var(--cardBck) !important;
+  color: var(--text-color) !important;
+  padding: 0.5rem;
 }
-
-/* 2) Label que mostra "1 – 10 of 100" */
 .mat-paginator-range-label,
 .mat-mdc-paginator-range-label {
   color: var(--text-color) !important;
   font-weight: 500;
 }
-
-/* 3) Select de page-size (o dropdown) */
 .mat-paginator-page-size,
 .mat-mdc-paginator-page-size {
   .mat-mdc-select-value,
@@ -167,32 +160,7 @@ $my-theme: mat.define-light-theme(
     border-radius: 4px;
   }
 }
-
-/* 4) Botões de navegação (previous / next) */
 .mat-paginator-icon-button,
-.mat-mdc-paginator-navigation-previous,
-.mat-mdc-paginator-navigation-next {
-  background-color: var(--purpleWeak) !important;
-  color: var(--text-color) !important;
-  border-radius: 4px !important;
-  margin: 0 0.25rem;
-  padding: 0.25rem;
-}
-
-/* 5) Hover nos botões de navegação */
-.mat-paginator-icon-button:hover,
-.mat-mdc-paginator-navigation-previous:hover,
-.mat-mdc-paginator-navigation-next:hover {
-  background-color: var(--purpleWeak) !important;
-  color: var(--text-color) !important;
-}
-
-/* 6) Desabilitado */
-.mat-paginator-icon-button.mat-button-disabled,
-.mat-mdc-paginator-navigation-previous.mat-button-disabled,
-.mat-mdc-paginator-navigation-next.mat-button-disabled {
-  opacity: 0.4;
-}
 .mat-mdc-paginator-navigation-first,
 .mat-mdc-paginator-navigation-previous,
 .mat-mdc-paginator-navigation-next,
@@ -202,4 +170,67 @@ $my-theme: mat.define-light-theme(
   border-radius: 4px !important;
   margin: 0 0.25rem;
   padding: 0.25rem;
+}
+.mat-paginator-icon-button:hover,
+.mat-mdc-paginator-navigation-previous:hover,
+.mat-mdc-paginator-navigation-next:hover {
+  background-color: var(--purpleWeak) !important;
+  color: var(--text-color) !important;
+}
+.mat-paginator-icon-button.mat-button-disabled,
+.mat-mdc-paginator-navigation-previous.mat-button-disabled,
+.mat-mdc-paginator-navigation-next.mat-button-disabled {
+  opacity: 0.4;
+}
+
+// ==========================================================================
+// 5. TEMAS DE COMPONENTES REUTILIZÁVEIS
+// ==========================================================================
+$filtro-base-bck: #381c9e;
+$filtro-hover-bck: #6b21a8;
+$filtro-border-color: darken($filtro-base-bck, 10%);
+
+.filtro-roxo-toggle {
+  .mat-button-toggle {
+    background-color: $filtro-base-bck;
+    color: white;
+    border-color: $filtro-border-color;
+  }
+  .mat-button-toggle-checked,
+  &:hover .mat-button-toggle:hover {
+    background-color: $filtro-hover-bck;
+    color: white;
+    border-color: $filtro-hover-bck;
+  }
+}
+
+.filtro-roxo-checkbox-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background-color: $filtro-base-bck;
+  padding: 8px 16px;
+  border-radius: 4px;
+
+  mat-checkbox {
+    .mdc-form-field label {
+      color: white;
+    }
+    .mdc-checkbox__native-control {
+      border-color: white !important;
+    }
+    .mdc-checkbox--selected .mdc-checkbox__native-control {
+      background-color: $filtro-hover-bck !important;
+      border-color: $filtro-hover-bck !important;
+    }
+  }
+}
+
+button.filtro-roxo-icon-button {
+  background-color: $filtro-base-bck;
+  color: white;
+  border-radius: 50%;
+  &:hover {
+    background-color: $filtro-hover-bck;
+  }
 }

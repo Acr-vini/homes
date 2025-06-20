@@ -91,9 +91,6 @@ export class homeheaderComponent implements OnInit, OnDestroy {
     this.notificationSub = this.notificationService
       .getNewApplicationsCount()
       .subscribe((count) => {
-        // Log para depuração
-        console.log(`[HomeHeader] Recebeu novo contador do serviço: ${count}.`);
-
         // Atualiza a contagem de aplicações
         this.newApplicationCount = count;
 

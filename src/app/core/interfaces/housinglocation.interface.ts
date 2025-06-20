@@ -8,12 +8,13 @@ export interface HousingLocation {
   wifi: boolean;
   laundry: boolean;
   typeOfBusiness: 'rent' | 'sell';
+  propertyType: 'house' | 'apartment' | 'terrain' | 'studio';
   createBy?: string;
   editedBy?: string;
   deletedBy?: string;
   isFavorite?: boolean;
-  createdAt?: string | Date; // Adicionado - pode ser string (ISO) ou Date
-  updatedAt?: string | Date; // Adicionado
-  deletedAt?: string | Date; // Adicionado
-  deleted: boolean; // Adicionado - indica se a localização foi deletada
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  deletedAt?: string | Date;
+  deleted: boolean;
 }

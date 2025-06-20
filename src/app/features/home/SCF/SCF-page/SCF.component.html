@@ -1,51 +1,117 @@
-<div class="home-filter-wrapper">
-  <section class="home-filter">
-    <form (submit)="onSubmit($event)">
-      <input
-        type="text"
-        placeholder="Filter by city"
-        [formControl]="filterControl"
-      />
-      <button
-        class="search-button"
-        type="submit"
-        mat-icon-button
-        color="primary"
-      >
-        <mat-icon>search</mat-icon>
+<mat-sidenav-container class="filter-sidenav-container">
+  <mat-sidenav #sidenav mode="over" position="start" class="filter-sidenav">
+    <div class="sidenav-header">
+      <h3>Filtros</h3>
+      <button mat-icon-button (click)="sidenav.close()" matTooltip="Fechar">
+        <mat-icon>close</mat-icon>
       </button>
-    </form>
-  </section>
+    </div>
 
-  <div class="create-wrapper">
-    <button class="create-button" (click)="openCreateHouse()">
-      + Create a House
-    </button>
-    <button
-      class="favorites-button"
-      routerLink="/favorites"
-      aria-label="Favorites"
-    >
-      <mat-icon>favorite_border</mat-icon>
-      Favorites
-    </button>
-  </div>
-</div>
+    <div class="filters-panel-content">
+      <form class="filters-panel-form" [formGroup]="filterForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Property type</mat-label>
+          <mat-select formControlName="propertyType">
+            @for (type of propertyTypes; track type) {
+            <mat-option [value]="type === 'No Preference' ? '' : type">
+              {{ type | titlecase }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
 
-<section class="housing-location-container">
-  <app-house-cards
-    *ngFor="let housingLocation of pagedLocationList"
-    [housingLocation]="housingLocation"
-  >
-  </app-house-cards>
-</section>
+        <label class="mat-body-strong">Tipo de Negócio</label>
+        <mat-button-toggle-group
+          formControlName="typeOfBusiness"
+          class="filtro-roxo-toggle"
+          aria-label="Tipo de Negócio"
+        >
+          <mat-button-toggle value="sell">Sell</mat-button-toggle>
+          <mat-button-toggle value="rent">Rent</mat-button-toggle>
+        </mat-button-toggle-group>
 
-<mat-paginator
-  [length]="filteredLocationList.length"
-  [pageSize]="20"
-  [pageSizeOptions]="[4, 8, 16, 20, 30, 50]"
-  (page)="onPageChange($event)"
-  showFirstLastButtons
-></mat-paginator>
+        <label class="mat-body-strong">Comodidades</label>
+        <div class="filtro-roxo-checkbox-group">
+          <mat-checkbox formControlName="wifi">Wi-Fi</mat-checkbox>
+          <mat-checkbox formControlName="laundry">Laundry</mat-checkbox>
+        </div>
+      </form>
 
-<app-legal-info></app-legal-info>
+      @if(filterForm.dirty) {
+      <div class="clear-filters-wrapper">
+        <button
+          mat-raised-button
+          class="clear-filters-button"
+          (click)="clearFilters()"
+        >
+          <mat-icon>delete_sweep</mat-icon>
+          Limpar Filtros
+        </button>
+      </div>
+      }
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="home-filter-wrapper">
+      <mat-form-field
+        appearance="outline"
+        class="filters-form-container__city-filter compact-form-field"
+      >
+        <mat-label>Filter by city</mat-label>
+        <input matInput formControlName="city" placeholder="Ex: Curitiba" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        (click)="sidenav.open()"
+        class="create-button compact-button"
+      >
+        <mat-icon>filter_list</mat-icon>
+        Filtros
+      </button>
+
+      @if(filterForm.dirty) {
+      <button
+        mat-icon-button
+        (click)="clearFilters()"
+        matTooltip="Limpar filtros"
+        class="clear-icon-button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+
+      <div class="create-wrapper">
+        <button class="create-button" (click)="openCreateHouse()">
+          + Create a House
+        </button>
+        <button
+          class="favorites-button"
+          routerLink="/favorites"
+          aria-label="Favorites"
+        >
+          <mat-icon>favorite_border</mat-icon>
+          Favorites
+        </button>
+      </div>
+    </div>
+
+    <section class="housing-location-container">
+      @for (housingLocation of pagedLocationList; track housingLocation.id) {
+      <app-house-cards [housingLocation]="housingLocation" />
+      }
+    </section>
+
+    <mat-paginator
+      [length]="filteredLocationList.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[4, 8, 16, 20, 30, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+
+    <app-legal-info></app-legal-info>
+  </mat-sidenav-content>
+</mat-sidenav-container>
