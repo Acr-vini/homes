@@ -69,11 +69,11 @@ export class homeheaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Configuração inicial do tema
-    this.isDark = false;
-    document.body.classList.add('light-theme');
-    document.body.classList.remove('dark-theme');
-    localStorage.setItem('darkMode', 'false');
+    // --- CORREÇÃO DA LÓGICA DO TEMA ---
+    // 1. Lê a preferência do usuário do localStorage.
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    // 2. Aplica o tema salvo ao iniciar o componente.
+    this.toggleDark(savedDarkMode);
 
     // Simulação de carregamento
     this.loading = true;

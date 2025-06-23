@@ -70,6 +70,7 @@ export class UserEditComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
+    private snackBar: MatSnackBar, // 2. Injete o MatSnackBar aqui
     @Optional() public dialogRef?: MatDialogRef<UserEditComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
@@ -104,7 +105,8 @@ export class UserEditComponent implements OnInit {
       this.spinner.show(); // Mostra o spinner
 
       const updatedUser = { ...this.user, ...this.userForm.value };
-      this.userService.updateUser(updatedUser).subscribe({
+      // A correção é adicionar 'this.userId' como o primeiro argumento.
+      this.userService.updateUser(this.userId, updatedUser).subscribe({
         next: () => {
           this.spinner.hide(); // Esconde o spinner
           if (this.dialogRef) {

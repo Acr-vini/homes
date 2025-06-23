@@ -17,4 +17,5 @@ export interface HousingLocation {
   updatedAt?: string | Date;
   deletedAt?: string | Date;
   deleted: boolean;
+  ownerId: string;
 }

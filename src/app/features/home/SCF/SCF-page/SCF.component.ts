@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Importa o MatSnackBar
 
 @Component({
   selector: 'app-SCF',
@@ -72,7 +73,7 @@ export class SCFComponent implements OnInit, OnDestroy {
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private snackBar: MatSnackBar) {
     // NOVO: Inicializamos o formulário no construtor.
     // Os valores iniciais representam um formulário "limpo".
     this.filterForm = this.fb.group({
@@ -196,8 +197,23 @@ export class SCFComponent implements OnInit, OnDestroy {
   }
 
   openCreateHouse() {
+    if (
+      this.currentUserRole !== 'Admin' &&
+      this.currentUserRole !== 'Manager' &&
+      this.currentUserRole !== 'Realtor'
+    ) {
+      this.snackBar.open(
+        'You do not have permission to perform this action.',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
+      return; // Impede a abertura do dialog
+    }
+
     const dialogRef = this.dialog.open(CreateComponent, {
-      width: '700px',
+      width: '80%',
       minWidth: '800px',
       disableClose: true,
       autoFocus: false,

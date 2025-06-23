@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatSnackBarModule,
     NgxSpinnerModule,
     MatIconButton,
+    RouterLink,
+    MatCardModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

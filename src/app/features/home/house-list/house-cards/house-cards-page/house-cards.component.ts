@@ -103,4 +103,19 @@ export class HouseCardsComponent {
       });
     }, 1000);
   }
+
+  canEditHouse(house: HousingLocation): boolean {
+    const role = this.currentUserRole;
+    const userId = this.currentUserId;
+
+    if (role === 'Admin' || role === 'Manager') {
+      return true; // Admin e Manager podem editar tudo
+    }
+
+    if (role === 'Realtor' && house.ownerId === userId) {
+      return true; // Realtor pode editar apenas as próprias casas
+    }
+
+    return false;
+  }
 }

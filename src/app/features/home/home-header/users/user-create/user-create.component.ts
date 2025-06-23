@@ -19,7 +19,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-// NOVO: Importe o MatProgressBarModule
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
@@ -36,7 +35,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSelectModule,
     MatSnackBarModule,
     NgxSpinnerModule,
-    // NOVO: Adicione o MatProgressBarModule aos imports
     MatProgressBarModule,
   ],
   templateUrl: './user-create.component.html',
@@ -62,11 +60,12 @@ export class UserCreateComponent implements OnInit {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      phone: [''],
-      location: [''],
-      role: ['', Validators.required],
-      status: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      phone: ['', Validators.required],
+      location: ['', Validators.required],
+      role: ['User', Validators.required],
+      status: ['active', Validators.required],
+      cpf: [''], // Adicione o campo cpf
     });
   }
 
@@ -79,6 +78,16 @@ export class UserCreateComponent implements OnInit {
         this.userForm.get('password')?.disable();
       });
     }
+
+    this.userForm.get('role')?.valueChanges.subscribe((role) => {
+      const cpfControl = this.userForm.get('cpf');
+      if (role === 'Realtor') {
+        cpfControl?.setValidators(Validators.required);
+      } else {
+        cpfControl?.clearValidators();
+      }
+      cpfControl?.updateValueAndValidity();
+    });
 
     // NOVO: Inscreva-se nas mudanças do formulário para calcular o progresso
     this.userForm.valueChanges.subscribe(() => {
@@ -112,7 +121,6 @@ export class UserCreateComponent implements OnInit {
   }
 
   onSave(): void {
-    // ALTERADO: Melhoria na validação para fornecer feedback ao usuário
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       this.snackBar.open(
@@ -127,19 +135,38 @@ export class UserCreateComponent implements OnInit {
 
     this.spinner.show();
 
-    this.userService.createUser(this.userForm.getRawValue()).subscribe({
+    const formValue = this.userForm.getRawValue();
+
+    // Constrói o payload manualmente para garantir a estrutura exata
+    const userPayload: any = {
+      name: formValue.name,
+      email: formValue.email,
+      password: formValue.password,
+      status: formValue.status,
+      role: formValue.role,
+      phone: formValue.phone,
+      location: formValue.location,
+    };
+
+    // Adiciona o CPF apenas se a role for Realtor
+    if (formValue.role === 'Realtor') {
+      userPayload.cpf = formValue.cpf;
+    }
+
+    this.userService.createUser(userPayload).subscribe({
       next: () => {
         this.snackBar.open('✅ User successfully created!', 'Close', {
           panelClass: ['snackbar-success'],
         });
         this.spinner.hide();
         if (this.dialogRef) {
-          this.dialogRef.close(true); // Indica sucesso ao fechar
+          this.dialogRef.close(true);
         } else {
           this.router.navigate(['/users']);
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error creating user:', err); // Log do erro real
         this.snackBar.open('❌ Error creating user', 'Close', {
           panelClass: ['snackbar-error'],
         });

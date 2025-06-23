@@ -7,4 +7,5 @@ export interface User {
   role: string;
   phone: string;
   location: string;
+  cpf?: string;
 }

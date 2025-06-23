@@ -65,10 +65,21 @@
       <mat-label>Role</mat-label>
       <mat-select formControlName="role" required>
         <mat-option value="User">User</mat-option>
+        <mat-option value="Realtor">Realtor</mat-option>
+        <!-- ADICIONE ESTA OPÇÃO -->
         <mat-option value="Manager">Manager</mat-option>
         <mat-option value="Admin">Admin</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <!-- CPF Field (only for Realtors) -->
+    @if (userForm.get('role')?.value === 'Realtor') {
+    <mat-form-field class="full-width">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf" required />
+      <mat-error>CPF is required for Realtors</mat-error>
+    </mat-form-field>
+    }
 
     <!-- Status -->
     <mat-form-field class="full-width">

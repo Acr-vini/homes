@@ -9,9 +9,12 @@ import { homeheaderComponent } from './features/home/home-header/home-header-pag
 // Páginas protegidas
 import { AuthGuard } from './core/guards/auth.guard';
 
+import { RegisterComponent } from './features/login/register/register/register.component'; // ADICIONE ESTA IMPORTAÇÃO
+
 const routes: Routes = [
   // Rota pública
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent }, // ADICIONE ESTA ROTA
 
   // Container principal (Shell) para todas as rotas autenticadas
   {

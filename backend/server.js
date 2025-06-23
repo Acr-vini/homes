@@ -45,7 +45,13 @@ server.post("/auth/login", (req, res) => {
 
 // 5) Middleware de proteção — todas as outras rotas exigem token
 server.use((req, res, next) => {
-  if (req.path === "/auth/login") return next();
+  // PERMITE a rota de login E a rota de criação de usuário (registro) sem token
+  if (
+    req.path === "/auth/login" ||
+    (req.path === "/users" && req.method === "POST")
+  ) {
+    return next(); // Permite o acesso
+  }
 
   const authHeader = req.headers.authorization;
   if (!authHeader) {

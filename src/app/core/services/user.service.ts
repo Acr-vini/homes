@@ -9,39 +9,40 @@ import { User } from '../interfaces/user.interface';
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:3000/users';
+  private apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
   /** GET: retorna lista de usuários */
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseUrl);
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
 
   /** GET: retorna um usuário por ID */
   getUserById(id: string): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/${id}`);
+    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
   }
 
   /** PUT: atualiza um usuário */
-  updateUser(user: User): Observable<User> {
-    return this.http.put<User>(`${this.baseUrl}/${user.id}`, user);
+  updateUser(id: string, user: Partial<User>): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/users/${id}`, user);
   }
 
   /** DELETE: deleta um usuário */
   deleteUser(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`);
   }
 
   /** POST: cria um novo usuário */
   createUser(user: Omit<User, 'id'>): Observable<User> {
-    return this.http.post<User>(this.baseUrl, user);
+    // CORREÇÃO: A rota correta para criar um usuário no seu backend é /users, não /register.
+    return this.http.post<User>(`${this.apiUrl}/users`, user);
   }
 
   // Busca usuário por email e senha
   authenticate(email: string, password: string): Observable<User | null> {
     return this.http
-      .get<User[]>(`${this.baseUrl}?email=${email}&password=${password}`)
+      .get<User[]>(`${this.apiUrl}/users?email=${email}&password=${password}`)
       .pipe(map((users) => (users.length ? users[0] : null)));
   }
 }

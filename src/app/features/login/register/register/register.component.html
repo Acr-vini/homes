@@ -1,0 +1,92 @@
+<ngx-spinner
+  size="medium"
+  color="#fff"
+  type="ball-scale-multiple"
+></ngx-spinner>
+<mat-card class="register-card">
+  <mat-card-title>Create your Account</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <!-- Role Selection -->
+      <mat-form-field class="full-width">
+        <mat-label>Account Type</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value="User">User</mat-option>
+          <mat-option value="Realtor">Realtor</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Name -->
+      <mat-form-field class="full-width">
+        <mat-label>Full Name</mat-label>
+        <input matInput formControlName="name" required />
+        <mat-error>Name is required</mat-error>
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" required />
+        <mat-error>A valid email is required</mat-error>
+      </mat-form-field>
+
+      <!-- Password -->
+      <mat-form-field class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          required
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="hidePassword = !hidePassword"
+          type="button"
+        >
+          <mat-icon>{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error>Password is required (min. 6 characters)</mat-error>
+      </mat-form-field>
+
+      <!-- Phone -->
+      <mat-form-field class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" required />
+        <mat-error>Phone is required</mat-error>
+      </mat-form-field>
+
+      <!-- CPF Field (only for Realtors) -->
+      <mat-form-field
+        class="full-width"
+        *ngIf="registerForm.get('role')?.value === 'Realtor'"
+      >
+        <mat-label>CPF</mat-label>
+        <input matInput formControlName="cpf" required />
+        <mat-error>CPF is required for Realtors</mat-error>
+      </mat-form-field>
+
+      <!-- Location -->
+      <mat-form-field class="full-width">
+        <mat-label>Location (e.g., City, Country)</mat-label>
+        <input matInput formControlName="location" required />
+        <mat-error>Location is required</mat-error>
+      </mat-form-field>
+
+      <div class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="registerForm.invalid"
+        >
+          Register
+        </button>
+        <a mat-button routerLink="/login">Back to Login</a>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

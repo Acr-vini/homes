@@ -2,59 +2,75 @@
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-  <!-- Email field -->
-  <mat-form-field appearance="fill" class="login-form-field">
-    <mat-label>Email</mat-label>
-    <input matInput type="email" formControlName="email" />
-    <!-- Error message for email field -->
-    <mat-error
-      *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-    >
-      Email is required and must be valid.
-    </mat-error>
-  </mat-form-field>
+<mat-card class="login-card">
+  <mat-card-title>Welcome Back</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email field -->
+      <mat-form-field class="full-width" appearance="outline">
+        <!-- Altere aqui -->
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+        <mat-error
+          *ngIf="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+        >
+          Email is required and must be valid.
+        </mat-error>
+      </mat-form-field>
 
-  <!-- Password field with eye icon -->
-  <mat-form-field appearance="fill" class="login-form-field">
-    <mat-label>Password</mat-label>
-    <input
-      matInput
-      [type]="hidePassword ? 'password' : 'text'"
-      formControlName="password"
-    />
-    <mat-error
-      *ngIf="
-        loginForm.get('password')?.invalid && loginForm.get('password')?.touched
-      "
-    >
-      Password is required.
-    </mat-error>
-    <!-- Button to show/hide password -->
-    <button
-      mat-icon-button
-      matSuffix
-      type="button"
-      (click)="hidePassword = !hidePassword"
-      [attr.aria-label]="'Toggle password visibility'"
-      [attr.aria-pressed]="!hidePassword"
-    >
-      <mat-icon>{{ hidePassword ? "visibility_off" : "visibility" }}</mat-icon>
-    </button>
-  </mat-form-field>
+      <!-- Password field -->
+      <mat-form-field class="full-width" appearance="outline">
+        <!-- Altere aqui -->
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword"
+        >
+          <mat-icon>{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+        >
+          Password is required.
+        </mat-error>
+      </mat-form-field>
 
-  <!-- Forgot password link -->
-  <div class="forgot-password-link">
-    <a href="#" (click)="onForgotPassword($event)">Forgot your password?</a>
-  </div>
+      <div class="actions">
+        <!-- Login button -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loginForm.invalid"
+        >
+          Login
+        </button>
 
-  <!-- Login button -->
-  <button
-    mat-raised-button
-    color="primary"
-    type="submit"
-    [disabled]="loginForm.invalid"
-  >
-    Login
-  </button>
-</form>
+        <!-- Forgot password link -->
+        <div class="forgot-password-link">
+          <a (click)="onForgotPassword($event)">Forgot your password?</a>
+        </div>
+
+        <!-- Register link -->
+        <div class="register-link">
+          <span>Don't have an account? </span>
+          <a routerLink="/register">Create one</a>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -21,16 +21,28 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     const token = this.auth.getToken();
     let authReq = req;
+
+    // 1. Lógica de Adição de Token (CORRETA)
+    // O cabeçalho de autorização só é adicionado se um token for encontrado.
+    // Para rotas públicas como /register ou /login, o token será nulo,
+    // e a requisição original passará sem o cabeçalho, o que é o comportamento desejado.
     if (token) {
       authReq = req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
       });
     }
+
+    // 2. Lógica de Tratamento de Erro (CORRETA)
+    // O pipe com catchError lida com respostas de erro do servidor.
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
+        // Se o erro for 401 (Unauthorized) ou 403 (Forbidden), significa que o token
+        // é inválido ou expirou. A melhor ação é deslogar o usuário.
         if (error.status === 401 || error.status === 403) {
           this.auth.logout();
         }
+        // Re-lança o erro para que o serviço que fez a chamada original
+        // também possa tratá-lo (ex: exibir uma mensagem de erro).
         return throwError(() => error);
       })
     );

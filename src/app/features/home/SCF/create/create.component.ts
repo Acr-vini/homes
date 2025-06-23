@@ -199,12 +199,21 @@ export class CreateComponent implements OnInit {
 
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
-    ); // 4. Monta o payload com o código ISO do estado
+    );
+
+    if (!currentUser) {
+      this.snackBar.open(
+        '❌ You must be logged in to create a house.',
+        'Close',
+        { duration: 3000 }
+      );
+      return;
+    }
 
     const payload: Omit<HousingLocation, 'id'> = {
       name: this.form.value.name,
       city: this.cityControl.value,
-      state: stateIsoCode, // 👈 USA O CÓDIGO ISO CORRIGIDO
+      state: stateIsoCode,
       photo: this.form.value.photo || (this.imagePreview as string) || '',
       availableUnits: this.form.value.availableUnits,
       wifi: this.form.value.wifi,
@@ -215,7 +224,8 @@ export class CreateComponent implements OnInit {
       editedBy: '',
       deletedBy: '',
       deleted: false,
-    }; // Envia o payload para o serviço
+      ownerId: currentUser.id,
+    };
 
     this.housingService.createHousingLocation(payload).subscribe({
       next: () => {

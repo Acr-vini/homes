@@ -102,17 +102,29 @@ export class EditComponent implements OnInit {
 
     this.housingService.getHousingLocationById(id).subscribe({
       next: (house) => {
+        if (!house) {
+          this.router.navigateByUrl('/');
+          return;
+        }
         this.housingLocation = house;
         this.imagePreview = house.photo ?? null;
 
         // Lógica de permissão para exibir botões de ação
-        if (
-          this.currentUserRole === 'Admin' ||
-          this.currentUserRole === 'Manager'
-        ) {
+        const role = this.currentUserRole;
+        const userId = user?.id;
+
+        if (role === 'Admin' || role === 'Manager') {
+          this.canPerformActions = true;
+        } else if (role === 'Realtor' && house.ownerId === userId) {
           this.canPerformActions = true;
         } else {
-          this.canPerformActions = house.createBy === user?.id;
+          this.canPerformActions = false;
+          this.snackBar.open(
+            'You do not have permission to edit this property.',
+            'Close',
+            { duration: 4000 }
+          );
+          this.onCancel(); // Fecha o dialog ou redireciona
         }
 
         // Preenche o formulário com os dados da casa

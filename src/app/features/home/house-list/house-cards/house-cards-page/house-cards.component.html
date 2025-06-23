@@ -49,10 +49,7 @@
     </div>
   </a>
 
-  <div
-    class="card-edit-button-wrapper"
-    *ngIf="currentUserRole === 'Admin' || currentUserRole === 'Manager'"
-  >
+  <div class="card-edit-button-wrapper" *ngIf="canEditHouse(housingLocation)">
     <button
       class="edit-button"
       (click)="openEditHouse(housingLocation.id)"
