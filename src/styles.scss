@@ -1,5 +1,5 @@
 // ==========================================================================
-// 1. IMPORTS E DEFINIÇÕES GLOBAIS
+// 1. IMPORTS E CONFIGURAÇÕES GLOBAIS
 // ==========================================================================
 @use "@angular/material" as mat;
 @use "assets/styles/scrollBar.scss" as scrollBar;
@@ -7,11 +7,13 @@
 @include mat.core();
 @include scrollBar.scrollBar;
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 // ==========================================================================
 // 2. SISTEMA DE TEMA (CSS VARIABLES)
 // ==========================================================================
+
+/* Variáveis de cor que NÃO mudam com o tema */
 :root {
   --purpleBrdr: #0e052c;
   --purpleBck: #381c9e;
@@ -19,31 +21,31 @@
   --purpleHeader: #321c7f;
 }
 
-/* Tema claro */
+/* Tema Claro (Padrão) */
 body.light-theme {
-  --card-title-color: #0e052c;
   --background: #ffffff;
   --text-color: #121212;
-  --card-bg: #f5f5f5;
+  --cardBck: #f5f5f5;
   --toggle: #eeff00;
   --titleAC: #321c7f;
-  --cardBck: #f5f5f5;
+  --card-title-color: #0e052c;
   --mFF: #ffffff;
 }
 
-/* Tema escuro */
+/* Tema Escuro */
 body.dark-theme {
-  --card-title-color: #ffffff;
   --background: #121212;
   --text-color: #ffffff;
-  --card-bg: #27165e;
+  --cardBck: #2c2a4a; // Ajustado para melhor contraste
   --toggle: #605ea3;
   --titleAC: #ffffff;
-  --cardBck: #6f5ead;
+  --card-title-color: #ffffff;
   --mFF: #381c9e49;
 }
 
-// Estilos base e aplicação de variáveis
+// ==========================================================================
+// 3. ESTILOS GLOBAIS DE ELEMENTOS
+// ==========================================================================
 html,
 body {
   height: 100%;
@@ -52,10 +54,16 @@ body {
 body {
   margin: 0;
   font-family: "Poppins", "Roboto", "Helvetica Neue", sans-serif;
-  font-weight: 400;
-  font-style: normal;
   background-color: var(--background);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.mat-drawer-content,
+.mat-sidenav-content {
+  background-color: var(--background);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ngx-spinner {
@@ -63,7 +71,7 @@ ngx-spinner {
 }
 
 // ==========================================================================
-// 3. TEMA ANGULAR MATERIAL (SCSS)
+// 4. TEMA ANGULAR MATERIAL (SCSS)
 // ==========================================================================
 $my-primary: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
 $my-accent: mat.define-palette(mat.$deep-purple-palette, 500, 300, 700);
@@ -82,10 +90,10 @@ $my-theme: mat.define-light-theme(
 @include mat.all-component-themes($my-theme);
 
 // ==========================================================================
-// 4. SOBRESCRITAS GLOBAIS DE COMPONENTES MATERIAL
+// 5. SOBRESCRITAS GLOBAIS DE COMPONENTES MATERIAL
 // ==========================================================================
 
-/* Estilos Globais para MatCard */
+/* MatCard */
 mat-card {
   background-color: var(--cardBck) !important;
   color: var(--text-color) !important;
@@ -94,71 +102,53 @@ mat-card {
   color: var(--titleAC);
 }
 
-/* Estilos Globais para MatFormField */
-.mat-form-field-appearance-outline
+/* MatFormField */
+.mat-form-field-appearance-outline {
   .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
-  background-color: var(--cardBck) !important;
-  border-radius: 4px !important;
-}
-.mat-form-field-appearance-outline .mat-form-field-label {
-  color: var(--text-color) !important;
-}
-.mat-form-field-appearance-outline input::placeholder {
-  color: var(--text-color) !important;
-}
-.mat-form-field-appearance-outline.mat-focused
-  .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
-  border-color: var(--text-color) !important;
-}
-.mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
-  color: var(--purpleBrdr) !important;
-}
-.mat-form-field-appearance-outline .mat-mdc-input-element {
-  color: var(--text-color) !important;
-}
-.mat-form-field-appearance-outline.mat-focused .mat-mdc-input-element {
-  color: var(--text-color) !important;
-}
-.mat-form-field-appearance-outline .mdc-floating-label {
-  color: var(--text-color) !important;
-}
-.mat-form-field-appearance-outline.mat-focused .mdc-floating-label {
-  color: var(--text-color) !important;
-}
-.full-width {
-  @include mat.form-field-density(-2);
-  min-width: 0 !important;
+    background-color: var(--mFF) !important;
+    border-radius: 4px !important;
+  }
+  .mat-form-field-label,
+  input::placeholder,
+  .mat-mdc-input-element,
+  .mdc-floating-label {
+    color: var(--text-color) !important;
+  }
+  &.mat-focused {
+    .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+      border-color: var(--text-color) !important;
+    }
+    .mat-form-field-label {
+      color: var(--purpleBrdr) !important;
+    }
+  }
 }
 .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 .mat-mdc-form-field-bottom-align::before {
   content: none !important;
 }
 
-/* Estilos Globais para MatPaginator */
+/* MatSelect */
+.mat-mdc-select-value {
+  color: var(--text-color) !important;
+}
+.mat-mdc-select-arrow svg {
+  fill: var(--text-color) !important;
+}
+
+/* MatPaginator */
 .mat-paginator,
 .mat-mdc-paginator {
   background-color: var(--cardBck) !important;
   color: var(--text-color) !important;
-  padding: 0.5rem;
 }
 .mat-paginator-range-label,
-.mat-mdc-paginator-range-label {
+.mat-mdc-paginator-range-label,
+.mat-paginator-page-size .mat-mdc-select-value,
+.mat-paginator-page-size .mat-paginator-page-size-label {
   color: var(--text-color) !important;
-  font-weight: 500;
-}
-.mat-paginator-page-size,
-.mat-mdc-paginator-page-size {
-  .mat-mdc-select-value,
-  .mat-paginator-page-size-label {
-    color: var(--text-color) !important;
-  }
-  .mat-mdc-select-trigger {
-    border-radius: 4px;
-  }
 }
 .mat-paginator-icon-button,
 .mat-mdc-paginator-navigation-first,
@@ -169,22 +159,13 @@ mat-card {
   color: var(--text-color) !important;
   border-radius: 4px !important;
   margin: 0 0.25rem;
-  padding: 0.25rem;
 }
-.mat-paginator-icon-button:hover,
-.mat-mdc-paginator-navigation-previous:hover,
-.mat-mdc-paginator-navigation-next:hover {
-  background-color: var(--purpleWeak) !important;
-  color: var(--text-color) !important;
-}
-.mat-paginator-icon-button.mat-button-disabled,
-.mat-mdc-paginator-navigation-previous.mat-button-disabled,
-.mat-mdc-paginator-navigation-next.mat-button-disabled {
+.mat-paginator-icon-button.mat-button-disabled {
   opacity: 0.4;
 }
 
 // ==========================================================================
-// 5. TEMAS DE COMPONENTES REUTILIZÁVEIS
+// 6. CLASSES DE UTILIDADE REUTILIZÁVEIS
 // ==========================================================================
 $filtro-base-bck: #381c9e;
 $filtro-hover-bck: #6b21a8;
@@ -216,21 +197,9 @@ $filtro-border-color: darken($filtro-base-bck, 10%);
     .mdc-form-field label {
       color: white;
     }
-    .mdc-checkbox__native-control {
-      border-color: white !important;
-    }
     .mdc-checkbox--selected .mdc-checkbox__native-control {
       background-color: $filtro-hover-bck !important;
       border-color: $filtro-hover-bck !important;
     }
-  }
-}
-
-button.filtro-roxo-icon-button {
-  background-color: $filtro-base-bck;
-  color: white;
-  border-radius: 50%;
-  &:hover {
-    background-color: $filtro-hover-bck;
   }
 }

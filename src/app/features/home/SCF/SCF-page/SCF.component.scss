@@ -1,8 +1,4 @@
 @use "@angular/material" as mat; // Adicione esta linha no topo
-* {
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
-}
 
 .compact-form-field {
   @include mat.form-field-density(-3);
@@ -42,11 +38,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--purpleWeak); // Usa a variável de tema
+
   h3 {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
+    color: var(--text-color); // Aplica a cor de texto do tema
   }
 }
 

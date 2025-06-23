@@ -2,8 +2,8 @@
   <mat-sidenav-container class="filter-sidenav-container">
     <mat-sidenav #sidenav mode="over" position="start" class="filter-sidenav">
       <div class="sidenav-header">
-        <h3>Filtros</h3>
-        <button mat-icon-button (click)="sidenav.close()" matTooltip="Fechar">
+        <h3>Filters</h3>
+        <button mat-icon-button (click)="sidenav.close()" matTooltip="Close">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -21,17 +21,17 @@
             </mat-select>
           </mat-form-field>
 
-          <label class="mat-body-strong">Tipo de Negócio</label>
+          <label class="mat-body-strong">Transaction Type</label>
           <mat-button-toggle-group
             formControlName="typeOfBusiness"
             class="filtro-roxo-toggle"
-            aria-label="Tipo de Negócio"
+            aria-label="Transaction Type"
           >
             <mat-button-toggle value="sell">Sell</mat-button-toggle>
             <mat-button-toggle value="rent">Rent</mat-button-toggle>
           </mat-button-toggle-group>
 
-          <label class="mat-body-strong">Comodidades</label>
+          <label class="mat-body-strong">Amenities</label>
           <div class="filtro-roxo-checkbox-group">
             <mat-checkbox formControlName="wifi">Wi-Fi</mat-checkbox>
             <mat-checkbox formControlName="laundry">Laundry</mat-checkbox>
@@ -46,7 +46,7 @@
             (click)="clearFilters()"
           >
             <mat-icon>delete_sweep</mat-icon>
-            Limpar Filtros
+            Clear Filters
           </button>
         </div>
         }
@@ -70,14 +70,14 @@
           class="create-button compact-button"
         >
           <mat-icon>filter_list</mat-icon>
-          Filtros
+          Filters
         </button>
 
         @if(filterForm.dirty) {
         <button
           mat-icon-button
           (click)="clearFilters()"
-          matTooltip="Limpar filtros"
+          matTooltip="Clear filters"
           class="clear-icon-button"
         >
           <mat-icon>close</mat-icon>
@@ -87,7 +87,6 @@
         <div class="create-wrapper">
           @if(currentUserRole === 'Admin' || currentUserRole === 'Manager' ||
           currentUserRole === 'Realtor') {
-          <!-- ADICIONE 'Realtor' -->
           <button class="create-button" (click)="openCreateHouse()">
             + Create a House
           </button>
