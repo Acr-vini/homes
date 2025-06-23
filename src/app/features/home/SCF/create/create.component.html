@@ -115,6 +115,18 @@
       </mat-error>
     </mat-form-field>
 
+    <!-- CAMPO DE PREÇO ADICIONADO -->
+    <mat-form-field class="full-width">
+      <mat-label>Price (USD)</mat-label>
+      <input matInput type="number" formControlName="price" required min="1" />
+      <mat-error *ngIf="form.get('price')?.hasError('required')">
+        Price is required.
+      </mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('min')">
+        Price must be positive.
+      </mat-error>
+    </mat-form-field>
+
     <mat-form-field class="full-width">
       <mat-label>Photo URL</mat-label>
       <input matInput formControlName="photo" />

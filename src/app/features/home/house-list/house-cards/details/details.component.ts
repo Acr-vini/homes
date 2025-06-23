@@ -70,7 +70,8 @@ export class DetailsComponent implements OnInit {
   );
   today = new Date().toISOString().split('T')[0];
 
-  visitHours = [
+  // Renomeia a lista principal de horários
+  allVisitHours = [
     '08:00',
     '09:00',
     '10:00',
@@ -85,6 +86,8 @@ export class DetailsComponent implements OnInit {
     '19:00',
     '20:00',
   ];
+  // Esta nova lista será usada no template
+  filteredVisitHours: string[] = [];
 
   // SECTION: Lifecycle Hooks
   constructor() {
@@ -120,6 +123,59 @@ export class DetailsComponent implements OnInit {
         location: this.currentUser.location,
       });
     }
+
+    this.route.params.subscribe((params) => {
+      const housingLocationId = params['id'];
+      this.loadHousingLocation(housingLocationId);
+    });
+
+    // Escuta mudanças na data da visita para atualizar os horários disponíveis
+    this.applyForm.get('visitDate')?.valueChanges.subscribe((selectedDate) => {
+      this.updateAvailableHours(selectedDate);
+      // Reseta o horário selecionado quando a data muda
+      this.applyForm.get('visitTime')?.reset('');
+    });
+  }
+
+  updateAvailableHours(selectedDateStr: string | null): void {
+    if (!selectedDateStr) {
+      this.filteredVisitHours = [];
+      return;
+    }
+
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+
+    if (selectedDateStr > todayStr) {
+      // Se a data selecionada for no futuro, mostra todos os horários.
+      this.filteredVisitHours = this.allVisitHours;
+    } else if (selectedDateStr === todayStr) {
+      // Se a data for hoje, filtra para mostrar apenas os horários futuros.
+      const currentHour = now.getHours();
+      this.filteredVisitHours = this.allVisitHours.filter((hour) => {
+        const hourPart = parseInt(hour.split(':')[0], 10);
+        return hourPart > currentHour;
+      });
+    } else {
+      // Data no passado, nenhum horário disponível.
+      this.filteredVisitHours = [];
+    }
+  }
+
+  loadHousingLocation(id: string): void {
+    this.spinner.show();
+    this.housingService.getHousingLocationById(id).subscribe({
+      next: (location) => {
+        this.housingLocation = location;
+        this.setupConditionalValidators();
+        this.spinner.hide();
+      },
+      error: (err) => {
+        console.error('Erro ao carregar detalhes da casa:', err);
+        this.router.navigateByUrl('/');
+        this.spinner.hide();
+      },
+    });
   }
 
   // Adicionar novo método para configurar validadores condicionais

@@ -41,6 +41,18 @@
       {{ housingLocation.typeOfBusiness | titlecase }}
     </span>
 
+    <!-- SEÇÃO DE PREÇO -->
+    <div class="home-listing-price">
+      <span class="price-value">{{
+        housingLocation.price | currency : "USD" : "symbol" : "1.0-0"
+      }}</span>
+      <span
+        class="price-period"
+        *ngIf="housingLocation.typeOfBusiness === 'rent'"
+        >/ day</span
+      >
+    </div>
+
     <div class="home-listing-row">
       <img class="home-listing-pin" src="../../assets/pin2.webp" alt="pin" />
       <h5 class="home-listing-location">

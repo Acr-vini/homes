@@ -30,7 +30,12 @@ import { NotificationService } from '../../../../core/services/notification.serv
   styleUrls: ['./activity-date.component.scss'],
 })
 export class ActivityDateComponent implements OnInit {
+  // Mantenha a lista original se precisar dela em outro lugar
   applications: Array<Application & { photoUrl?: string }> = [];
+  // Crie as duas novas listas para a UI
+  upcomingApplications: Array<Application & { photoUrl?: string }> = [];
+  expiredApplications: Array<Application & { photoUrl?: string }> = [];
+
   currentUserId: string | null = null;
   isLoading: boolean = false;
 
@@ -57,7 +62,6 @@ export class ActivityDateComponent implements OnInit {
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private spinner: NgxSpinnerService,
-    // 1. ADICIONAR O NotificationService AO CONSTRUCTOR PARA INJETÁ-LO
     private notificationService: NotificationService
   ) {}
 
@@ -110,6 +114,7 @@ export class ActivityDateComponent implements OnInit {
       .subscribe({
         next: (appsCompletas) => {
           this.applications = appsCompletas;
+          this.sortApplications(appsCompletas); // Chama o novo método de separação
           this.isLoading = false;
         },
         error: (err) => {
@@ -122,8 +127,96 @@ export class ActivityDateComponent implements OnInit {
       });
   }
 
-  // ... O RESTO DO SEU CÓDIGO (viewDetails, editApplication, etc.) PERMANECE IGUAL ...
-  // ... Copiei o resto do seu código para garantir que nada mais se perca ...
+  sortApplications(apps: Array<Application & { photoUrl?: string }>): void {
+    const now = new Date(); // Usa a data e hora atuais para a comparação
+
+    this.upcomingApplications = [];
+    this.expiredApplications = [];
+
+    apps.forEach((app) => {
+      // Para aluguéis, a lógica de expiração baseada apenas no dia de check-in está correta.
+      if (app.typeOfBusiness === 'rent') {
+        const checkInDateStr = app.checkInDate;
+        if (!checkInDateStr) {
+          this.upcomingApplications.push(app);
+          return;
+        }
+        const todayDateOnly = new Date();
+        todayDateOnly.setHours(0, 0, 0, 0);
+        const dateParts = checkInDateStr
+          .split('-')
+          .map((part) => parseInt(part, 10));
+        const checkInDate = new Date(
+          dateParts[0],
+          dateParts[1] - 1,
+          dateParts[2]
+        );
+
+        if (checkInDate < todayDateOnly) {
+          this.expiredApplications.push(app);
+        } else {
+          this.upcomingApplications.push(app);
+        }
+      }
+      // Para visitas, precisamos comparar a data e a hora.
+      else if (app.typeOfBusiness === 'sell') {
+        const visitDateStr = app.visitDate;
+        const visitTimeStr = app.visitTime;
+
+        if (!visitDateStr || !visitTimeStr) {
+          this.upcomingApplications.push(app); // Dados incompletos, assume como futuro.
+          return;
+        }
+
+        // Combina a data e a hora para criar um objeto Date preciso para a visita.
+        const visitDateTime = new Date(`${visitDateStr}T${visitTimeStr}`);
+
+        if (visitDateTime < now) {
+          this.expiredApplications.push(app); // A hora da visita já passou.
+        } else {
+          this.upcomingApplications.push(app); // A visita ainda vai acontecer.
+        }
+      }
+    });
+  }
+
+  clearAllExpired(): void {
+    if (this.expiredApplications.length === 0) return;
+
+    const snackBarRef = this.snackBar.open(
+      `Delete all ${this.expiredApplications.length} expired applications? This action cannot be undone.`,
+      'Yes, Delete All',
+      { duration: 7000 }
+    );
+
+    snackBarRef.onAction().subscribe(() => {
+      this.spinner.show();
+      const deleteObservables = this.expiredApplications.map((app) =>
+        this.applicationService.delete(app.id)
+      );
+
+      forkJoin(deleteObservables)
+        .pipe(finalize(() => this.spinner.hide()))
+        .subscribe({
+          next: () => {
+            this.snackBar.open(
+              '✅ All expired applications have been deleted.',
+              'Close',
+              { duration: 3000 }
+            );
+            this.expiredApplications = []; // Limpa a lista na UI
+          },
+          error: (err) => {
+            console.error('Failed to delete all expired applications', err);
+            this.snackBar.open(
+              '❌ An error occurred while deleting applications.',
+              'Close',
+              { duration: 3000 }
+            );
+          },
+        });
+    });
+  }
 
   viewDetails(app: Application): void {
     this.router.navigate(['/details-application'], {
@@ -155,11 +248,13 @@ export class ActivityDateComponent implements OnInit {
 
   deleteApplication(app: Application): void {
     this.spinner.show();
-    this.applicationService.delete(app.id).subscribe(() => {
-      this.applications = this.applications.filter((a) => a.id !== app.id);
-      this.spinner.hide();
-      this.snackBar.open('✅ Application deleted!', '', { duration: 2000 });
-    });
+    this.applicationService
+      .delete(app.id)
+      .pipe(finalize(() => this.spinner.hide()))
+      .subscribe(() => {
+        this.snackBar.open('✅ Application deleted!', '', { duration: 2000 });
+        this.loadApplications(); // <-- ADICIONE ESTA LINHA
+      });
   }
 
   cancelApplication(app: Application): void {
@@ -201,6 +296,7 @@ export class ActivityDateComponent implements OnInit {
                 'Close',
                 { duration: 3000 }
               );
+              // A chamada já existe aqui, o que é ótimo!
               this.loadApplications();
             },
             error: (err) => {

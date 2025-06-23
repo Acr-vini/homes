@@ -148,6 +148,7 @@ export class EditComponent implements OnInit {
           wifi: [house.wifi || false],
           laundry: [house.laundry || false],
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
+          price: [0, [Validators.required, Validators.min(1)]],
         });
 
         this.form = this.fb.group({
@@ -162,8 +163,8 @@ export class EditComponent implements OnInit {
           wifi: [house.wifi || false],
           laundry: [house.laundry || false],
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
-          // NOVO: Adicione o controle, populando com o dado existente
           propertyType: [house.propertyType, Validators.required],
+          price: this.form.value.price,
         });
 
         this._setupFilters();
@@ -186,6 +187,7 @@ export class EditComponent implements OnInit {
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
+    const currentUserId = currentUser?.id;
 
     const payload = {
       id: this.housingLocation.id,

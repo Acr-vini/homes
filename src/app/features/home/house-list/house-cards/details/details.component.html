@@ -86,15 +86,14 @@
         </div>
 
         <label for="visit-time">Visit Time</label>
-        <mat-form-field class="full-width">
+        <mat-form-field class="form-field">
           <mat-select formControlName="visitTime">
-            <!-- Removido 'required' daqui, pois o Validators.required no formControl é o principal -->
             <mat-option value="" disabled>Select a time</mat-option>
-            <mat-option *ngFor="let hour of visitHours" [value]="hour">
+            <!-- Altera para usar a lista de horários filtrados -->
+            <mat-option *ngFor="let hour of filteredVisitHours" [value]="hour">
               {{ hour }}
             </mat-option>
           </mat-select>
-          <!-- Adicionar mensagem de erro para mat-select -->
           <mat-error
             *ngIf="
               applyForm.get('visitTime')?.hasError('required') &&

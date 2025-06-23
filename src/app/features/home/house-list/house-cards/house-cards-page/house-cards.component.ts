@@ -1,11 +1,11 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateComponent } from '../../../../home/SCF/create/create.component';
-import { EditComponent } from '../../house-cards/edit/edit.component';
+import { EditComponent } from '../edit/edit.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -26,8 +26,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class HouseCardsComponent {
   @Input() housingLocation!: HousingLocation;
+  @Output() houseUpdated = new EventEmitter<void>(); // NOVO: Evento para notificar a atualização
 
-  private dialog = inject(MatDialog);
+  // Injeção dos serviços
+  private dialog = inject(MatDialog); // ADICIONE ESTA LINHA
   private spinner = inject(NgxSpinnerService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
@@ -92,16 +94,20 @@ export class HouseCardsComponent {
     });
   }
 
-  openEditHouse(houseId: string) {
-    setTimeout(() => {
-      this.dialog.open(EditComponent, {
-        width: '700px',
-        minWidth: '800px',
-        data: { id: houseId },
-        disableClose: true,
-        autoFocus: false,
-      });
-    }, 1000);
+  openEditHouse(id: string): void {
+    // Agora `this.dialog` existe e o método funcionará
+    const dialogRef = this.dialog.open(EditComponent, {
+      width: '500px',
+      data: this.housingLocation, // Passa os dados da casa para o diálogo
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Se o resultado for 'true' (ou seja, o formulário foi salvo com sucesso)
+      if (result) {
+        // Emita o evento para notificar o componente pai que a lista precisa ser atualizada
+        this.houseUpdated.emit();
+      }
+    });
   }
 
   canEditHouse(house: HousingLocation): boolean {

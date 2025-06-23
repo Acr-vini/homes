@@ -27,6 +27,25 @@
     padding: 10px 20px 0;
   }
 
+  // ESTILO PARA O PREÇO
+  &-price {
+    padding: 4px 20px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--purpleBck);
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    min-height: 2.5rem; // ADICIONADO: Garante uma altura mínima consistente
+
+    .price-period {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+  }
+
   &-location {
     font-size: 1rem;
     color: var(--card-title-color);

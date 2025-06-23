@@ -104,7 +104,11 @@
 
       <section class="housing-location-container">
         @for (housingLocation of pagedLocationList; track housingLocation.id) {
-        <app-house-cards [housingLocation]="housingLocation" />
+        <!-- CORREÇÃO: Altera o nome do método para o correto -->
+        <app-house-cards
+          [housingLocation]="housingLocation"
+          (houseUpdated)="loadLocations()"
+        />
         }
       </section>
 

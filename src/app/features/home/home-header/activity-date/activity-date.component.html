@@ -1,85 +1,201 @@
 <ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
+
 <h2 class="title-h2">My Applications</h2>
-<div class="activity-container">
-  <section
-    class="home-listing"
-    *ngFor="let app of applications; trackBy: trackByApplicationId"
-  >
-    <a class="home-listing-link" (click)="viewDetails(app)">
-      <!-- House photo -->
-      <img
-        class="home-listing-photo"
-        [src]="app.photoUrl"
-        [alt]="'Photo of ' + app.houseName"
-        loading="eager"
-      />
 
-      <!-- House name -->
-      <h2 class="home-listing-heading">{{ app.houseName }}</h2>
+<div class="page-layout">
+  <!-- Coluna da Esquerda: Atividades Futuras -->
+  <div class="column">
+    <div class="column-header">
+      <h3 class="column-title">Upcoming Activities</h3>
+    </div>
 
-      <!-- Type label -->
-      <span
-        class="home-listing__type-label"
-        [ngClass]="{
-          'home-listing__type-label--sell': app.typeOfBusiness === 'sell',
-          'home-listing__type-label--rent': app.typeOfBusiness === 'rent'
-        }"
-      >
-        <mat-icon class="Tob">sell</mat-icon>
-
-        {{ app.typeOfBusiness | titlecase }}
-      </span>
-
-      <!-- Visit / Stay message -->
-      <div class="home-listing-row">
-        <mat-icon>event</mat-icon>
-        <h5 class="home-listing-location">
-          <ng-container *ngIf="app.typeOfBusiness === 'sell'; else rentMsg">
-            Visit on {{ app.visitDate }} at {{ app.visitTime }}
-          </ng-container>
-          <ng-template #rentMsg>
-            Stay from {{ app.checkInDate }} to {{ app.checkOutDate }}
-          </ng-template>
-        </h5>
+    <!-- INFO BOX ADICIONADO AQUI -->
+    <div class="info-box">
+      <mat-icon>info_outline</mat-icon>
+      <div>
+        <p>
+          For property viewings and check-ins, please arrive 15 minutes early.
+        </p>
+        <p>
+          Rented properties have check-in at 08:00 AM and check-out at 06:00 PM.
+        </p>
       </div>
-    </a>
-    <div class="application-actions">
+    </div>
+
+    <div class="activity-container">
+      <section
+        class="home-listing"
+        *ngFor="let app of upcomingApplications; trackBy: trackByApplicationId"
+      >
+        <a class="home-listing-link" (click)="viewDetails(app)">
+          <img
+            class="home-listing-photo"
+            [src]="app.photoUrl"
+            [alt]="'Photo of ' + app.houseName"
+            loading="eager"
+          />
+          <h2 class="home-listing-heading">{{ app.houseName }}</h2>
+          <span
+            class="home-listing__type-label"
+            [ngClass]="{
+              'home-listing__type-label--sell': app.typeOfBusiness === 'sell',
+              'home-listing__type-label--rent': app.typeOfBusiness === 'rent'
+            }"
+          >
+            <mat-icon class="Tob">sell</mat-icon>
+            {{ app.typeOfBusiness | titlecase }}
+          </span>
+          <div class="home-listing-row">
+            <mat-icon>event</mat-icon>
+            <h5 class="home-listing-location">
+              <ng-container *ngIf="app.typeOfBusiness === 'sell'; else rentMsg">
+                Visit on {{ app.visitDate }} at {{ app.visitTime }}
+              </ng-container>
+              <ng-template #rentMsg>
+                Stay from {{ app.checkInDate }} to {{ app.checkOutDate }}
+              </ng-template>
+            </h5>
+          </div>
+        </a>
+        <div class="application-actions">
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="confirmDeleteApplication(app)"
+            [matTooltip]="'Cancel application'"
+            class="uncheck-button"
+          >
+            <mat-icon>event_busy</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            (click)="editApplication(app)"
+            [matTooltip]="'Edit application'"
+            class="edit-button"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </section>
+      <div
+        *ngIf="upcomingApplications.length === 0 && !isLoading"
+        class="no-applications-message"
+      >
+        <mat-icon class="no-apps-icon">explore</mat-icon>
+        <h3>No Upcoming Activities</h3>
+        <p>
+          Your future indicates that you will have many visits and stays here.
+        </p>
+        <button mat-flat-button color="primary" routerLink="/home">
+          Explore Properties
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coluna da Direita: Atividades Expiradas -->
+  <div class="column">
+    <div class="column-header">
+      <h3 class="column-title">Expired Activities</h3>
       <button
-        mat-icon-button
+        *ngIf="expiredApplications.length > 0"
+        mat-stroked-button
         color="warn"
-        (click)="confirmDeleteApplication(app)"
-        [matTooltip]="'Uncheck application'"
-        class="uncheck-button"
+        class="clear-all-btn"
+        (click)="clearAllExpired()"
       >
-        <mat-icon>event_busy</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        (click)="editApplication(app)"
-        [matTooltip]="'Edit application'"
-        class="edit-button"
-      >
-        <mat-icon>edit</mat-icon>
+        <mat-icon>delete_sweep</mat-icon>
+        Clear All
       </button>
     </div>
-  </section>
 
-  <!-- Mensagem se não houver aplicações -->
-  <div
-    *ngIf="applications.length === 0 && currentUserId && !isLoading"
-    class="no-applications-message"
-  >
-    You have no applications yet.
-  </div>
-  <div *ngIf="!currentUserId && !isLoading" class="no-applications-message">
-    Please log in to see your applications.
+    <!-- INFO BOX ADICIONADO AQUI PARA EQUILÍBRIO -->
+    <div class="info-box">
+      <mat-icon>inventory_2</mat-icon>
+      <div>
+        <p>
+          These activities are kept for your records. You can reschedule or
+          delete them at any time.
+        </p>
+        <!-- SEGUNDA LINHA ADICIONADA -->
+        <p>Deleted activities cannot be recovered.</p>
+      </div>
+    </div>
+
+    <div class="activity-container">
+      <section
+        class="home-listing expired-card"
+        *ngFor="let app of expiredApplications; trackBy: trackByApplicationId"
+      >
+        <!-- Conteúdo do card (não clicável) -->
+        <img
+          class="home-listing-photo"
+          [src]="app.photoUrl"
+          [alt]="'Photo of ' + app.houseName"
+          loading="lazy"
+        />
+        <h2 class="home-listing-heading">{{ app.houseName }}</h2>
+        <span
+          class="home-listing__type-label"
+          [ngClass]="{
+            'home-listing__type-label--sell': app.typeOfBusiness === 'sell',
+            'home-listing__type-label--rent': app.typeOfBusiness === 'rent'
+          }"
+        >
+          <mat-icon class="Tob">sell</mat-icon>
+          {{ app.typeOfBusiness | titlecase }}
+        </span>
+        <div class="home-listing-row">
+          <mat-icon>event</mat-icon>
+          <h5 class="home-listing-location">
+            <ng-container
+              *ngIf="app.typeOfBusiness === 'sell'; else rentMsgExp"
+            >
+              Visited on {{ app.visitDate }} at {{ app.visitTime }}
+            </ng-container>
+            <ng-template #rentMsgExp>
+              Stayed from {{ app.checkInDate }} to {{ app.checkOutDate }}
+            </ng-template>
+          </h5>
+        </div>
+        <!-- Ações que aparecem no hover -->
+        <div class="hover-actions">
+          <button
+            mat-fab
+            color="primary"
+            (click)="editApplication(app)"
+            matTooltip="Reschedule"
+          >
+            <mat-icon>replay</mat-icon>
+          </button>
+          <button
+            mat-fab
+            color="warn"
+            (click)="confirmDeleteApplication(app)"
+            matTooltip="Delete"
+          >
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </div>
+      </section>
+      <div
+        *ngIf="expiredApplications.length === 0 && !isLoading"
+        class="no-applications-message"
+      >
+        <!-- MENSAGEM MELHORADA E ENGRAÇADA -->
+        <mat-icon class="no-apps-icon">check_circle_outline</mat-icon>
+        <h3>No Expired Activities</h3>
+        <p>You are not late, congratulations!</p>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Rodapé com informações adicionais -->
-<footer class="activity-footer">
-  <p>For property viewings and check-ins, please arrive 15 minutes early.</p>
-  <p>Rented properties have check-in at 08:00 AM and check-out at 06:00 PM.</p>
-</footer>
+<div
+  *ngIf="!currentUserId && !isLoading"
+  class="no-applications-message full-width-message"
+>
+  Please log in to see your applications.
+</div>

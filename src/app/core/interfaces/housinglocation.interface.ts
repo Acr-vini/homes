@@ -9,6 +9,7 @@ export interface HousingLocation {
   laundry: boolean;
   typeOfBusiness: 'rent' | 'sell';
   propertyType: 'house' | 'apartment' | 'terrain' | 'studio';
+  price: number;
   createBy?: string;
   editedBy?: string;
   deletedBy?: string;

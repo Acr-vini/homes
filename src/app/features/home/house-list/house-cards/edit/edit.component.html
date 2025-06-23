@@ -89,17 +89,25 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Photo URL -->
+    <!-- CAMPO DE PREÇO ADICIONADO -->
     <mat-form-field class="full-width">
-      <mat-label>Photo URL (optional)</mat-label>
-      <input matInput formControlName="photo" />
+      <mat-label>Price (USD)</mat-label>
+      <input matInput type="number" formControlName="price" required min="1" />
+      <mat-error *ngIf="form.get('price')?.hasError('required')">
+        Price is required.
+      </mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('min')">
+        Price must be positive.
+      </mat-error>
     </mat-form-field>
 
-    <!-- Wi-Fi Available -->
-    <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
+    <div class="checkbox-group">
+      <!-- Wi-Fi Available -->
+      <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
 
-    <!-- Laundry Available -->
-    <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
+      <!-- Laundry Available -->
+      <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
+    </div>
 
     <!-- Image Preview & Upload -->
     <div *ngIf="imagePreview" class="image-preview">

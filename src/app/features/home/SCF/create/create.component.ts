@@ -99,6 +99,7 @@ export class CreateComponent implements OnInit {
       photo: ['', Validators.required],
       typeOfBusiness: ['sell', Validators.required],
       propertyType: ['', Validators.required],
+      price: [0, [Validators.required, Validators.min(1)]], // Adiciona o controle de preço
       createBy: [''],
     });
   }
@@ -141,6 +142,7 @@ export class CreateComponent implements OnInit {
       'typeOfBusiness',
       'photo',
       'propertyType',
+      'price', // Adiciona o preço aos campos obrigatórios
     ];
 
     const validControls = requiredControls.filter((controlName) => {
@@ -220,6 +222,7 @@ export class CreateComponent implements OnInit {
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
       propertyType: this.form.value.propertyType,
+      price: this.form.value.price, // Adiciona o preço ao payload
       createBy: String(currentUser?.id ?? ''),
       editedBy: '',
       deletedBy: '',
