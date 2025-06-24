@@ -1,74 +1,96 @@
 <ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
-<section class="home-listing">
-  <button
-    class="favorite-icon-button"
-    (click)="toggleFavorite(housingLocation)"
-    [ngClass]="{ favorited: isFavorited(housingLocation) }"
-    aria-label="Favorite"
-    type="button"
-  >
-    <mat-icon>
-      {{ isFavorited(housingLocation) ? "favorite" : "favorite_border" }}
-    </mat-icon>
-  </button>
-  <a class="home-listing-link" [routerLink]="['/details', housingLocation.id]">
-    <img
-      class="home-listing-photo"
-      [src]="housingLocation.photo"
-      alt="Exterior photo of {{ housingLocation.name }}"
-      loading="eager"
-    />
-    <!-- Atributos movidos para dentro da tag img -->
-
-    <h2 class="home-listing-heading">{{ housingLocation.name }}</h2>
-
-    <span
-      class="home-listing__type-label"
-      role="text"
-      [attr.aria-label]="
-        'Tipo de negócio: ' + (housingLocation.typeOfBusiness | titlecase)
-      "
-      [ngClass]="{
-        'home-listing__type-label--sell':
-          housingLocation.typeOfBusiness === 'sell',
-        'home-listing__type-label--rent':
-          housingLocation.typeOfBusiness === 'rent'
-      }"
-    >
-      <mat-icon>sell</mat-icon>
-      {{ housingLocation.typeOfBusiness | titlecase }}
-    </span>
-
-    <!-- SEÇÃO DE PREÇO -->
-    <div class="home-listing-price">
-      <span class="price-value">{{
-        housingLocation.price | currency : "USD" : "symbol" : "1.2-2"
-      }}</span>
-      <span
-        class="price-period"
-        *ngIf="housingLocation.typeOfBusiness === 'rent'"
-        >/ day</span
-      >
-    </div>
-
-    <div class="home-listing-row">
-      <img class="home-listing-pin" src="../../assets/pin2.webp" alt="pin" />
-      <h5 class="home-listing-location">
-        {{ housingLocation.city }}, {{ housingLocation.state }}
-      </h5>
-    </div>
-  </a>
-
-  <div class="card-edit-button-wrapper" *ngIf="canEditHouse(housingLocation)">
+<section class="home-listing" [class.compare-active]="compareMode">
+  <!-- Wrapper para o conteúdo que será desfocado -->
+  <div class="card-content-wrapper">
     <button
-      class="edit-button"
-      (click)="openEditHouse(housingLocation.id)"
-      aria-label="Edit house"
-      [matTooltip]="'Edit house'"
+      class="favorite-icon-button"
+      (click)="toggleFavorite(housingLocation)"
+      [ngClass]="{ favorited: isFavorited(housingLocation) }"
+      aria-label="Favorite"
+      type="button"
     >
-      <span class="material-icons">edit</span>
+      <mat-icon>
+        {{ isFavorited(housingLocation) ? "favorite" : "favorite_border" }}
+      </mat-icon>
+    </button>
+    <a
+      class="home-listing-link"
+      [routerLink]="['/details', housingLocation.id]"
+    >
+      <img
+        class="home-listing-photo"
+        [src]="housingLocation.photo"
+        alt="Exterior photo of {{ housingLocation.name }}"
+        loading="eager"
+      />
+      <h2 class="home-listing-heading">{{ housingLocation.name }}</h2>
+
+      <span
+        class="home-listing__type-label"
+        role="text"
+        [attr.aria-label]="
+          'Tipo de negócio: ' + (housingLocation.typeOfBusiness | titlecase)
+        "
+        [ngClass]="{
+          'home-listing__type-label--sell':
+            housingLocation.typeOfBusiness === 'sell',
+          'home-listing__type-label--rent':
+            housingLocation.typeOfBusiness === 'rent'
+        }"
+      >
+        <mat-icon>sell</mat-icon>
+        {{ housingLocation.typeOfBusiness | titlecase }}
+      </span>
+
+      <!-- SEÇÃO DE PREÇO -->
+      <div class="home-listing-price">
+        <span class="price-value">{{
+          housingLocation.price | currency : "USD" : "symbol" : "1.2-2"
+        }}</span>
+        <span
+          class="price-period"
+          *ngIf="housingLocation.typeOfBusiness === 'rent'"
+          >/ day</span
+        >
+      </div>
+
+      <div class="home-listing-row">
+        <img class="home-listing-pin" src="../../assets/pin2.webp" alt="pin" />
+        <h5 class="home-listing-location">
+          {{ housingLocation.city }}, {{ housingLocation.state }}
+        </h5>
+      </div>
+    </a>
+
+    <div class="card-edit-button-wrapper" *ngIf="canEditHouse(housingLocation)">
+      <button
+        class="edit-button"
+        (click)="openEditHouse(housingLocation.id)"
+        aria-label="Edit house"
+        [matTooltip]="'Edit house'"
+      >
+        <span class="material-icons">edit</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Overlay de Comparação que aparece no hover -->
+  <div *ngIf="compareMode" class="compare-overlay">
+    <button
+      mat-icon-button
+      class="compare-add-btn"
+      [class.in-list]="isInCompareList()"
+      (click)="toggleCompareItem(housingLocation)"
+      [matTooltip]="
+        isInCompareList() ? 'Remove from comparison' : 'Add to comparison'
+      "
+      aria-label="Toggle Comparison"
+    >
+      <mat-icon>{{
+        isInCompareList() ? "remove_circle" : "library_add"
+      }}</mat-icon>
     </button>
   </div>
 </section>

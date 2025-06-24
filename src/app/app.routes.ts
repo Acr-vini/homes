@@ -94,6 +94,14 @@ const routes: Routes = [
           ),
         title: 'Favorites',
       },
+      {
+        path: 'compare',
+        loadComponent: () =>
+          import(
+            './features/home/SCF/compare/compare-page/compare.component'
+          ).then((m) => m.CompareComponent),
+        title: 'Compare',
+      },
     ],
   },
 

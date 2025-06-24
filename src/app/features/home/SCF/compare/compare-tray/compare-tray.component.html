@@ -1,0 +1,31 @@
+<ng-container *ngIf="compareList$ | async as list">
+  <div class="compare-tray-wrapper" *ngIf="list.length > 0">
+    <div class="tray-items">
+      <div *ngFor="let house of list" class="tray-item">
+        <img [src]="house.photo" [alt]="house.name" />
+        <span>{{ house.name }}</span>
+        <button
+          mat-icon-button
+          (click)="removeFromCompare(house.id)"
+          matTooltip="Remove from comparison"
+        >
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="list.length < 2" class="placeholder-item">
+        <mat-icon>add_box</mat-icon>
+        <span>Select one more house</span>
+      </div>
+    </div>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="compare-now-btn"
+      [disabled]="list.length !== 2"
+      (click)="goToComparePage()"
+    >
+      Compare Now ({{ list.length }}/2)
+    </button>
+  </div>
+</ng-container>

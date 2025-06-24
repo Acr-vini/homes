@@ -24,7 +24,8 @@ import { Subject } from 'rxjs';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar'; // Importa o MatSnackBar
+import { MatSnackBar } from '@angular/material/snack-bar'; // 1. Importe o MatSnackBar
+import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tray.component'; // 1. Importe o novo componente
 
 @Component({
   selector: 'app-SCF',
@@ -48,6 +49,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // Importa o MatSnack
     MatButtonToggleModule,
     MatTooltipModule,
     MatSidenavModule,
+    CompareTrayComponent,
   ],
   templateUrl: './SCF.component.html',
   styleUrls: ['./SCF.component.scss'],
@@ -57,6 +59,7 @@ export class SCFComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   // NOVO: Injetamos o FormBuilder para facilitar a criação de formulários reativos.
   private fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar); // 2. Injete o MatSnackBar
 
   // Lista completa e lista filtrada
   housingLocationList: HousingLocation[] = [];
@@ -73,7 +76,25 @@ export class SCFComponent implements OnInit, OnDestroy {
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
 
-  constructor(private dialog: MatDialog, private snackBar: MatSnackBar) {
+  compareMode = false;
+
+  // 3. Crie o novo método para alternar o modo de comparação
+  toggleCompareMode(): void {
+    this.compareMode = !this.compareMode;
+
+    if (this.compareMode) {
+      this.snackBar.open(
+        'Compare mode on. Hover over a house to add it to the comparison.',
+        'Got it!',
+        {
+          duration: 10000,
+          verticalPosition: 'top',
+        }
+      );
+    }
+  }
+
+  constructor(private dialog: MatDialog) {
     // NOVO: Inicializamos o formulário no construtor.
     // Os valores iniciais representam um formulário "limpo".
     this.filterForm = this.fb.group({

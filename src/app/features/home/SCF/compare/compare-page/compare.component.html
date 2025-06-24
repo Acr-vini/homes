@@ -1,0 +1,63 @@
+<div class="compare-container">
+  <ng-container *ngIf="compareList$ | async as list">
+    <div class="compare-header">
+      <h1>Compare Properties</h1>
+      <button mat-stroked-button color="warn" (click)="clearAndGoBack()">
+        <mat-icon>close</mat-icon>
+        <span>Clear & Go Back</span>
+      </button>
+    </div>
+
+    <div class="compare-grid" *ngIf="list.length === 2; else notEnough">
+      <!-- Headers -->
+      <div class="feature-header">Feature</div>
+      <div class="house-header" *ngFor="let house of list">
+        <img [src]="house.photo" [alt]="house.name" />
+        <h2>{{ house.name }}</h2>
+        <p>{{ house.city }}, {{ house.state }}</p>
+      </div>
+
+      <!-- Price -->
+      <div class="feature-name">Price</div>
+      <div class="feature-value" *ngFor="let house of list">
+        {{ house.price | currency : "USD" : "symbol" : "1.2-2" }}
+        <span *ngIf="house.typeOfBusiness === 'rent'">/ day</span>
+      </div>
+
+      <!-- Type -->
+      <div class="feature-name">Type</div>
+      <div class="feature-value" *ngFor="let house of list">
+        {{ house.propertyType | titlecase }} for
+        {{ house.typeOfBusiness | titlecase }}
+      </div>
+
+      <!-- Units -->
+      <div class="feature-name">Available Units</div>
+      <div class="feature-value" *ngFor="let house of list">
+        {{ house.availableUnits }}
+      </div>
+
+      <!-- Wifi -->
+      <div class="feature-name">Wi-Fi</div>
+      <div class="feature-value" *ngFor="let house of list">
+        <mat-icon [ngClass]="house.wifi ? 'icon-yes' : 'icon-no'">
+          {{ house.wifi ? "check_circle" : "cancel" }}
+        </mat-icon>
+      </div>
+
+      <!-- Laundry -->
+      <div class="feature-name">Laundry</div>
+      <div class="feature-value" *ngFor="let house of list">
+        <mat-icon [ngClass]="house.laundry ? 'icon-yes' : 'icon-no'">
+          {{ house.laundry ? "check_circle" : "cancel" }}
+        </mat-icon>
+      </div>
+    </div>
+
+    <ng-template #notEnough>
+      <div class="not-enough-container">
+        <h2>Please select two houses to compare.</h2>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>

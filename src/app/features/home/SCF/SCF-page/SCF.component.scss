@@ -96,7 +96,7 @@
   padding: 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 16px; // CORREÇÃO: Revertido para o gap padrão entre os elementos próximos
   margin: 0 auto;
 }
 
@@ -107,58 +107,74 @@
   max-width: 500px;
 }
 
-.create-wrapper {
-  display: flex;
-  gap: 12px;
-  margin-left: auto;
-}
-
+// CORREÇÃO: Adicionando de volta o estilo para o botão de filtro para restaurar sua cor roxa.
 .create-button {
-  height: 48px;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
   background-color: var(--purpleBck);
   color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.3s;
 
   &:hover {
-    background: #6b21a8;
+    background-color: #581c87;
+  }
+
+  mat-icon {
+    color: white;
   }
 }
 
-.favorites-button {
-  height: 48px;
-  padding: 0 16px;
+.create-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-left: 32px; // ADICIONADO: Cria o espaçamento maior apenas aqui
+}
+
+// REMOVA OS BLOCOS .create-button, .favorites-button e o bloco unificado anterior
+// E SUBSTITUA POR ESTE NOVO ESTILO UNIFICADO:
+
+.main-action-btn {
+  // height: 48px; // REMOVA a altura fixa para evitar o corte
+  padding: 22px 20px; // CORREÇÃO: Ajustado o padding para igualar a altura de 44px
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
   background-color: var(--purpleBck);
   color: white;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.3s;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 
   mat-icon {
     color: white;
     font-size: 24px;
+    // ADICIONE estas linhas para garantir que o ícone tenha espaço
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    transition: color 0.3s;
   }
 
   &:hover {
-    background: #c62828;
+    background-color: #581c87; // Um roxo um pouco mais escuro para o hover
+  }
+
+  // Estilo para o botão de comparação quando ativo
+  &.active {
+    background-color: var(--purpleWeak);
+    border-color: var(--purpleBck);
+    color: var(--purpleBck);
+
     mat-icon {
-      color: #ff1744;
+      color: var(--purpleBck);
     }
   }
+}
+
+.home-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .mat-icon {

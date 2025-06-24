@@ -9,6 +9,7 @@ import { EditComponent } from '../edit/edit.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CompareService } from '../../../../../core/services/compare.service'; // Importe o novo serviço
 
 @Component({
   selector: 'app-house-cards',
@@ -26,6 +27,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class HouseCardsComponent {
   @Input() housingLocation!: HousingLocation;
+  @Input() compareMode = false; // Recebe o modo de comparação
   @Output() houseUpdated = new EventEmitter<void>(); // NOVO: Evento para notificar a atualização
 
   // Injeção dos serviços
@@ -33,6 +35,7 @@ export class HouseCardsComponent {
   private spinner = inject(NgxSpinnerService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+  private compareService = inject(CompareService); // Injete o serviço
 
   applications: any[] = [];
 
@@ -123,5 +126,16 @@ export class HouseCardsComponent {
     }
 
     return false;
+  }
+
+  // CORREÇÃO: Renomeie o método e chame a nova função 'toggleCompare'
+  toggleCompareItem(house: HousingLocation): void {
+    this.compareService.toggleCompare(house);
+  }
+
+  isInCompareList(): boolean {
+    return !!this.compareService
+      .getCompareList()
+      .find((h) => h.id === this.housingLocation.id);
   }
 }
