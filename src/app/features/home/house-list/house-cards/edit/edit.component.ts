@@ -21,7 +21,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { map, Observable, startWith } from 'rxjs';
+// CORREÇÃO: Adiciona 'finalize' à lista de imports do rxjs
+import { map, Observable, startWith, finalize } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
@@ -40,9 +41,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatSelectModule,
     MatAutocompleteModule,
     MatCheckboxModule,
-    MatTooltipModule,
+    MatTooltipModule, // O import duplicado foi removido
     NgxSpinnerModule,
-    MatTooltipModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
@@ -110,7 +110,8 @@ export class EditComponent implements OnInit {
         this.imagePreview = house.photo ?? null;
 
         // Lógica de permissão para exibir botões de ação
-        const role = this.currentUserRole;
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const role = user?.role || null;
         const userId = user?.id;
 
         if (role === 'Admin' || role === 'Manager') {
@@ -127,36 +128,28 @@ export class EditComponent implements OnInit {
           this.onCancel(); // Fecha o dialog ou redireciona
         }
 
-        // Preenche o formulário com os dados da casa
-        const stateName = this._findStateName(house.state) || house.state || '';
-        this.stateControl.setValue(stateName);
-        const iso = house.state || '';
-        this.allCities = iso
-          ? City.getCitiesOfState('US', iso).map((c) => c.name)
-          : [];
-        this.cityControl.setValue(house.city || '');
+        // CORREÇÃO: Lógica robusta para preencher o formulário, tratando dados inválidos.
+        const stateName = this._findStateName(house.state); // Tenta encontrar o nome do estado a partir do código.
+        this.stateControl.setValue(stateName || ''); // Se não encontrar, deixa o campo em branco.
 
+        // Carrega as cidades apenas se o estado for válido.
+        if (stateName) {
+          this.allCities = City.getCitiesOfState('US', house.state).map(
+            (c) => c.name
+          );
+          this.cityControl.setValue(house.city || '');
+        } else {
+          this.allCities = []; // Se o estado for inválido, a lista de cidades fica vazia.
+          this.cityControl.setValue(''); // E o campo de cidade também.
+        }
+
+        // CORREÇÃO: O formulário agora é inicializado apenas uma vez e corretamente.
         this.form = this.fb.group({
           name: [house.name || '', Validators.required],
           state: this.stateControl,
           city: this.cityControl,
           availableUnits: [
-            house.availableUnits || '',
-            [Validators.required, Validators.min(1)],
-          ],
-          photo: [house.photo || ''],
-          wifi: [house.wifi || false],
-          laundry: [house.laundry || false],
-          typeOfBusiness: [house.typeOfBusiness, Validators.required],
-          price: [0, [Validators.required, Validators.min(1)]],
-        });
-
-        this.form = this.fb.group({
-          name: [house.name || '', Validators.required],
-          state: this.stateControl,
-          city: this.cityControl,
-          availableUnits: [
-            house.availableUnits || '',
+            house.availableUnits || 0, // CORRIGIDO: Usar || 0 para manter o tipo numérico
             [Validators.required, Validators.min(1)],
           ],
           photo: [house.photo || ''],
@@ -164,7 +157,8 @@ export class EditComponent implements OnInit {
           laundry: [house.laundry || false],
           typeOfBusiness: [house.typeOfBusiness, Validators.required],
           propertyType: [house.propertyType, Validators.required],
-          price: this.form.value.price,
+          // O preço agora é carregado corretamente a partir dos dados da casa.
+          price: [house.price || 0, [Validators.required, Validators.min(1)]],
         });
 
         this._setupFilters();
@@ -179,61 +173,88 @@ export class EditComponent implements OnInit {
 
   // SECTION: Form and Submission Logic
   onSubmit(): void {
-    if (this.form.invalid || !this.housingLocation.id) return;
+    // CORREÇÃO 2: Adiciona uma verificação de segurança para garantir que os dados da casa foram carregados.
+    if (!this.housingLocation) {
+      this.snackBar.open('Cannot save, house data is not available.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.spinner.show();
 
-    const iso =
-      this._findStateIso(this.stateControl.value) || this.housingLocation.state;
-    const currentUser = JSON.parse(
-      localStorage.getItem('currentUser') || 'null'
-    );
-    const currentUserId = currentUser?.id;
+    const stateName = this.stateControl.value;
+    const stateIsoCode = this._findStateIso(stateName);
 
-    const payload = {
-      id: this.housingLocation.id,
-      name: this.form.value.name,
+    if (!stateIsoCode) {
+      this.snackBar.open(
+        'Invalid state selected. Please choose from the list.',
+        'Close',
+        { duration: 3000 }
+      );
+      this.spinner.hide();
+      return;
+    }
+
+    const formValues = this.form.getRawValue();
+    const currentUserId = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    )?.id;
+
+    const updatedHouseData: Partial<HousingLocation> = {
+      ...formValues,
+      state: stateIsoCode,
       city: this.cityControl.value,
-      state: iso,
-      photo: this.form.value.photo || this.imagePreview || '',
-      availableUnits: this.form.value.availableUnits,
-      wifi: this.form.value.wifi,
-      laundry: this.form.value.laundry,
-      typeOfBusiness: this.form.value.typeOfBusiness,
-      propertyType: this.form.value.propertyType,
-      createBy: this.housingLocation.createBy ?? String(currentUser?.id ?? ''),
-      editedBy: String(currentUser?.id ?? ''),
-      deletedBy: this.housingLocation.deletedBy ?? '',
+      price: Number(formValues.price),
+      editedBy: currentUserId,
+      updatedAt: new Date().toISOString(),
     };
 
-    const finalPayload: Partial<HousingLocation> = { ...payload };
-
     this.housingService
-      .updateHousingLocation(this.housingLocation.id, payload)
+      // CORREÇÃO 1: O nome do método correto é 'updateHousingLocation'.
+      .updateHousingLocation(this.housingLocation.id, updatedHouseData)
+      .pipe(finalize(() => this.spinner.hide()))
       .subscribe({
         next: () => {
           this.snackBar.open('✅ House updated successfully!', 'Close', {
             duration: 3000,
           });
-          this.spinner.hide();
-
-          this.housingService.notifyHouseListUpdated();
-
+          // CORREÇÃO 3: Trata tanto o fechamento do modal quanto a navegação.
           if (this.dialogRef) {
             this.dialogRef.close(true);
           } else {
-            this.router.navigate(['/details', this.housingLocation.id]);
+            this.router.navigateByUrl('/');
           }
         },
-        error: () => {
-          this.snackBar.open('❌ Failed to update the house.', 'Close', {
-            duration: 3000,
-          });
-          this.spinner.hide();
+        error: (err) => {
+          console.error('Failed to update house', err);
+          this.snackBar.open(
+            '❌ An error occurred while updating the house.',
+            'Close',
+            {
+              duration: 3000,
+            }
+          );
         },
       });
   }
 
   onDelete(): void {
+    // CORREÇÃO 2: Adiciona a mesma verificação de segurança aqui.
+    if (!this.housingLocation) {
+      this.snackBar.open(
+        'Cannot delete, house data is not available.',
+        'Close',
+        { duration: 3000 }
+      );
+      return;
+    }
+
     const snackBarRef = this.snackBar.open(
       'Are you sure you want to delete this house?',
       'Yes',
@@ -262,10 +283,12 @@ export class EditComponent implements OnInit {
 
             this.housingService.notifyHouseListUpdated();
 
+            // CORREÇÃO 3: Trata tanto o fechamento do modal quanto a navegação.
             if (this.dialogRef) {
               this.dialogRef.close(true);
+            } else {
+              this.router.navigateByUrl('/');
             }
-            this.router.navigateByUrl('/');
           },
           error: () => {
             this.snackBar.open('❌ Failed to delete the house.', 'Close', {
@@ -278,14 +301,11 @@ export class EditComponent implements OnInit {
   }
 
   onCancel(): void {
+    // CORREÇÃO 3: Trata tanto o fechamento do modal quanto a navegação.
     if (this.dialogRef) {
-      this.dialogRef.close();
+      this.dialogRef.close(false);
     } else {
-      if (this.housingLocation?.id) {
-        this.router.navigate(['/details', this.housingLocation.id]);
-      } else {
-        this.router.navigateByUrl('/');
-      }
+      this.router.navigateByUrl('/');
     }
   }
 
@@ -296,21 +316,21 @@ export class EditComponent implements OnInit {
       map((val: string) => this._filterStates(val))
     );
 
+    // CORREÇÃO: Define o filtro de cidades UMA VEZ.
     this.filteredCities = this.cityControl.valueChanges.pipe(
-      startWith<string>(this.cityControl.value),
-      map((v: string) => this._filterCities(v))
+      startWith<string>(this.cityControl.value || ''),
+      map((value: string) => this._filterCities(value))
     );
 
-    this.stateControl.valueChanges.subscribe((val: string) => {
-      const iso = this._findStateIso(val);
+    // CORREÇÃO: A inscrição em `stateControl` agora só atualiza a lista de cidades e reseta o campo.
+    this.stateControl.valueChanges.subscribe((stateName: string) => {
+      const iso = this._findStateIso(stateName);
+      // Atualiza a fonte de dados para as cidades.
       this.allCities = iso
         ? City.getCitiesOfState('US', iso).map((c) => c.name)
         : [];
+      // Reseta o campo da cidade, forçando o usuário a escolher uma nova.
       this.cityControl.setValue('');
-      this.filteredCities = this.cityControl.valueChanges.pipe(
-        startWith<string>(''),
-        map((v2: string) => this._filterCities(v2))
-      );
     });
   }
 

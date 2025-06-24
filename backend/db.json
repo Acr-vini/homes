@@ -14,7 +14,9 @@
       "id": "1",
       "propertyType": "house",
       "createBy": "1",
-      "deletedBy": ""
+      "deletedBy": "",
+      "price": 150,
+      "updatedAt": "2025-06-24T11:41:47.893Z"
     },
     {
       "name": "A113 Transitional Housing",
@@ -31,7 +33,9 @@
       "id": "2",
       "createBy": "1",
       "deletedBy": "",
-      "propertyType": "apartment"
+      "propertyType": "apartment",
+      "price": 300,
+      "updatedAt": "2025-06-24T11:41:55.811Z"
     },
     {
       "name": "Warm Beds Housing Support",
@@ -47,7 +51,9 @@
       "id": "3",
       "createBy": "1",
       "deletedBy": "",
-      "propertyType": "house"
+      "propertyType": "house",
+      "price": 300000,
+      "updatedAt": "2025-06-24T11:41:08.388Z"
     },
     {
       "name": "Homesteady Housing",
@@ -63,7 +69,9 @@
       "id": "4",
       "propertyType": "house",
       "createBy": "1",
-      "deletedBy": ""
+      "deletedBy": "",
+      "price": 200000,
+      "updatedAt": "2025-06-24T11:41:37.099Z"
     },
     {
       "name": "Happy Homes Group",
@@ -74,12 +82,13 @@
       "wifi": true,
       "laundry": false,
       "editedBy": "1",
-      "deleted": false,
+      "deleted": true,
       "typeOfBusiness": "sell",
       "id": "5",
       "propertyType": "house",
       "createBy": "1",
-      "deletedBy": ""
+      "deletedBy": "1",
+      "deletedAt": "2025-06-24T11:44:10.087Z"
     },
     {
       "name": "Hopeful Apartment Group",
@@ -90,9 +99,11 @@
       "wifi": true,
       "laundry": true,
       "editedBy": "1",
-      "deleted": false,
+      "deleted": true,
       "typeOfBusiness": "sell",
-      "id": "6"
+      "id": "6",
+      "deletedBy": "1",
+      "deletedAt": "2025-06-24T11:44:03.624Z"
     },
     {
       "name": "Seriously Safe Towns",
@@ -105,7 +116,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "rent",
-      "id": "7"
+      "id": "7",
+      "propertyType": "house",
+      "price": 275,
+      "updatedAt": "2025-06-24T11:43:53.290Z"
     },
     {
       "name": "Hopeful Housing Solutions",
@@ -118,7 +132,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "8"
+      "id": "8",
+      "propertyType": "house",
+      "price": 475000,
+      "updatedAt": "2025-06-24T11:44:47.495Z"
     },
     {
       "name": "Seriously Safe Towns",
@@ -126,12 +143,15 @@
       "city": "Oakland",
       "availableUnits": 10,
       "photo": "https://angular.io/assets/images/tutorials/faa/saru-robert-9rP3mxf8qWI-unsplash.jpg",
-      "wifi": false,
-      "laundry": false,
+      "wifi": true,
+      "laundry": true,
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "rent",
-      "id": "9"
+      "id": "9",
+      "propertyType": "apartment",
+      "price": 175,
+      "updatedAt": "2025-06-24T11:45:05.628Z"
     },
     {
       "name": "Capital Safe Towns",
@@ -144,7 +164,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "10"
+      "id": "10",
+      "propertyType": "house",
+      "price": 500000,
+      "updatedAt": "2025-06-24T11:43:06.066Z"
     },
     {
       "name": "Modern house",
@@ -157,7 +180,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "11"
+      "id": "11",
+      "propertyType": "house",
+      "price": 275000,
+      "updatedAt": "2025-06-24T11:43:24.954Z"
     },
     {
       "name": "Garden house",
@@ -170,7 +196,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "rent",
-      "id": "12"
+      "id": "12",
+      "propertyType": "house",
+      "price": 175,
+      "updatedAt": "2025-06-24T11:46:26.226Z"
     },
     {
       "name": "sdasdadaaaaa",
@@ -196,8 +225,11 @@
       "laundry": true,
       "editedBy": "1",
       "deleted": false,
-      "typeOfBusiness": "rent",
-      "id": "16"
+      "typeOfBusiness": "sell",
+      "id": "16",
+      "propertyType": "house",
+      "price": 100000000,
+      "updatedAt": "2025-06-24T11:47:47.263Z"
     },
     {
       "name": "Barbie House",
@@ -225,12 +257,15 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "18"
+      "id": "18",
+      "propertyType": "house",
+      "price": 550000,
+      "updatedAt": "2025-06-24T11:47:19.018Z"
     },
     {
       "name": "Mine house",
-      "state": "Steve",
-      "city": "zombie",
+      "state": "KY",
+      "city": "Boyle County",
       "availableUnits": 1,
       "photo": "data:image/jpeg;base64,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",
       "wifi": true,
@@ -238,7 +273,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "19"
+      "id": "19",
+      "propertyType": "house",
+      "price": 200000,
+      "updatedAt": "2025-06-24T12:08:42.290Z"
     },
     {
       "name": "peasant house",
@@ -249,9 +287,11 @@
       "wifi": false,
       "laundry": true,
       "editedBy": "1",
-      "deleted": false,
+      "deleted": true,
       "typeOfBusiness": "sell",
-      "id": "20"
+      "id": "20",
+      "deletedBy": "1",
+      "deletedAt": "2025-06-24T11:45:56.568Z"
     },
     {
       "name": "colonial house",
@@ -264,7 +304,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "rent",
-      "id": "21"
+      "id": "21",
+      "propertyType": "house",
+      "price": 375,
+      "updatedAt": "2025-06-24T11:45:49.633Z"
     },
     {
       "name": "king castle",
@@ -277,7 +320,10 @@
       "editedBy": "1",
       "deleted": false,
       "typeOfBusiness": "sell",
-      "id": "22"
+      "id": "22",
+      "propertyType": "house",
+      "price": 750000,
+      "updatedAt": "2025-06-24T12:01:11.163Z"
     },
     {
       "name": "beach house",
@@ -292,7 +338,10 @@
       "typeOfBusiness": "sell",
       "id": "23",
       "createBy": "1",
-      "deletedBy": ""
+      "deletedBy": "",
+      "propertyType": "house",
+      "price": 750000,
+      "updatedAt": "2025-06-24T11:45:37.283Z"
     },
     {
       "id": "A-bU_lV",
@@ -321,9 +370,10 @@
       "typeOfBusiness": "sell",
       "createBy": "1",
       "editedBy": "",
-      "deletedBy": "",
-      "deleted": false,
-      "id": "Lf_-gIB"
+      "deletedBy": "1",
+      "deleted": true,
+      "id": "Lf_-gIB",
+      "deletedAt": "2025-06-24T11:45:20.032Z"
     },
     {
       "name": "adasd",
@@ -434,10 +484,11 @@
       "propertyType": "apartment",
       "createBy": "gdhGqur",
       "editedBy": "",
-      "deletedBy": "",
-      "deleted": false,
+      "deletedBy": "1",
+      "deleted": true,
       "ownerId": "gdhGqur",
-      "id": "pTNCctG"
+      "id": "pTNCctG",
+      "deletedAt": "2025-06-24T11:42:11.058Z"
     }
   ],
   "users": [

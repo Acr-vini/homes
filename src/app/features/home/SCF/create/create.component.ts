@@ -45,10 +45,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSelectModule,
     MatAutocompleteModule,
     MatCheckboxModule,
-    MatTooltipModule,
-    NgxSpinnerModule, // NOVO: Adicione o MatProgressBarModule aos imports
+    MatTooltipModule, // Mantenha apenas uma ocorrência
+    NgxSpinnerModule,
     MatProgressBarModule,
-    MatTooltipModule,
+    // MatTooltipModule, // REMOVA ESTA LINHA DUPLICADA
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
@@ -109,25 +109,27 @@ export class CreateComponent implements OnInit {
     this.filteredStates = this.stateControl.valueChanges.pipe(
       startWith(this.stateControl.value),
       map((value) => this._filterStates(value))
-    ); // Atualiza cidades quando estado muda
+    );
 
-    this.stateControl.valueChanges.subscribe((val) => {
-      const iso = this._findStateIso(val);
+    // CORREÇÃO: Define o filtro de cidades UMA VEZ.
+    // Ele vai reagir automaticamente às mudanças no `cityControl`.
+    this.filteredCities = this.cityControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filterCities(value))
+    );
+
+    // CORREÇÃO: A inscrição em `stateControl` agora só atualiza a lista de cidades e reseta o campo.
+    this.stateControl.valueChanges.subscribe((stateName) => {
+      const iso = this._findStateIso(stateName);
+      // Atualiza a fonte de dados para as cidades.
       this.allCities = iso
         ? City.getCitiesOfState('US', iso).map((c) => c.name)
         : [];
-      this.filteredCities = this.cityControl.valueChanges.pipe(
-        startWith(this.cityControl.value),
-        map((v) => this._filterCities(v))
-      );
+      // Reseta o campo da cidade, forçando o usuário a escolher uma nova.
       this.cityControl.setValue('');
-    }); // Filtra cidades conforme digita
+    });
 
-    this.filteredCities = this.cityControl.valueChanges.pipe(
-      startWith(this.cityControl.value),
-      map((v) => this._filterCities(v))
-    ); // Inscreva-se nas mudanças do formulário para calcular o progresso
-
+    // Inscreva-se nas mudanças do formulário para calcular o progresso
     this.form.valueChanges.subscribe(() => {
       this.calculateProgress();
     });

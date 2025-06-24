@@ -22,6 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { User } from '../../../../../core/interfaces/user.interface';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { switchMap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -50,7 +52,7 @@ export class DetailsComponent implements OnInit {
   housingService = inject(HousingService);
   applicationService = inject(ApplicationService);
   snackBar = inject(MatSnackBar);
-  spinner = inject(NgxSpinnerService); // Injetar NgxSpinnerService
+  spinner = inject(NgxSpinnerService);
 
   housingLocation: HousingLocation | undefined;
 
@@ -89,32 +91,53 @@ export class DetailsComponent implements OnInit {
   // Esta nova lista será usada no template
   filteredVisitHours: string[] = [];
 
-  // SECTION: Lifecycle Hooks
-  constructor() {
-    this.spinner.show(); // Mostrar spinner antes de carregar os dados
-    const housingLocationId = String(this.route.snapshot.paramMap.get('id'));
-    if (!housingLocationId) {
-      console.error('ID inválido:', housingLocationId);
-      this.router.navigateByUrl('/');
-      this.spinner.hide(); // Esconder spinner se houver erro de ID
-      return;
-    }
+  // CORREÇÃO: O construtor deve ficar vazio.
+  constructor() {}
 
-    this.housingService.getHousingLocationById(housingLocationId).subscribe({
-      next: (location) => {
-        this.housingLocation = location;
-        this.setupConditionalValidators(); // Configurar validadores após carregar housingLocation
-        this.spinner.hide(); // Esconder spinner após carregar com sucesso
-      },
-      error: (err) => {
-        console.error('Erro ao carregar detalhes da casa:', err);
-        this.router.navigateByUrl('/');
-        this.spinner.hide(); // Esconder spinner em caso de erro
-      },
+  // CORREÇÃO: Toda a lógica de inicialização vai para o ngOnInit.
+  ngOnInit(): void {
+    this.spinner.show();
+    // Usar route.params.subscribe é mais robusto que snapshot
+    this.route.params
+      .pipe(
+        // O switchMap cancela a requisição anterior se o ID mudar rapidamente
+        switchMap((params) => {
+          const housingLocationId = params['id'];
+          if (!housingLocationId) {
+            this.router.navigateByUrl('/');
+            return EMPTY; // Retorna um observable vazio se não houver ID
+          }
+          return this.housingService.getHousingLocationById(housingLocationId);
+        })
+      )
+      .subscribe({
+        next: (location) => {
+          if (!location) {
+            this.router.navigateByUrl('/');
+            return;
+          }
+          this.housingLocation = location;
+          this.setupConditionalValidators();
+          this.patchUserForm();
+          this.spinner.hide();
+        },
+        error: (err) => {
+          console.error('Erro ao carregar detalhes da casa:', err);
+          this.spinner.hide();
+          this.router.navigateByUrl('/');
+        },
+      });
+
+    // Escuta mudanças na data da visita para atualizar os horários disponíveis
+    this.applyForm.get('visitDate')?.valueChanges.subscribe((selectedDate) => {
+      this.updateAvailableHours(selectedDate);
+      // Reseta o horário selecionado quando a data muda
+      this.applyForm.get('visitTime')?.reset('');
     });
   }
 
-  ngOnInit(): void {
+  // NOVO: Método para preencher o formulário com dados do usuário
+  patchUserForm(): void {
     if (this.currentUser) {
       this.applyForm.patchValue({
         name: this.currentUser.name,
@@ -123,18 +146,6 @@ export class DetailsComponent implements OnInit {
         location: this.currentUser.location,
       });
     }
-
-    this.route.params.subscribe((params) => {
-      const housingLocationId = params['id'];
-      this.loadHousingLocation(housingLocationId);
-    });
-
-    // Escuta mudanças na data da visita para atualizar os horários disponíveis
-    this.applyForm.get('visitDate')?.valueChanges.subscribe((selectedDate) => {
-      this.updateAvailableHours(selectedDate);
-      // Reseta o horário selecionado quando a data muda
-      this.applyForm.get('visitTime')?.reset('');
-    });
   }
 
   updateAvailableHours(selectedDateStr: string | null): void {
@@ -160,22 +171,6 @@ export class DetailsComponent implements OnInit {
       // Data no passado, nenhum horário disponível.
       this.filteredVisitHours = [];
     }
-  }
-
-  loadHousingLocation(id: string): void {
-    this.spinner.show();
-    this.housingService.getHousingLocationById(id).subscribe({
-      next: (location) => {
-        this.housingLocation = location;
-        this.setupConditionalValidators();
-        this.spinner.hide();
-      },
-      error: (err) => {
-        console.error('Erro ao carregar detalhes da casa:', err);
-        this.router.navigateByUrl('/');
-        this.spinner.hide();
-      },
-    });
   }
 
   // Adicionar novo método para configurar validadores condicionais
