@@ -114,6 +114,18 @@ button.mat-icon-button .material-symbols-outlined {
   }
 }
 
+/* CORREÇÃO: Usando ::ng-deep para sobrescrever estilos encapsulados */
+::ng-deep .edit-card mat-checkbox .mdc-form-field .mdc-label {
+  color: var(--text-color) !important; // Adapta ao tema claro/escuro
+}
+
+::ng-deep .edit-card mat-checkbox {
+  --mdc-checkbox-label-text-color: var(
+    --text-color
+  ); // Adapta ao tema claro/escuro
+}
+
+/* Outros estilos existentes */
 .image-preview {
   display: flex;
   justify-content: center;
@@ -151,6 +163,6 @@ button.mat-icon-button .material-symbols-outlined {
 
   span {
     font-size: 14px;
-    color: black;
+    color: var(--text-color);
   }
 }

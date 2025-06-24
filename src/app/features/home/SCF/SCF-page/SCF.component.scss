@@ -20,6 +20,7 @@
   width: 320px;
   padding: 24px;
   background-color: var(--background);
+  color: var(--text-color);
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   // NOVO: Adicionado display flex para controlar o conteúdo interno
   display: flex;
@@ -30,22 +31,50 @@
 .filters-panel-content {
   display: flex;
   flex-direction: column;
-  flex-grow: 1; // Ocupa todo o espaço vertical disponível
+  gap: 1.5rem;
+  flex-grow: 1;
+
+  // CORREÇÃO: Centraliza os labels dos filtros
+  label.mat-body-strong {
+    text-align: center;
+    color: var(--titleAC);
+    font-size: 1rem;
+    margin-bottom: -0.5rem; // Ajuste visual do espaçamento
+  }
+}
+
+/* Estilos para os checkboxes no sidenav */
+::ng-deep .filters-panel-content .mdc-form-field .mdc-label {
+  color: white !important; // Adapta ao tema claro/escuro
+}
+
+::ng-deep .filters-panel-content mat-checkbox {
+  --mdc-checkbox-label-text-color: white;
+  // Adapta ao tema claro/escuro
 }
 
 // Cabeçalho do painel (sem alterações)
 .sidenav-header {
+  position: relative; // Necessário para posicionar o botão de fechar
   display: flex;
-  justify-content: space-between;
+  justify-content: center; // CORREÇÃO: Centraliza o título
   align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--purpleWeak); // Usa a variável de tema
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--purpleWeak);
 
   h3 {
     margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-color); // Aplica a cor de texto do tema
+    font-size: 1.5rem;
+    color: var(--titleAC);
+  }
+
+  // Posiciona o botão de fechar no canto direito, independentemente do título
+  button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 

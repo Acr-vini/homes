@@ -192,14 +192,5 @@ $filtro-border-color: darken($filtro-base-bck, 10%);
   background-color: $filtro-base-bck;
   padding: 8px 16px;
   border-radius: 4px;
-
-  mat-checkbox {
-    .mdc-form-field label {
-      color: white;
-    }
-    .mdc-checkbox--selected .mdc-checkbox__native-control {
-      background-color: $filtro-hover-bck !important;
-      border-color: $filtro-hover-bck !important;
-    }
-  }
+  color: var(--text-color);
 }
