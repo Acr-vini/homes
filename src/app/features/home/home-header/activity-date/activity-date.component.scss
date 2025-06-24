@@ -12,6 +12,7 @@
   grid-template-columns: 1fr; // Padrão para telas pequenas
   gap: 8rem; // Aumente este valor (ex: de 2rem para 3rem)
   padding: 1rem 2rem;
+  background-color: var(--mFF);
 
   @media (min-width: 1024px) {
     grid-template-columns: 1fr 1fr; // Duas colunas em telas maiores
@@ -37,6 +38,7 @@
 }
 
 .clear-all-btn {
+  background-color: var(--mFF);
   mat-icon {
     margin-right: 8px;
   }
