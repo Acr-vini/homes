@@ -121,8 +121,11 @@ export class HouseCardsComponent {
       return true; // Admin e Manager podem editar tudo
     }
 
-    if (role === 'Realtor' && house.ownerId === userId) {
-      return true; // Realtor pode editar apenas as próprias casas
+    if (
+      (role === 'Owner' || role === 'Real Estate Agency') &&
+      house.ownerId === userId
+    ) {
+      return true; // Owner e Real Estate Agency podem editar apenas as próprias casas
     }
 
     return false;

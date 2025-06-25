@@ -56,11 +56,11 @@ export class RegisterComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // A lógica agora só precisa controlar o campo CPF
+    // A lógica agora controla o campo CPF para Owner e Real Estate Agency
     this.registerForm.get('role')?.valueChanges.subscribe((role) => {
       const cpfControl = this.registerForm.get('cpf');
 
-      if (role === 'Realtor') {
+      if (role === 'Owner' || role === 'Real Estate Agency') {
         cpfControl?.setValidators(Validators.required);
       } else {
         cpfControl?.clearValidators();
@@ -85,7 +85,6 @@ export class RegisterComponent implements OnInit {
 
     const formValue = this.registerForm.value;
 
-    // Constrói o payload manualmente para garantir a estrutura exata
     const newUserPayload: any = {
       name: formValue.name,
       email: formValue.email,
@@ -96,8 +95,8 @@ export class RegisterComponent implements OnInit {
       location: formValue.location,
     };
 
-    // Adiciona o CPF apenas se a role for Realtor
-    if (formValue.role === 'Realtor') {
+    // Adiciona o CPF apenas se a role for Owner ou Real Estate Agency
+    if (formValue.role === 'Owner' || formValue.role === 'Real Estate Agency') {
       newUserPayload.cpf = formValue.cpf;
     }
 
@@ -115,14 +114,10 @@ export class RegisterComponent implements OnInit {
       },
       error: (err) => {
         this.spinner.hide();
-        console.error('Registration failed:', err);
-        this.snackBar.open(
-          '❌ Failed to create account. The email might already be in use.',
-          'Close',
-          {
-            duration: 5000,
-          }
-        );
+        this.snackBar.open('❌ Error creating account.', 'Close', {
+          duration: 3000,
+        });
+        console.error(err);
       },
     });
   }

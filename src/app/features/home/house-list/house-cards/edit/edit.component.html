@@ -76,9 +76,25 @@
     <mat-form-field class="full-width">
       <mat-label>Property Type</mat-label>
       <mat-select formControlName="propertyType" required>
-        @for (type of propertyTypes; track type.value) {
-        <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
-        }
+        <!-- ATUALIZAÇÃO AQUI -->
+        <mat-optgroup label="Residential">
+          <mat-option
+            *ngFor="let type of residentialPropertyTypes"
+            [value]="type.value"
+          >
+            <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
+            {{ type.viewValue }}
+          </mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="Commercial">
+          <mat-option
+            *ngFor="let type of commercialPropertyTypes"
+            [value]="type.value"
+          >
+            <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
+            {{ type.viewValue }}
+          </mat-option>
+        </mat-optgroup>
       </mat-select>
       <mat-error
         *ngIf="

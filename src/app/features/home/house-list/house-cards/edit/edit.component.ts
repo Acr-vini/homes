@@ -70,11 +70,31 @@ export class EditComponent implements OnInit {
   currentUserRole: string | null = null;
   canPerformActions = false;
 
-  propertyTypes = [
-    { value: 'apartment', viewValue: 'apartment' },
-    { value: 'house', viewValue: 'house' },
-    { value: 'terrain', viewValue: 'terrain' },
-    { value: 'studio', viewValue: 'studio' },
+  residentialPropertyTypes = [
+    { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
+    { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
+    { value: 'condo', viewValue: 'Condo', icon: 'domain' },
+    { value: 'studio', viewValue: 'Studio', icon: 'meeting_room' },
+    { value: 'flat', viewValue: 'Flat', icon: 'hotel' },
+    { value: 'loft', viewValue: 'Loft', icon: 'roofing' },
+    { value: 'penthouse', viewValue: 'Penthouse', icon: 'villa' },
+    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
+    { value: 'land', viewValue: 'Land/Lot', icon: 'terrain' },
+    { value: 'land_condo', viewValue: 'Land in Condo', icon: 'location_city' },
+  ];
+  commercialPropertyTypes = [
+    { value: 'office', viewValue: 'Office', icon: 'business' },
+    {
+      value: 'commercial_house',
+      viewValue: 'Commercial House',
+      icon: 'home_work',
+    },
+    { value: 'store', viewValue: 'Store', icon: 'store' },
+    { value: 'warehouse', viewValue: 'Warehouse', icon: 'inventory' },
+    { value: 'commercial_land', viewValue: 'Commercial Land', icon: 'terrain' },
+    { value: 'building', viewValue: 'Building', icon: 'apartment' },
+    { value: 'garage', viewValue: 'Garage', icon: 'local_parking' },
+    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
   ];
 
   constructor(
@@ -112,11 +132,14 @@ export class EditComponent implements OnInit {
         // Lógica de permissão para exibir botões de ação
         const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
         const role = user?.role || null;
-        const userId = user?.id;
+        const userId = String(user?.id); // Garante que o ID seja string para comparação
 
         if (role === 'Admin' || role === 'Manager') {
           this.canPerformActions = true;
-        } else if (role === 'Realtor' && house.ownerId === userId) {
+        } else if (
+          (role === 'Owner' || role === 'Real Estate Agency') &&
+          house.ownerId === userId
+        ) {
           this.canPerformActions = true;
         } else {
           this.canPerformActions = false;

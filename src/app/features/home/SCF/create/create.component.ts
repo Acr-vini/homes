@@ -74,11 +74,32 @@ export class CreateComponent implements OnInit {
 
   imagePreview: string | ArrayBuffer | null = null;
 
-  propertyTypes = [
-    { value: 'apartment', viewValue: 'apartment' },
-    { value: 'house', viewValue: 'house' },
-    { value: 'terrain', viewValue: 'terrain' },
-    { value: 'studio', viewValue: 'studio' },
+  // SUBSTITUA O ARRAY 'propertyTypes' ANTIGO POR ESTES DOIS:
+  residentialPropertyTypes = [
+    { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
+    { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
+    { value: 'condo', viewValue: 'Condo', icon: 'domain' },
+    { value: 'studio', viewValue: 'Studio', icon: 'meeting_room' },
+    { value: 'flat', viewValue: 'Flat', icon: 'hotel' },
+    { value: 'loft', viewValue: 'Loft', icon: 'roofing' },
+    { value: 'penthouse', viewValue: 'Penthouse', icon: 'villa' },
+    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
+    { value: 'land', viewValue: 'Land/Lot', icon: 'terrain' },
+    { value: 'land_condo', viewValue: 'Land in Condo', icon: 'location_city' },
+  ];
+  commercialPropertyTypes = [
+    { value: 'office', viewValue: 'Office', icon: 'business' },
+    {
+      value: 'commercial_house',
+      viewValue: 'Commercial House',
+      icon: 'home_work',
+    },
+    { value: 'store', viewValue: 'Store', icon: 'store' },
+    { value: 'warehouse', viewValue: 'Warehouse', icon: 'inventory' },
+    { value: 'commercial_land', viewValue: 'Commercial Land', icon: 'terrain' },
+    { value: 'building', viewValue: 'Building', icon: 'apartment' },
+    { value: 'garage', viewValue: 'Garage', icon: 'local_parking' },
+    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
   ];
 
   constructor(
@@ -91,16 +112,16 @@ export class CreateComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
-      state: this.stateControl,
-      city: this.cityControl,
-      availableUnits: [0, [Validators.required, Validators.min(1)]],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      photo: ['', Validators.required],
+      availableUnits: [0, Validators.required],
       wifi: [false],
       laundry: [false],
-      photo: ['', Validators.required],
-      typeOfBusiness: ['sell', Validators.required],
+      typeOfBusiness: ['', Validators.required],
       propertyType: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(1)]], // Adiciona o controle de preço
-      createBy: [''],
+      price: [0, Validators.required],
+      ownerId: ['', Validators.required],
     });
   }
 
@@ -214,6 +235,19 @@ export class CreateComponent implements OnInit {
       return;
     }
 
+    // Adicione uma verificação para garantir que o usuário tem a permissão correta
+    if (
+      currentUser.role !== 'Owner' &&
+      currentUser.role !== 'Real Estate Agency'
+    ) {
+      this.snackBar.open(
+        '❌ You do not have permission to create a listing.',
+        'Close',
+        { duration: 3000 }
+      );
+      return;
+    }
+
     const payload: Omit<HousingLocation, 'id'> = {
       name: this.form.value.name,
       city: this.cityControl.value,
@@ -224,7 +258,9 @@ export class CreateComponent implements OnInit {
       laundry: this.form.value.laundry,
       typeOfBusiness: this.form.value.typeOfBusiness,
       propertyType: this.form.value.propertyType,
-      price: this.form.value.price, // Adiciona o preço ao payload
+      price: this.form.value.price,
+      // CORREÇÃO: Defina o sellerType com base no role do usuário logado
+      sellerType: currentUser.role,
       createBy: String(currentUser?.id ?? ''),
       editedBy: '',
       deletedBy: '',

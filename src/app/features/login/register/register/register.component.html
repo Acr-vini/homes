@@ -10,9 +10,11 @@
       <!-- Role Selection -->
       <mat-form-field class="full-width">
         <mat-label>Account Type</mat-label>
-        <mat-select formControlName="role">
+        <mat-select formControlName="role" required>
           <mat-option value="User">User</mat-option>
-          <mat-option value="Realtor">Realtor</mat-option>
+          <mat-option value="Owner">Owner</mat-option>
+          <mat-option value="Real Estate Agency">Real Estate Agency</mat-option>
+          <!-- As opções 'Manager' e 'Admin' foram removidas para impedir o auto-registro -->
         </mat-select>
       </mat-form-field>
 
@@ -59,14 +61,17 @@
         <mat-error>Phone is required</mat-error>
       </mat-form-field>
 
-      <!-- CPF Field (only for Realtors) -->
+      <!-- CPF Field (conditionally required) -->
       <mat-form-field
         class="full-width"
-        *ngIf="registerForm.get('role')?.value === 'Realtor'"
+        *ngIf="
+          registerForm.get('role')?.value === 'Owner' ||
+          registerForm.get('role')?.value === 'Real Estate Agency'
+        "
       >
         <mat-label>CPF</mat-label>
         <input matInput formControlName="cpf" required />
-        <mat-error>CPF is required for Realtors</mat-error>
+        <mat-error>CPF is required for this account type</mat-error>
       </mat-form-field>
 
       <!-- Location -->

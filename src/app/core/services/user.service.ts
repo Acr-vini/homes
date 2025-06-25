@@ -35,8 +35,11 @@ export class UserService {
 
   /** POST: cria um novo usuário */
   createUser(user: Omit<User, 'id'>): Observable<User> {
-    // CORREÇÃO: A rota correta para criar um usuário no seu backend é /users, não /register.
-    return this.http.post<User>(`${this.apiUrl}/users`, user);
+    const payload = {
+      ...user,
+      role: user.role === 'Realtor' ? 'Real Estate Agency' : user.role, // Ajusta Realtor para Real Estate Agency
+    };
+    return this.http.post<User>(`${this.apiUrl}/users`, payload);
   }
 
   // Busca usuário por email e senha

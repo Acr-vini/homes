@@ -75,6 +75,17 @@
               </mat-form-field>
             </div>
           </ng-container>
+
+          <!-- Novo filtro para tipo de vendedor -->
+          <mat-form-field appearance="outline">
+            <mat-label>Seller Type</mat-label>
+            <mat-select formControlName="sellerType">
+              <mat-option value="Owner">Owner</mat-option>
+              <mat-option value="Real Estate Agency"
+                >Real Estate Agency</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
         </div>
 
         @if(filterForm.dirty) {
@@ -125,7 +136,8 @@
 
         <div class="create-wrapper">
           @if(currentUserRole === 'Admin' || currentUserRole === 'Manager' ||
-          currentUserRole === 'Realtor') {
+          currentUserRole === 'Owner' || currentUserRole === 'Real Estate
+          Agency') {
           <!-- CORREÇÃO: Aplicando a classe e a diretiva corretas -->
           <button
             mat-flat-button

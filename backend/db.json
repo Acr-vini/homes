@@ -165,9 +165,9 @@
       "deleted": false,
       "typeOfBusiness": "sell",
       "id": "10",
-      "propertyType": "house",
+      "propertyType": "condo",
       "price": 500000,
-      "updatedAt": "2025-06-24T11:43:06.066Z"
+      "updatedAt": "2025-06-25T13:06:24.361Z"
     },
     {
       "name": "Modern house",
@@ -274,9 +274,9 @@
       "deleted": false,
       "typeOfBusiness": "sell",
       "id": "19",
-      "propertyType": "house",
+      "propertyType": "farm",
       "price": 200000,
-      "updatedAt": "2025-06-24T12:08:42.290Z"
+      "updatedAt": "2025-06-25T13:07:07.650Z"
     },
     {
       "name": "peasant house",
@@ -542,6 +542,17 @@
       "status": "active",
       "cpf": "123123123",
       "id": "gdhGqur"
+    },
+    {
+      "name": "asdasdsada",
+      "email": "dasdasd@adsad",
+      "password": "asdasdad",
+      "status": "active",
+      "role": "Owner",
+      "phone": "12312312",
+      "location": "adadsadas",
+      "cpf": "123132124124",
+      "id": "GEvQvUI"
     }
   ],
   "reviews": [

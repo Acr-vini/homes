@@ -127,13 +127,14 @@ export class SCFComponent implements OnInit, OnDestroy {
     // NOVO: Inicializamos o formulário no construtor.
     // Os valores iniciais representam um formulário "limpo".
     this.filterForm = this.fb.group({
-      city: [''], // antigo filterControl
+      city: [''],
       typeOfBusiness: [''],
-      propertyType: [''], // Ex: 'Apartamento', 'Casa'
-      wifi: [false], // antigo filterWifi
-      laundry: [false], // antigo filterLaundry
+      propertyType: [''],
+      wifi: [false],
+      laundry: [false],
       priceFrom: [null],
       priceTo: [null],
+      sellerType: [''], // Novo filtro de tipo de vendedor
     });
   }
 
@@ -178,9 +179,9 @@ export class SCFComponent implements OnInit, OnDestroy {
     const filters = this.filterForm.value;
 
     this.filteredLocationList = this.housingLocationList.filter((location) => {
-      const matchesCity = location.city
-        .toLowerCase()
-        .includes((filters.city ?? '').toLowerCase());
+      const matchesCity =
+        !filters.city ||
+        location.city.toLowerCase().includes(filters.city.toLowerCase());
       const matchesTransaction =
         !filters.typeOfBusiness ||
         location.typeOfBusiness === filters.typeOfBusiness;
@@ -191,6 +192,8 @@ export class SCFComponent implements OnInit, OnDestroy {
       const matchesPrice =
         (!filters.priceFrom || location.price >= filters.priceFrom) &&
         (!filters.priceTo || location.price <= filters.priceTo);
+      const matchesSellerType =
+        !filters.sellerType || location.sellerType === filters.sellerType;
 
       return (
         matchesCity &&
@@ -198,7 +201,8 @@ export class SCFComponent implements OnInit, OnDestroy {
         matchesPropertyType &&
         matchesWifi &&
         matchesLaundry &&
-        matchesPrice
+        matchesPrice &&
+        matchesSellerType
       );
     });
 
@@ -244,11 +248,8 @@ export class SCFComponent implements OnInit, OnDestroy {
   }
 
   openCreateHouse() {
-    if (
-      this.currentUserRole !== 'Admin' &&
-      this.currentUserRole !== 'Manager' &&
-      this.currentUserRole !== 'Realtor'
-    ) {
+    const allowedRoles = ['Admin', 'Manager', 'Owner', 'Real Estate Agency'];
+    if (!allowedRoles.includes(this.currentUserRole ?? '')) {
       this.snackBar.open(
         'You do not have permission to perform this action.',
         'Close',

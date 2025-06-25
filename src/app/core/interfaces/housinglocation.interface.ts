@@ -10,6 +10,7 @@ export interface HousingLocation {
   typeOfBusiness: 'rent' | 'sell';
   propertyType: 'house' | 'apartment' | 'terrain' | 'studio';
   price: number;
+  sellerType: 'Owner' | 'Real Estate Agency';
   createBy?: string;
   editedBy?: string;
   deletedBy?: string;
