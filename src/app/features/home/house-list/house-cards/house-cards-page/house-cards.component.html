@@ -10,6 +10,11 @@
       [ngClass]="{ favorited: isFavorited(housingLocation) }"
       aria-label="Favorite"
       type="button"
+      [matTooltip]="
+        isFavorited(housingLocation)
+          ? 'Remove from favorites'
+          : 'Add to favorites'
+      "
     >
       <mat-icon>
         {{ isFavorited(housingLocation) ? "favorite" : "favorite_border" }}

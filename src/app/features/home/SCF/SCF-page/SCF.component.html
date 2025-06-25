@@ -10,6 +10,17 @@
 
       <div class="filters-panel-content">
         <div class="filters-panel-form">
+          <!-- Filtro de tipo de vendedor movido para o topo -->
+          <mat-form-field appearance="outline">
+            <mat-label>Seller Type</mat-label>
+            <mat-select formControlName="sellerType">
+              <mat-option value="Owner">Owner</mat-option>
+              <mat-option value="Real Estate Agency"
+                >Real Estate Agency</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+
           <!-- Filtro de tipo de propriedade -->
           <mat-form-field appearance="outline">
             <mat-label>Property Type</mat-label>
@@ -75,17 +86,6 @@
               </mat-form-field>
             </div>
           </ng-container>
-
-          <!-- Novo filtro para tipo de vendedor -->
-          <mat-form-field appearance="outline">
-            <mat-label>Seller Type</mat-label>
-            <mat-select formControlName="sellerType">
-              <mat-option value="Owner">Owner</mat-option>
-              <mat-option value="Real Estate Agency"
-                >Real Estate Agency</mat-option
-              >
-            </mat-select>
-          </mat-form-field>
         </div>
 
         @if(filterForm.dirty) {

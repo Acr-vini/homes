@@ -533,17 +533,6 @@
       "status": "active"
     },
     {
-      "name": "realtor",
-      "email": "realtor@example.com.br",
-      "password": "password123",
-      "phone": "123123",
-      "location": "abc ab",
-      "role": "Realtor",
-      "status": "active",
-      "cpf": "123123123",
-      "id": "gdhGqur"
-    },
-    {
       "name": "asdasdsada",
       "email": "dasdasd@adsad",
       "password": "asdasdad",

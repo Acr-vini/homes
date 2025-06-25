@@ -194,36 +194,43 @@
   }
 }
 
+// CORREÇÃO: Estilos atualizados para corresponder ao da página de detalhes
 .favorite-icon-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
   background: white;
-  border: none;
-  border-radius: 50%;
-  padding: 10px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 48px;
+  height: 48px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-  transition: background 0.2s;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
 
   mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    line-height: 1;
     color: #bdbdbd;
-    font-size: 22px;
-    transition: color 0.2s;
-    justify-content: center;
-    align-items: center;
+    transition: color 0.2s, transform 0.2s;
   }
 
   &.favorited mat-icon {
-    color: #e53935;
+    color: #e5354d;
+  }
+
+  &:hover:not(.favorited) mat-icon {
+    color: #e5354d;
   }
 
   &:hover mat-icon {
-    color: #e53935;
+    transform: scale(1.1);
   }
 }
 

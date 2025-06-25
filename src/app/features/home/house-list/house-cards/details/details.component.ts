@@ -136,6 +136,50 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+  // LÓGICA DE FAVORITOS ADICIONADA
+  get favoriteKey(): string {
+    // Retorna uma chave única por usuário para o localStorage
+    return `favoriteHouses_${this.currentUser?.id}`;
+  }
+
+  get favoriteIds(): string[] {
+    if (!this.currentUser?.id) return [];
+    return JSON.parse(localStorage.getItem(this.favoriteKey) || '[]');
+  }
+
+  isFavorited(): boolean {
+    if (!this.housingLocation) return false;
+    return this.favoriteIds.includes(String(this.housingLocation.id));
+  }
+
+  toggleFavorite(): void {
+    if (!this.housingLocation || !this.currentUser?.id) return;
+
+    const id = String(this.housingLocation.id);
+    let ids = this.favoriteIds;
+    const wasFavorited = this.isFavorited();
+
+    if (wasFavorited) {
+      ids = ids.filter((favId) => favId !== id);
+      this.snackBar.open('Removed from favorites.', 'Close', {
+        duration: 2000,
+      });
+    } else {
+      ids = [...ids, id];
+      // Replicando a snackbar da home
+      const snackBarRef = this.snackBar.open(
+        '✅  House favorited. Go to favorites?',
+        'Yes',
+        { duration: 5000 }
+      );
+
+      snackBarRef.onAction().subscribe(() => {
+        this.router.navigate(['/favorites']);
+      });
+    }
+    localStorage.setItem(this.favoriteKey, JSON.stringify(ids));
+  }
+
   // NOVO: Método para preencher o formulário com dados do usuário
   patchUserForm(): void {
     if (this.currentUser) {

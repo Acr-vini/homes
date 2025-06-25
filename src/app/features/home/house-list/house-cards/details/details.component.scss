@@ -146,3 +146,62 @@ button.primary {
 button.primary:hover {
   background-color: #5e34b1;
 }
+
+// ESTILOS ADICIONADOS SEM ALTERAR A ARQUITETURA EXISTENTE
+
+// O novo container da foto. Ele se comporta exatamente como a imagem original no layout.
+.listing-photo-container {
+  position: relative; // Permite posicionar o botão de favorito dentro dele.
+  // Copia as dimensões da classe .listing-photo para não quebrar o layout de colunas.
+  height: 600px;
+  width: 50%;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+    height: 400px;
+  }
+
+  // Faz a imagem preencher 100% do seu novo container.
+  .listing-photo {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Estilo do botão de favorito.
+.favorite-details-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    line-height: 1;
+    color: #bdbdbd;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  &.favorited mat-icon {
+    color: #e5354d;
+  }
+
+  &:hover:not(.favorited) mat-icon {
+    color: #e5354d;
+  }
+
+  &:hover mat-icon {
+    transform: scale(1.1);
+  }
+}
