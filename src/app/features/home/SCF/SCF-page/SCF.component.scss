@@ -121,19 +121,36 @@
 // Barra superior
 .home-filter-wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: 2300px; // Aumentado para dar mais espaço
   padding: 24px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 16px; // CORREÇÃO: Revertido para o gap padrão entre os elementos próximos
-  margin: 0 auto;
+  justify-content: space-between; // Garante que os grupos fiquem nos extremos
+  gap: 32px; // Espaço mínimo entre os grupos
+}
+
+// 2. Define como os itens dentro do grupo da esquerda se comportam
+.toolbar-left-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem; // Espaço entre os itens da esquerda
+  width: 100%; // Faz o grupo da esquerda tentar ocupar todo o espaço disponível
+}
+
+// 3. Define como os itens dentro do grupo da direita se comportam
+.toolbar-right-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem; // Espaço entre os itens da direita
+  flex-shrink: 0; // Impede que o grupo da direita seja espremido
 }
 
 // Filtro de cidade
 .filters-form-container__city-filter {
   min-width: 250px;
-  flex-grow: 1;
-  max-width: 500px;
+  flex-grow: 1; // A MÁGICA: Faz a barra de pesquisa crescer para preencher o espaço
+  max-width: 500px; // Aumenta o limite máximo de largura
 }
 
 // CORREÇÃO: Adicionando de volta o estilo para o botão de filtro para restaurar sua cor roxa.
@@ -226,6 +243,11 @@
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
+
+  &.list-view {
+    grid-template-columns: 1fr; // Muda o grid para uma única coluna
+    gap: 1.5rem;
+  }
 }
 
 .price-filter-group {
@@ -235,4 +257,10 @@
 
 .price-filter {
   flex: 1;
+}
+
+.view-toggle {
+  margin-right: 1rem;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 8px;
 }

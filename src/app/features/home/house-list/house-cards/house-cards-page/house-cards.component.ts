@@ -28,6 +28,7 @@ import { CompareService } from '../../../../../core/services/compare.service'; /
 export class HouseCardsComponent {
   @Input() housingLocation!: HousingLocation;
   @Input() compareMode = false; // Recebe o modo de comparação
+  @Input() displayMode: 'grid' | 'list' = 'grid'; // Recebe o modo de visualização
   @Output() houseUpdated = new EventEmitter<void>(); // NOVO: Evento para notificar a atualização
 
   // Injeção dos serviços

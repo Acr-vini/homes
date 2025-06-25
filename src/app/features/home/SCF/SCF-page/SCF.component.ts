@@ -68,6 +68,7 @@ export class SCFComponent implements OnInit, OnDestroy {
   // NOVO: Substituímos o FormControl e as variáveis booleanas por um FormGroup único.
   // Isso centraliza toda a lógica de filtros em um só lugar.
   filterForm: FormGroup;
+  displayMode: 'grid' | 'list' = 'grid'; // Initialize with a default value
 
   // NOVO: Opções para os nossos filtros do tipo select/toggle
   propertyTypes = ['No Preference', 'house', 'apartment', 'terrain', 'studio'];

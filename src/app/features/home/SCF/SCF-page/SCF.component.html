@@ -105,40 +105,57 @@
 
     <mat-sidenav-content>
       <div class="home-filter-wrapper">
-        <mat-form-field
-          appearance="outline"
-          class="filters-form-container__city-filter compact-form-field"
-        >
-          <mat-label>Search by city</mat-label>
-          <input matInput formControlName="city" placeholder="Ex: Oakland" />
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
+        <!-- GRUPO DA ESQUERDA -->
+        <div class="toolbar-left-group">
+          <mat-button-toggle-group
+            [(ngModel)]="displayMode"
+            aria-label="Display Mode"
+            class="view-toggle"
+          >
+            <mat-button-toggle value="grid" matTooltip="Grid View">
+              <mat-icon>grid_view</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="list" matTooltip="List View">
+              <mat-icon>view_list</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
 
-        <button
-          mat-raised-button
-          (click)="sidenav.open()"
-          class="create-button compact-button"
-        >
-          <mat-icon>filter_list</mat-icon>
-          Filters
-        </button>
+          <mat-form-field
+            class="filters-form-container__city-filter"
+            appearance="outline"
+          >
+            <mat-label>Search by city</mat-label>
+            <input matInput formControlName="city" placeholder="Ex: Oakland" />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
 
-        @if(filterForm.dirty) {
-        <button
-          mat-icon-button
-          (click)="clearFilters()"
-          matTooltip="Clear filters"
-          class="clear-icon-button"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-        }
+          <button
+            mat-stroked-button
+            (click)="sidenav.open()"
+            class="create-button compact-button"
+          >
+            <mat-icon>filter_list</mat-icon>
+            Filters
+          </button>
 
-        <div class="create-wrapper">
+          <!-- 4. Botão de Limpar Filtros -->
+          @if(filterForm.dirty) {
+          <button
+            mat-icon-button
+            (click)="clearFilters()"
+            matTooltip="Clear filters"
+            class="clear-icon-button"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          }
+        </div>
+
+        <!-- GRUPO DA DIREITA -->
+        <div class="toolbar-right-group">
           @if(currentUserRole === 'Admin' || currentUserRole === 'Manager' ||
           currentUserRole === 'Owner' || currentUserRole === 'Real Estate
           Agency') {
-          <!-- CORREÇÃO: Aplicando a classe e a diretiva corretas -->
           <button
             mat-flat-button
             class="main-action-btn"
@@ -147,7 +164,6 @@
             + Create a House
           </button>
           }
-          <!-- CORREÇÃO: Usando mat-flat-button para consistência -->
           <button
             mat-flat-button
             class="main-action-btn"
@@ -157,9 +173,6 @@
             <mat-icon>favorite_border</mat-icon>
             Favorites
           </button>
-
-          <!-- BOTÃO DE COMPARAÇÃO ADICIONADO -->
-          <!-- CORREÇÃO: Usando mat-flat-button para consistência -->
           <button
             mat-flat-button
             class="main-action-btn"
@@ -172,12 +185,16 @@
         </div>
       </div>
 
-      <section class="housing-location-container">
+      <section
+        class="housing-location-container"
+        [class.list-view]="displayMode === 'list'"
+      >
         @for (housingLocation of pagedLocationList; track housingLocation.id) {
         <app-house-cards
           [housingLocation]="housingLocation"
           (houseUpdated)="loadLocations()"
           [compareMode]="compareMode"
+          [displayMode]="displayMode"
         />
         }
       </section>
