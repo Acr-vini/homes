@@ -1,7 +1,11 @@
 <ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
-<section class="home-listing" [class.compare-active]="compareMode">
+<section
+  class="home-listing"
+  [class.list-view-item]="displayMode === 'list'"
+  [class.compare-active]="compareMode"
+>
   <!-- Wrapper para o conteúdo que será desfocado -->
   <div class="card-content-wrapper">
     <button

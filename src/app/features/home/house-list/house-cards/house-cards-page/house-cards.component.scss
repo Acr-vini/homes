@@ -144,6 +144,48 @@
       pointer-events: auto; // Permite clicar no botão quando visível
     }
   }
+
+  &.list-view-item {
+    flex-direction: row;
+    align-items: center;
+    height: 140px;
+    min-height: 120px;
+    padding: 1rem;
+    gap: 2rem;
+
+    .home-listing-photo {
+      width: 180px;
+      height: 110px;
+      border-radius: 16px;
+      object-fit: cover;
+      margin-right: 1.5rem;
+    }
+
+    .home-listing-heading {
+      font-size: 1.2rem;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .card-content-wrapper {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 1.5rem;
+    }
+
+    .home-listing-link {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .card-edit-button-wrapper,
+    .favorite-icon-button {
+      position: static;
+      margin-left: auto;
+    }
+  }
 }
 
 @keyframes bounce {
@@ -194,43 +236,36 @@
   }
 }
 
-// CORREÇÃO: Estilos atualizados para corresponder ao da página de detalhes
 .favorite-icon-button {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
+  top: 10px;
+  right: 10px;
   background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  width: 48px;
-  height: 48px;
-  padding: 0;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s;
 
   mat-icon {
-    font-size: 30px;
-    width: 30px;
-    height: 30px;
-    line-height: 1;
     color: #bdbdbd;
-    transition: color 0.2s, transform 0.2s;
+    font-size: 22px;
+    transition: color 0.2s;
+    justify-content: center;
+    align-items: center;
   }
 
   &.favorited mat-icon {
-    color: #e5354d;
-  }
-
-  &:hover:not(.favorited) mat-icon {
-    color: #e5354d;
+    color: #e53935;
   }
 
   &:hover mat-icon {
-    transform: scale(1.1);
+    color: #e53935;
   }
 }
 

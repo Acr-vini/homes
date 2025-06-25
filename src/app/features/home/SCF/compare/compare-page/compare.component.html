@@ -38,7 +38,10 @@
       </div>
 
       <!-- Wifi -->
-      <div class="feature-name">Wi-Fi</div>
+      <div class="feature-name">
+        <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
+        Wi-Fi
+      </div>
       <div class="feature-value" *ngFor="let house of list">
         <mat-icon [ngClass]="house.wifi ? 'icon-yes' : 'icon-no'">
           {{ house.wifi ? "check_circle" : "cancel" }}
@@ -46,7 +49,12 @@
       </div>
 
       <!-- Laundry -->
-      <div class="feature-name">Laundry</div>
+      <div class="feature-name">
+        <mat-icon inline style="vertical-align: middle"
+          >local_laundry_service</mat-icon
+        >
+        Laundry
+      </div>
       <div class="feature-value" *ngFor="let house of list">
         <mat-icon [ngClass]="house.laundry ? 'icon-yes' : 'icon-no'">
           {{ house.laundry ? "check_circle" : "cancel" }}

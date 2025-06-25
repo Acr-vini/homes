@@ -38,8 +38,16 @@
     <h2 class="section-heading">About this housing location</h2>
     <ul>
       <li>✔ Units available: {{ housingLocation.availableUnits }}</li>
-      <li>✔ Does this location have wifi: {{ housingLocation.wifi }}</li>
-      <li>✔ Does this location have laundry: {{ housingLocation.laundry }}</li>
+      <li>
+        <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
+        Does this location have wifi: {{ housingLocation.wifi }}
+      </li>
+      <li>
+        <mat-icon inline style="vertical-align: middle"
+          >local_laundry_service</mat-icon
+        >
+        Does this location have laundry: {{ housingLocation.laundry }}
+      </li>
     </ul>
   </section>
 
