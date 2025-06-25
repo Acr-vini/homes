@@ -72,6 +72,35 @@ export class SCFComponent implements OnInit, OnDestroy {
   // NOVO: Opções para os nossos filtros do tipo select/toggle
   propertyTypes = ['No Preference', 'house', 'apartment', 'terrain', 'studio'];
 
+  // Adicionar os novos tipos de propriedade
+  residentialPropertyTypes = [
+    { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
+    { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
+    { value: 'condo', viewValue: 'Condo', icon: 'domain' },
+    { value: 'studio', viewValue: 'Studio', icon: 'meeting_room' },
+    { value: 'flat', viewValue: 'Flat', icon: 'hotel' },
+    { value: 'loft', viewValue: 'Loft', icon: 'roofing' },
+    { value: 'penthouse', viewValue: 'Penthouse', icon: 'villa' },
+    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
+    { value: 'land', viewValue: 'Land/Lot', icon: 'terrain' },
+    { value: 'land_condo', viewValue: 'Land in Condo', icon: 'location_city' },
+  ];
+
+  commercialPropertyTypes = [
+    { value: 'office', viewValue: 'Office', icon: 'business' },
+    {
+      value: 'commercial_house',
+      viewValue: 'Commercial House',
+      icon: 'home_work',
+    },
+    { value: 'store', viewValue: 'Store', icon: 'store' },
+    { value: 'warehouse', viewValue: 'Warehouse', icon: 'inventory' },
+    { value: 'commercial_land', viewValue: 'Commercial Land', icon: 'terrain' },
+    { value: 'building', viewValue: 'Building', icon: 'apartment' },
+    { value: 'garage', viewValue: 'Garage', icon: 'local_parking' },
+    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
+  ];
+
   pageSize = 20;
   pageIndex = 0;
   pagedLocationList: HousingLocation[] = [];
@@ -103,6 +132,8 @@ export class SCFComponent implements OnInit, OnDestroy {
       propertyType: [''], // Ex: 'Apartamento', 'Casa'
       wifi: [false], // antigo filterWifi
       laundry: [false], // antigo filterLaundry
+      priceFrom: [null],
+      priceTo: [null],
     });
   }
 
@@ -144,39 +175,34 @@ export class SCFComponent implements OnInit, OnDestroy {
 
   // ALTERADO: A lógica de filtro agora lê os valores do `filterForm`.
   filterResults(): void {
-    // Pegamos todos os valores do formulário de uma vez.
     const filters = this.filterForm.value;
-    const term = (filters.city ?? '').toLowerCase();
 
-    this.filteredLocationList = this.housingLocationList.filter(
-      (location: HousingLocation) => {
-        // A lógica de filtro agora é mais legível e centralizada.
-        const matchesCity = location.city.toLowerCase().includes(term);
+    this.filteredLocationList = this.housingLocationList.filter((location) => {
+      const matchesCity = location.city
+        .toLowerCase()
+        .includes((filters.city ?? '').toLowerCase());
+      const matchesTransaction =
+        !filters.typeOfBusiness ||
+        location.typeOfBusiness === filters.typeOfBusiness;
+      const matchesPropertyType =
+        !filters.propertyType || location.propertyType === filters.propertyType;
+      const matchesWifi = !filters.wifi || location.wifi;
+      const matchesLaundry = !filters.laundry || location.laundry;
+      const matchesPrice =
+        (!filters.priceFrom || location.price >= filters.priceFrom) &&
+        (!filters.priceTo || location.price <= filters.priceTo);
 
-        // Se um tipo de transação foi selecionado, filtra por ele. Senão, ignora.
-        const matchesTransaction =
-          !filters.typeOfBusiness ||
-          location.typeOfBusiness === filters.typeOfBusiness;
+      return (
+        matchesCity &&
+        matchesTransaction &&
+        matchesPropertyType &&
+        matchesWifi &&
+        matchesLaundry &&
+        matchesPrice
+      );
+    });
 
-        // Se um tipo de imóvel foi selecionado, filtra por ele. Senão, ignora.
-        const matchesPropertyType =
-          !filters.propertyType ||
-          location.propertyType === filters.propertyType;
-
-        const matchesWifi = !filters.wifi || location.wifi;
-        const matchesLaundry = !filters.laundry || location.laundry;
-
-        // O imóvel só aparece se passar em TODAS as condições.
-        return (
-          matchesCity &&
-          matchesTransaction &&
-          matchesPropertyType &&
-          matchesWifi &&
-          matchesLaundry
-        );
-      }
-    );
-    this.pageIndex = 0; // Reseta a paginação para a primeira página
+    this.pageIndex = 0;
     this.updatePagedList();
   }
 

@@ -10,14 +10,28 @@
 
       <div class="filters-panel-content">
         <div class="filters-panel-form">
+          <!-- Filtro de tipo de propriedade -->
           <mat-form-field appearance="outline">
-            <mat-label>Property type</mat-label>
+            <mat-label>Property Type</mat-label>
             <mat-select formControlName="propertyType">
-              @for (type of propertyTypes; track type) {
-              <mat-option [value]="type === 'No Preference' ? '' : type">
-                {{ type | titlecase }}
-              </mat-option>
-              }
+              <mat-optgroup label="Residential">
+                <mat-option
+                  *ngFor="let type of residentialPropertyTypes"
+                  [value]="type.value"
+                >
+                  <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
+                  {{ type.viewValue }}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Commercial">
+                <mat-option
+                  *ngFor="let type of commercialPropertyTypes"
+                  [value]="type.value"
+                >
+                  <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
+                  {{ type.viewValue }}
+                </mat-option>
+              </mat-optgroup>
             </mat-select>
           </mat-form-field>
 
@@ -36,6 +50,31 @@
             <mat-checkbox formControlName="wifi">Wi-Fi</mat-checkbox>
             <mat-checkbox formControlName="laundry">Laundry</mat-checkbox>
           </div>
+
+          <!-- Filtro de preço -->
+          <ng-container *ngIf="filterForm.get('typeOfBusiness')?.value">
+            <div class="price-filter-group">
+              <mat-form-field appearance="outline" class="price-filter">
+                <mat-label>Price From</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="priceFrom"
+                  placeholder="Ex: 1000"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="price-filter">
+                <mat-label>Price To</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="priceTo"
+                  placeholder="Ex: 5000"
+                />
+              </mat-form-field>
+            </div>
+          </ng-container>
         </div>
 
         @if(filterForm.dirty) {
@@ -59,8 +98,8 @@
           appearance="outline"
           class="filters-form-container__city-filter compact-form-field"
         >
-          <mat-label>Filter by city</mat-label>
-          <input matInput formControlName="city" placeholder="Ex: Curitiba" />
+          <mat-label>Search by city</mat-label>
+          <input matInput formControlName="city" placeholder="Ex: Oakland" />
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 

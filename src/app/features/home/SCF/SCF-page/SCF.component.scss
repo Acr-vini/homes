@@ -227,3 +227,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.price-filter-group {
+  display: flex;
+  gap: 16px;
+}
+
+.price-filter {
+  flex: 1;
+}
