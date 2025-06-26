@@ -103,7 +103,7 @@ export class SCFComponent implements OnInit, OnDestroy {
 
   compareMode = false;
 
-  orderBy: 'priceAsc' | 'priceDesc' = 'priceAsc';
+  orderBy: 'relevance' | 'priceAsc' | 'priceDesc' = 'relevance';
 
   // 3. Crie o novo método para alternar o modo de comparação
   toggleCompareMode(): void {
