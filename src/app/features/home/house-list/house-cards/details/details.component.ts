@@ -8,7 +8,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms'; // Adicionado Validators
+} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,7 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationService } from '../../../../../core/services/application.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner'; // Adicionado NgxSpinnerService
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
@@ -46,7 +46,6 @@ import { EMPTY } from 'rxjs';
   styleUrls: ['./details.component.scss'],
 })
 export class DetailsComponent implements OnInit {
-  // SECTION: Properties and Injections
   route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);
   housingService = inject(HousingService);
@@ -57,14 +56,14 @@ export class DetailsComponent implements OnInit {
   housingLocation: HousingLocation | undefined;
 
   applyForm = new FormGroup({
-    name: new FormControl('', Validators.required), // Adicionado Validators.required
-    email: new FormControl('', [Validators.required, Validators.email]), // Adicionado Validators.required
-    visitDate: new FormControl(''), // Validadores serão adicionados dinamicamente
-    visitTime: new FormControl(''), // Validadores serão adicionados dinamicamente
-    checkInDate: new FormControl(''), // Validadores serão adicionados dinamicamente
-    checkOutDate: new FormControl(''), // Validadores serão adicionados dinamicamente
-    phone: new FormControl('', Validators.required), // Adicionado Validators.required
-    location: new FormControl('', Validators.required), // Adicionado Validators.required
+    name: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    visitDate: new FormControl(''),
+    visitTime: new FormControl(''),
+    checkInDate: new FormControl(''),
+    checkOutDate: new FormControl(''),
+    phone: new FormControl('', Validators.required),
+    location: new FormControl('', Validators.required),
   });
 
   currentUser: User | null = JSON.parse(
@@ -72,7 +71,6 @@ export class DetailsComponent implements OnInit {
   );
   today = new Date().toISOString().split('T')[0];
 
-  // Renomeia a lista principal de horários
   allVisitHours = [
     '08:00',
     '09:00',
@@ -88,24 +86,19 @@ export class DetailsComponent implements OnInit {
     '19:00',
     '20:00',
   ];
-  // Esta nova lista será usada no template
   filteredVisitHours: string[] = [];
 
-  // CORREÇÃO: O construtor deve ficar vazio.
   constructor() {}
 
-  // CORREÇÃO: Toda a lógica de inicialização vai para o ngOnInit.
   ngOnInit(): void {
     this.spinner.show();
-    // Usar route.params.subscribe é mais robusto que snapshot
     this.route.params
       .pipe(
-        // O switchMap cancela a requisição anterior se o ID mudar rapidamente
         switchMap((params) => {
           const housingLocationId = params['id'];
           if (!housingLocationId) {
             this.router.navigateByUrl('/');
-            return EMPTY; // Retorna um observable vazio se não houver ID
+            return EMPTY;
           }
           return this.housingService.getHousingLocationById(housingLocationId);
         })
@@ -136,7 +129,6 @@ export class DetailsComponent implements OnInit {
     });
   }
 
-  // LÓGICA DE FAVORITOS ADICIONADA
   get favoriteKey(): string {
     // Retorna uma chave única por usuário para o localStorage
     return `favoriteHouses_${this.currentUser?.id}`;
@@ -166,7 +158,6 @@ export class DetailsComponent implements OnInit {
       });
     } else {
       ids = [...ids, id];
-      // Replicando a snackbar da home
       const snackBarRef = this.snackBar.open(
         '✅  House favorited. Go to favorites?',
         'Yes',
@@ -180,7 +171,6 @@ export class DetailsComponent implements OnInit {
     localStorage.setItem(this.favoriteKey, JSON.stringify(ids));
   }
 
-  // NOVO: Método para preencher o formulário com dados do usuário
   patchUserForm(): void {
     if (this.currentUser) {
       this.applyForm.patchValue({
@@ -276,7 +266,7 @@ export class DetailsComponent implements OnInit {
 
         const newApplicationPayload = {
           userId: user.id,
-          houseId: this.housingLocation!.id, // Usar ! pois já verificamos housingLocation
+          houseId: this.housingLocation!.id,
           typeOfBusiness: this.housingLocation!.typeOfBusiness,
           houseName: this.housingLocation!.name,
           city: this.housingLocation!.city,
@@ -314,11 +304,10 @@ export class DetailsComponent implements OnInit {
             }
 
             this.snackBar.open(snackBarMessage, 'OK', {
-              duration: 7000, // Duração para o usuário ler
+              duration: 7000,
             });
 
             // Navegar para a tela de "activity date"
-            // Substitua '/my-activity' pela rota correta se for diferente
             this.router.navigate(['/activity-date']);
           },
           error: (err) => {

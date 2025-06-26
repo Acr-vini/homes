@@ -77,7 +77,6 @@ button.mat-icon-button .material-symbols-outlined {
   font-size: 20px;
 }
 
-/* DELETE */
 .delete-btn {
   background-color: #f44336;
   color: #fff;
@@ -87,7 +86,6 @@ button.mat-icon-button .material-symbols-outlined {
   }
 }
 
-/* SAVE */
 .save-btn {
   background-color: #381c9e;
   color: #fff;
@@ -97,7 +95,6 @@ button.mat-icon-button .material-symbols-outlined {
   }
 }
 
-/* CANCEL */
 .cancel-btn {
   background-color: #e0e0e0;
   color: #424242;
@@ -114,18 +111,14 @@ button.mat-icon-button .material-symbols-outlined {
   }
 }
 
-/* CORREÇÃO: Usando ::ng-deep para sobrescrever estilos encapsulados */
 ::ng-deep .edit-card mat-checkbox .mdc-form-field .mdc-label {
-  color: var(--text-color) !important; // Adapta ao tema claro/escuro
+  color: var(--text-color) !important;
 }
 
 ::ng-deep .edit-card mat-checkbox {
-  --mdc-checkbox-label-text-color: var(
-    --text-color
-  ); // Adapta ao tema claro/escuro
+  --mdc-checkbox-label-text-color: var(--text-color);
 }
 
-/* Outros estilos existentes */
 .image-preview {
   display: flex;
   justify-content: center;

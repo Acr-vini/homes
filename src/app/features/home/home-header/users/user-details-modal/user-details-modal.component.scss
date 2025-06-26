@@ -1,14 +1,11 @@
-// :host aplica estilos diretamente ao container do seu componente.
 :host {
-  display: block; // Boa prática para componentes que atuam como blocos.
-  background: var(--cardBck, #f9f8fe); // Seu fundo personalizado.
+  display: block;
+  background: var(--cardBck, #f9f8fe);
   color: var(--text-color, #222);
   border-radius: 18px;
   box-shadow: 0 4px 18px rgba(56, 28, 158, 0.2);
 }
 
-// Estiliza o título que vem do MatDialog
-// Usamos [mat-dialog-title] para mirar no atributo específico.
 [mat-dialog-title] {
   font-size: 1.5rem;
   font-weight: bold;
@@ -16,12 +13,10 @@
   text-align: center;
 }
 
-// Estiliza o conteúdo do MatDialog
 [mat-dialog-content] {
-  padding: 0 1.5rem; // Adiciona espaçamento lateral.
+  padding: 0 1.5rem;
 }
 
-// Estiliza a seção dentro do conteúdo
 section {
   margin-bottom: 1rem;
   &:last-child {
@@ -29,7 +24,6 @@ section {
   }
 }
 
-// Estiliza os subtítulos h3
 h3 {
   font-size: 1.15rem;
   font-weight: 600;
@@ -40,7 +34,6 @@ h3 {
   gap: 8px;
 }
 
-// Estiliza a lista
 ul {
   padding-left: 0;
   list-style: none;
@@ -52,14 +45,12 @@ li {
   font-size: 0.95rem;
 }
 
-// Estiliza as ações do MatDialog
 [mat-dialog-actions] {
   display: flex;
-  justify-content: flex-end; // Alinha o botão 'Close' à direita.
+  justify-content: flex-end;
   padding: 1rem 1.5rem;
 }
 
-// Estilo para o spinner de carregamento
 .loading-indicator {
   display: flex;
   flex-direction: column;

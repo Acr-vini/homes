@@ -74,19 +74,19 @@ export class UsersComponent implements OnInit {
 
   /** Carrega os usuários */
   loadUsers(): void {
-    this.spinner.show(); // Mostra o spinner
+    this.spinner.show();
 
     this.userService.getUsers().subscribe({
       next: (users) => {
         this.dataSource.data = users;
         this.dataSource.paginator = this.paginator;
-        this.spinner.hide(); // Esconde o spinner após carregar
+        this.spinner.hide();
       },
       error: () => {
         this.snackBar.open('Erro ao carregar usuários', 'Close', {
           duration: 2000,
         });
-        this.spinner.hide(); // Esconde o spinner em caso de erro
+        this.spinner.hide();
       },
     });
   }

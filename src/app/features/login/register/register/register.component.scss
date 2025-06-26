@@ -5,8 +5,8 @@
   background: rgba(40, 40, 60, 0.75);
   display: flex;
   justify-content: center;
-  align-items: flex-start; // Altere de 'center' para 'flex-start'
-  padding: 4rem 2rem; // Aumentei o padding superior para dar um respiro do topo
+  align-items: flex-start;
+  padding: 4rem 2rem;
   box-sizing: border-box;
 }
 
@@ -35,7 +35,7 @@ mat-card-title {
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; // Espaçamento menor entre os campos
+  gap: 0.5rem;
 }
 
 mat-form-field {
@@ -57,7 +57,7 @@ mat-form-field {
     transition: background-color 0.3s;
 
     &:hover {
-      background-color: #2a1575; // Um tom mais escuro para o hover
+      background-color: #2a1575;
     }
 
     &:disabled {
@@ -71,7 +71,6 @@ mat-form-field {
   }
 }
 
-// Media query para telas menores
 @media (max-width: 600px) {
   :host {
     padding: 1rem;

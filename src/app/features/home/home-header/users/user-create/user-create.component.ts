@@ -1,6 +1,4 @@
-// user-create.component.ts
-
-import { Component, Inject, Optional, OnInit } from '@angular/core'; // ALTERADO: Adicionado OnInit
+import { Component, Inject, Optional, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../../core/services/user.service';
 import {
@@ -40,11 +38,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
 })
-// ALTERADO: Implemente a interface OnInit
 export class UserCreateComponent implements OnInit {
   userForm: FormGroup;
   userId?: string;
-  // NOVO: Adicione a propriedade para controlar o progresso
   progress = 0;
 
   constructor(
@@ -65,7 +61,7 @@ export class UserCreateComponent implements OnInit {
       location: ['', Validators.required],
       role: ['User', Validators.required],
       status: ['active', Validators.required],
-      cpf: [''], // Adicione o campo cpf
+      cpf: [''],
     });
   }
 
@@ -74,7 +70,6 @@ export class UserCreateComponent implements OnInit {
     if (this.userId) {
       this.userService.getUserById(this.userId).subscribe((user) => {
         this.userForm.patchValue(user);
-        // Desabilitamos o campo de senha na edição para evitar que seja alterada acidentalmente
         this.userForm.get('password')?.disable();
       });
     }
@@ -89,13 +84,11 @@ export class UserCreateComponent implements OnInit {
       cpfControl?.updateValueAndValidity();
     });
 
-    // NOVO: Inscreva-se nas mudanças do formulário para calcular o progresso
     this.userForm.valueChanges.subscribe(() => {
       this.calculateProgress();
     });
   }
 
-  // NOVO: Método para calcular o progresso do formulário
   private calculateProgress(): void {
     // Define quais campos são obrigatórios para o progresso
     const requiredControls = ['name', 'email', 'password', 'role', 'status'];
@@ -166,7 +159,7 @@ export class UserCreateComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Error creating user:', err); // Log do erro real
+        console.error('Error creating user:', err);
         this.snackBar.open('❌ Error creating user', 'Close', {
           panelClass: ['snackbar-error'],
         });

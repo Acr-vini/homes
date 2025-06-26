@@ -57,23 +57,18 @@ import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tra
 export class SCFComponent implements OnInit, OnDestroy {
   private housingService = inject(HousingService);
   private destroy$ = new Subject<void>();
-  // NOVO: Injetamos o FormBuilder para facilitar a criação de formulários reativos.
-  private fb = inject(FormBuilder);
-  private snackBar = inject(MatSnackBar); // 2. Injete o MatSnackBar
 
-  // Lista completa e lista filtrada
+  private fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
+
   housingLocationList: HousingLocation[] = [];
   filteredLocationList: HousingLocation[] = [];
 
-  // NOVO: Substituímos o FormControl e as variáveis booleanas por um FormGroup único.
-  // Isso centraliza toda a lógica de filtros em um só lugar.
   filterForm: FormGroup;
-  displayMode: 'grid' | 'list' = 'grid'; // Initialize with a default value
+  displayMode: 'grid' | 'list' = 'grid';
 
-  // NOVO: Opções para os nossos filtros do tipo select/toggle
   propertyTypes = ['No Preference', 'house', 'apartment', 'terrain', 'studio'];
 
-  // Adicionar os novos tipos de propriedade
   residentialPropertyTypes = [
     { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
     { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
@@ -125,7 +120,6 @@ export class SCFComponent implements OnInit, OnDestroy {
   }
 
   constructor(private dialog: MatDialog) {
-    // NOVO: Inicializamos o formulário no construtor.
     // Os valores iniciais representam um formulário "limpo".
     this.filterForm = this.fb.group({
       city: [''],
@@ -135,7 +129,7 @@ export class SCFComponent implements OnInit, OnDestroy {
       laundry: [false],
       priceFrom: [null],
       priceTo: [null],
-      sellerType: [''], // Novo filtro de tipo de vendedor
+      sellerType: [''],
     });
   }
 
@@ -161,21 +155,18 @@ export class SCFComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ALTERADO: Agora escutamos as mudanças do FormGroup como um todo.
   setupSearchListener(): void {
     this.filterForm.valueChanges
-      .pipe(debounceTime(400), distinctUntilChanged(this.isEqual)) // Usamos debounce para não pesquisar a cada tecla
+      .pipe(debounceTime(400), distinctUntilChanged(this.isEqual))
       .subscribe(() => {
         this.filterResults();
       });
   }
 
-  // NOVO: Função para comparar objetos (útil no distinctUntilChanged)
   isEqual(a: any, b: any): boolean {
     return JSON.stringify(a) === JSON.stringify(b);
   }
 
-  // ALTERADO: A lógica de filtro agora lê os valores do `filterForm`.
   filterResults(): void {
     const filters = this.filterForm.value;
 
@@ -211,14 +202,11 @@ export class SCFComponent implements OnInit, OnDestroy {
     this.updatePagedList();
   }
 
-  // A função onSubmit não é mais estritamente necessária se o filtro é reativo,
-  // mas podemos mantê-la por acessibilidade (ex: pressionar Enter no campo de texto).
   onSubmit(event: Event): void {
     event.preventDefault();
     this.filterResults();
   }
 
-  // NOVO: Método para limpar o formulário e re-executar a busca.
   clearFilters(): void {
     this.filterForm.reset({
       city: '',
@@ -227,10 +215,8 @@ export class SCFComponent implements OnInit, OnDestroy {
       wifi: false,
       laundry: false,
     });
-    // A busca será re-executada automaticamente pelo `valueChanges`
   }
 
-  // Seus outros métodos continuam iguais...
   onPageChange(event: PageEvent) {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
@@ -258,7 +244,7 @@ export class SCFComponent implements OnInit, OnDestroy {
           duration: 3000,
         }
       );
-      return; // Impede a abertura do dialog
+      return;
     }
 
     const dialogRef = this.dialog.open(CreateComponent, {

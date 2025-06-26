@@ -3,7 +3,7 @@ import {
   inject,
   OnInit,
   OnDestroy,
-  ChangeDetectorRef, // 1. IMPORTAÇÃO ADICIONADA
+  ChangeDetectorRef,
 } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -69,7 +69,6 @@ export class homeheaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // --- CORREÇÃO DA LÓGICA DO TEMA ---
     // 1. Lê a preferência do usuário do localStorage.
     const savedDarkMode = localStorage.getItem('darkMode') === 'true';
     // 2. Aplica o tema salvo ao iniciar o componente.
@@ -86,7 +85,7 @@ export class homeheaderComponent implements OnInit, OnDestroy {
       this.notificationService.checkForNewApplications();
     }
 
-    // --- LÓGICA DA SUBSCRIPTION (CORRIGIDA) ---
+    // --- LÓGICA DA SUBSCRIPTION ---
     // Apenas uma subscrição é necessária
     this.notificationSub = this.notificationService
       .getNewApplicationsCount()

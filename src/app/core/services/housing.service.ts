@@ -91,7 +91,6 @@ export class HousingService {
   }
 
   getAllLocationsWithHistory(): Observable<HousingLocation[]> {
-    // Note que esta chamada não tem o filtro '?deleted=false'
     return this.http.get<HousingLocation[]>(this.baseUrl);
   }
 }

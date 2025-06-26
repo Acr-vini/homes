@@ -1,9 +1,8 @@
-/* Modal centralizado e harmonioso para edição de usuário */
 :host {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(40, 40, 60, 0.75); // fundo escuro semi-transparente
+  background: rgba(40, 40, 60, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,7 +75,6 @@ mat-error {
   color: red;
 }
 
-/* Upload de arquivo, se houver */
 .edit-file-upload {
   display: flex;
   align-items: center;
@@ -99,7 +97,6 @@ mat-error {
   }
 }
 
-/* Actions */
 .actions {
   display: flex;
   justify-content: flex-end;

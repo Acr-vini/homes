@@ -1,63 +1,54 @@
-@use "@angular/material" as mat; // Adicione esta linha no topo
+@use "@angular/material" as mat;
 
 .compact-form-field {
   @include mat.form-field-density(-3);
 }
 
-// NOVO: Classe para diminuir a altura dos botões para combinar com os campos
 .compact-button {
-  height: 44px; // Altura que combina com a densidade -3
+  height: 44px;
 }
 
-// Estilos para o container do Sidenav (sem alterações)
 .filter-sidenav-container {
   width: 100%;
   height: calc(100vh - 64px);
 }
 
-// Estilos para o painel lateral
 .filter-sidenav {
   width: 340px;
   padding: 24px;
   background-color: var(--background);
   color: var(--text-color);
   border-right: 1px solid rgba(0, 0, 0, 0.12);
-  // NOVO: Adicionado display flex para controlar o conteúdo interno
   display: flex;
   flex-direction: column;
 }
 
-// NOVO: Container para o conteúdo do painel (para empurrar o botão para baixo)
 .filters-panel-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   flex-grow: 1;
 
-  // CORREÇÃO: Centraliza os labels dos filtros
   label.mat-body-strong {
     text-align: center;
     color: var(--titleAC);
     font-size: 1rem;
-    margin-bottom: -0.5rem; // Ajuste visual do espaçamento
+    margin-bottom: -0.5rem;
   }
 }
 
-/* Estilos para os checkboxes no sidenav */
 ::ng-deep .filters-panel-content .mdc-form-field .mdc-label {
-  color: white !important; // Adapta ao tema claro/escuro
+  color: white !important;
 }
 
 ::ng-deep .filters-panel-content mat-checkbox {
   --mdc-checkbox-label-text-color: white;
-  // Adapta ao tema claro/escuro
 }
 
-// Cabeçalho do painel (sem alterações)
 .sidenav-header {
-  position: relative; // Necessário para posicionar o botão de fechar
+  position: relative;
   display: flex;
-  justify-content: center; // CORREÇÃO: Centraliza o título
+  justify-content: center;
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
@@ -69,7 +60,6 @@
     color: var(--titleAC);
   }
 
-  // Posiciona o botão de fechar no canto direito, independentemente do título
   button {
     position: absolute;
     right: 0;
@@ -78,7 +68,6 @@
   }
 }
 
-// Formulário dentro do painel
 .filters-panel-form {
   display: flex;
   flex-direction: column;
@@ -95,21 +84,19 @@
     width: 100%;
   }
 
-  // ALTERADO: Adicionado alinhamento para o toggle-group
   .filtro-roxo-toggle {
-    align-self: center; // Centraliza o grupo de botões
+    align-self: center;
   }
 }
 
-// NOVO: Estilos para o container e o botão de limpar filtros no painel
 .clear-filters-wrapper {
-  margin-top: auto; // Mágica do Flexbox: empurra para o final do painel
-  padding-top: 24px; // Espaçamento acima do botão
+  margin-top: auto;
+  padding-top: 24px;
   display: flex;
-  justify-content: center; // Centraliza o botão
+  justify-content: center;
 }
 .clear-filters-button {
-  background-color: #d32f2f; // Vermelho
+  background-color: #d32f2f;
   color: white;
   width: 100%;
 }
@@ -118,42 +105,37 @@
   opacity: 0.6;
 }
 
-// Barra superior
 .home-filter-wrapper {
   width: 100%;
-  max-width: 2300px; // Aumentado para dar mais espaço
+  max-width: 2300px;
   padding: 24px;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between; // Garante que os grupos fiquem nos extremos
-  gap: 32px; // Espaço mínimo entre os grupos
+  justify-content: space-between;
+  gap: 32px;
 }
 
-// 2. Define como os itens dentro do grupo da esquerda se comportam
 .toolbar-left-group {
   display: flex;
   align-items: center;
-  gap: 1rem; // Espaço entre os itens da esquerda
-  width: 100%; // Faz o grupo da esquerda tentar ocupar todo o espaço disponível
+  gap: 1rem;
+  width: 100%;
 }
 
-// 3. Define como os itens dentro do grupo da direita se comportam
 .toolbar-right-group {
   display: flex;
   align-items: center;
-  gap: 1rem; // Espaço entre os itens da direita
-  flex-shrink: 0; // Impede que o grupo da direita seja espremido
+  gap: 1rem;
+  flex-shrink: 0;
 }
 
-// Filtro de cidade
 .filters-form-container__city-filter {
   min-width: 250px;
-  flex-grow: 1; // A MÁGICA: Faz a barra de pesquisa crescer para preencher o espaço
-  max-width: 500px; // Aumenta o limite máximo de largura
+  flex-grow: 1;
+  max-width: 500px;
 }
 
-// CORREÇÃO: Adicionando de volta o estilo para o botão de filtro para restaurar sua cor roxa.
 .create-button {
   background-color: var(--purpleBck);
   color: white;
@@ -170,15 +152,11 @@
 .create-wrapper {
   display: flex;
   gap: 12px;
-  margin-left: 32px; // ADICIONADO: Cria o espaçamento maior apenas aqui
+  margin-left: 32px;
 }
 
-// REMOVA OS BLOCOS .create-button, .favorites-button e o bloco unificado anterior
-// E SUBSTITUA POR ESTE NOVO ESTILO UNIFICADO:
-
 .main-action-btn {
-  // height: 48px; // REMOVA a altura fixa para evitar o corte
-  padding: 22px 20px; // CORREÇÃO: Ajustado o padding para igualar a altura de 44px
+  padding: 22px 20px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -194,7 +172,6 @@
   mat-icon {
     color: white;
     font-size: 24px;
-    // ADICIONE estas linhas para garantir que o ícone tenha espaço
     width: 24px;
     height: 24px;
     line-height: 24px;
@@ -202,10 +179,9 @@
   }
 
   &:hover {
-    background-color: #581c87; // Um roxo um pouco mais escuro para o hover
+    background-color: #581c87;
   }
 
-  // Estilo para o botão de comparação quando ativo
   &.active {
     background-color: var(--purpleWeak);
     border-color: var(--purpleBck);
@@ -245,7 +221,7 @@
   }
 
   &.list-view {
-    grid-template-columns: 1fr; // Muda o grid para uma única coluna
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 }

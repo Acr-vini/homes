@@ -1,5 +1,3 @@
-// create.component.ts
-
 import { Component, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -27,7 +25,6 @@ import { Observable, startWith, map } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-// NOVO: Importe o MatProgressBarModule
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
@@ -45,16 +42,15 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSelectModule,
     MatAutocompleteModule,
     MatCheckboxModule,
-    MatTooltipModule, // Mantenha apenas uma ocorrência
+    MatTooltipModule,
     NgxSpinnerModule,
     MatProgressBarModule,
-    // MatTooltipModule, // REMOVA ESTA LINHA DUPLICADA
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
-  form: FormGroup; // NOVO: Adicione a propriedade para controlar o progresso
+  form: FormGroup;
   progress = 0;
 
   stateControl = new FormControl<string>('', {
@@ -74,7 +70,6 @@ export class CreateComponent implements OnInit {
 
   imagePreview: string | ArrayBuffer | null = null;
 
-  // SUBSTITUA O ARRAY 'propertyTypes' ANTIGO POR ESTES DOIS:
   residentialPropertyTypes = [
     { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
     { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
@@ -132,14 +127,13 @@ export class CreateComponent implements OnInit {
       map((value) => this._filterStates(value))
     );
 
-    // CORREÇÃO: Define o filtro de cidades UMA VEZ.
     // Ele vai reagir automaticamente às mudanças no `cityControl`.
     this.filteredCities = this.cityControl.valueChanges.pipe(
       startWith(''),
       map((value) => this._filterCities(value))
     );
 
-    // CORREÇÃO: A inscrição em `stateControl` agora só atualiza a lista de cidades e reseta o campo.
+    // A inscrição em `stateControl` agora só atualiza a lista de cidades e reseta o campo.
     this.stateControl.valueChanges.subscribe((stateName) => {
       const iso = this._findStateIso(stateName);
       // Atualiza a fonte de dados para as cidades.
@@ -165,7 +159,7 @@ export class CreateComponent implements OnInit {
       'typeOfBusiness',
       'photo',
       'propertyType',
-      'price', // Adiciona o preço aos campos obrigatórios
+      'price',
     ];
 
     const validControls = requiredControls.filter((controlName) => {
@@ -207,10 +201,9 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    this.spinner.show(); // 2. CORREÇÃO PRINCIPAL: Busca o código ISO a partir do nome do estado no formulário
-
+    this.spinner.show();
     const stateName = this.stateControl.value;
-    const stateIsoCode = this._findStateIso(stateName); // 3. Validação para garantir que um estado válido foi selecionado
+    const stateIsoCode = this._findStateIso(stateName);
 
     if (!stateIsoCode) {
       this.snackBar.open(
@@ -235,7 +228,6 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    // Adicione uma verificação para garantir que o usuário tem a permissão correta
     if (
       currentUser.role !== 'Owner' &&
       currentUser.role !== 'Real Estate Agency'
@@ -259,7 +251,6 @@ export class CreateComponent implements OnInit {
       typeOfBusiness: this.form.value.typeOfBusiness,
       propertyType: this.form.value.propertyType,
       price: this.form.value.price,
-      // CORREÇÃO: Defina o sellerType com base no role do usuário logado
       sellerType: currentUser.role,
       createBy: String(currentUser?.id ?? ''),
       editedBy: '',

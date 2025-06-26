@@ -7,7 +7,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,7 +18,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Observable, startWith, map } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject, Optional } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -70,7 +68,7 @@ export class UserEditComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
-    private snackBar: MatSnackBar, // 2. Injete o MatSnackBar aqui
+    private snackBar: MatSnackBar,
     @Optional() public dialogRef?: MatDialogRef<UserEditComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
@@ -80,7 +78,7 @@ export class UserEditComponent implements OnInit {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: [''], // Adicione este campo!
+      password: [''],
       phone: [''],
       location: [''],
       role: [''],
@@ -102,13 +100,12 @@ export class UserEditComponent implements OnInit {
 
   onSave(): void {
     if (this.userForm.valid) {
-      this.spinner.show(); // Mostra o spinner
+      this.spinner.show();
 
       const updatedUser = { ...this.user, ...this.userForm.value };
-      // A correção é adicionar 'this.userId' como o primeiro argumento.
       this.userService.updateUser(this.userId, updatedUser).subscribe({
         next: () => {
-          this.spinner.hide(); // Esconde o spinner
+          this.spinner.hide();
           if (this.dialogRef) {
             this.dialogRef.close();
           } else {
@@ -116,8 +113,7 @@ export class UserEditComponent implements OnInit {
           }
         },
         error: () => {
-          this.spinner.hide(); // Esconde o spinner em caso de erro
-          // Exiba um erro se necessário
+          this.spinner.hide();
         },
       });
     }
@@ -135,7 +131,6 @@ export class UserEditComponent implements OnInit {
     if (!this.currentUser) return false;
     if (this.currentUser.role === 'Admin') return true;
     if (this.currentUser.role === 'Manager') {
-      // Manager pode editar ele mesmo e outros, menos Admin
       return user.role !== 'Admin' || user.id === this.currentUser.id;
     }
     return false;

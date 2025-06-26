@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(40, 40, 60, 0.75); // fundo escuro semi-transparente
+  background: rgba(40, 40, 60, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -86,15 +86,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px; // Espaço entre os checkboxes e o botão
+  margin-top: 16px;
 
   button {
     background-color: var(--purpleBck);
-    color: #ffffff; // Cor fixa para o ícone, garantindo contraste
+    color: #ffffff;
     border-radius: 4px;
 
     mat-icon {
-      color: #ffffff; // Força o ícone a ficar visível
+      color: #ffffff;
     }
   }
 
@@ -190,23 +190,22 @@ button.mat-icon-button {
   }
 }
 .create-progress-bar {
-  margin-bottom: 1.5rem; // Adiciona espaço abaixo da barra
-  border-radius: 5px; // Bordas arredondadas para um visual mais suave
-  height: 8px !important; // Torna a barra um pouco mais espessa e visível
+  margin-bottom: 1.5rem;
+  border-radius: 5px;
+  height: 8px !important;
 }
 .create-file-upload-wrapper {
   display: flex;
-  flex-direction: column; // Empilha o botão e o erro verticalmente
-  margin-top: 16px; // Mantém o espaçamento
+  flex-direction: column;
+  margin-top: 16px;
 }
 
 .custom-mat-error {
-  font-size: 75%; // Tamanho padrão para erros do Material
-  color: #f44336; // Cor padrão de erro do Material (vermelho)
+  font-size: 75%;
+  color: #f44336;
   margin-top: 4px;
   margin-left: 4px;
 }
-// FIM da adição
 
 .create-file-upload {
   display: flex;

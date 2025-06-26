@@ -9,7 +9,6 @@
       [src]="housingLocation.photo"
       alt="Exterior photo of {{ housingLocation.name }}"
     />
-    <!-- BOTÃO DE FAVORITAR ADICIONADO -->
     <button
       mat-icon-button
       class="favorite-details-button"
@@ -96,7 +95,6 @@
           class="form-input"
           [min]="today"
         />
-        <!-- Adicionar mensagem de erro -->
         <div
           *ngIf="
             applyForm.get('visitDate')?.invalid &&
@@ -114,7 +112,6 @@
         <mat-form-field class="form-field">
           <mat-select formControlName="visitTime">
             <mat-option value="" disabled>Select a time</mat-option>
-            <!-- Altera para usar a lista de horários filtrados -->
             <mat-option *ngFor="let hour of filteredVisitHours" [value]="hour">
               {{ hour }}
             </mat-option>
@@ -140,7 +137,6 @@
           class="form-input"
           [min]="today"
         />
-        <!-- Adicionar mensagem de erro -->
         <div
           *ngIf="
             applyForm.get('checkInDate')?.invalid &&
@@ -162,7 +158,6 @@
           class="form-input"
           [min]="applyForm.get('checkInDate')?.value || today"
         />
-        <!-- Adicionar mensagem de erro -->
         <div
           *ngIf="
             applyForm.get('checkOutDate')?.invalid &&
@@ -182,7 +177,6 @@
   </section>
 </article>
 
-<!-- Seção de Reviews agora usa o componente app-reviews -->
 <app-reviews
   *ngIf="housingLocation?.id"
   [housingLocationId]="housingLocation!.id"

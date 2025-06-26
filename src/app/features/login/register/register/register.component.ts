@@ -50,13 +50,12 @@ export class RegisterComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     role: ['User', Validators.required],
-    phone: ['', Validators.required], // Alterado para ser sempre obrigatório
-    cpf: [''], // Permanece condicional
-    location: ['', Validators.required], // Alterado para ser sempre obrigatório
+    phone: ['', Validators.required],
+    cpf: [''],
+    location: ['', Validators.required],
   });
 
   ngOnInit(): void {
-    // A lógica agora controla o campo CPF para Owner e Real Estate Agency
     this.registerForm.get('role')?.valueChanges.subscribe((role) => {
       const cpfControl = this.registerForm.get('cpf');
 
@@ -89,13 +88,12 @@ export class RegisterComponent implements OnInit {
       name: formValue.name,
       email: formValue.email,
       password: formValue.password,
-      status: 'active', // Define o status padrão
+      status: 'active',
       role: formValue.role,
       phone: formValue.phone,
       location: formValue.location,
     };
 
-    // Adiciona o CPF apenas se a role for Owner ou Real Estate Agency
     if (formValue.role === 'Owner' || formValue.role === 'Real Estate Agency') {
       newUserPayload.cpf = formValue.cpf;
     }

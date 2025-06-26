@@ -20,8 +20,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-// ADD THIS IMPORT
-// Import the provider function for the date adapter.
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
@@ -38,15 +36,11 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatTooltipModule,
     MatButtonModule,
     MatIconModule,
-    MatDatepickerModule, // You had this listed twice, I removed the duplicate.
+    MatDatepickerModule,
   ],
   templateUrl: './activity-date-modal.component.html',
   styleUrls: ['./activity-date-modal.component.scss'],
 
-  // ADD THIS PROVIDERS ARRAY
-  // This explicitly provides the NativeDateAdapter to this component's injector.
-  // It ensures that the MatDatepicker inside this dynamically created dialog
-  // can find the required DateAdapter.
   providers: [provideNativeDateAdapter()],
 })
 export class ActivityDateModalComponent implements OnInit {

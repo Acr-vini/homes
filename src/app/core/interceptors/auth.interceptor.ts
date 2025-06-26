@@ -22,17 +22,13 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = this.auth.getToken();
     let authReq = req;
 
-    // 1. Lógica de Adição de Token (CORRETA)
-    // O cabeçalho de autorização só é adicionado se um token for encontrado.
-    // Para rotas públicas como /register ou /login, o token será nulo,
-    // e a requisição original passará sem o cabeçalho, o que é o comportamento desejado.
     if (token) {
       authReq = req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
       });
     }
 
-    // 2. Lógica de Tratamento de Erro (CORRETA)
+    // 2. Lógica de Tratamento de Erro
     // O pipe com catchError lida com respostas de erro do servidor.
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {

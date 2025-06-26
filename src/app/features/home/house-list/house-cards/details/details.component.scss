@@ -80,7 +80,6 @@
   margin-left: -16px;
 }
 
-// FORMULÁRIO
 .listing-apply .section-heading {
   font-size: 22pt;
   font-weight: 600;
@@ -147,12 +146,8 @@ button.primary:hover {
   background-color: #5e34b1;
 }
 
-// ESTILOS ADICIONADOS SEM ALTERAR A ARQUITETURA EXISTENTE
-
-// O novo container da foto. Ele se comporta exatamente como a imagem original no layout.
 .listing-photo-container {
-  position: relative; // Permite posicionar o botão de favorito dentro dele.
-  // Copia as dimensões da classe .listing-photo para não quebrar o layout de colunas.
+  position: relative;
   height: 600px;
   width: 50%;
 
@@ -161,14 +156,12 @@ button.primary:hover {
     height: 400px;
   }
 
-  // Faz a imagem preencher 100% do seu novo container.
   .listing-photo {
     width: 100%;
     height: 100%;
   }
 }
 
-// Estilo do botão de favorito.
 .favorite-details-button {
   position: absolute;
   top: 16px;

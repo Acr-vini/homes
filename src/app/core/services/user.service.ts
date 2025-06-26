@@ -37,7 +37,7 @@ export class UserService {
   createUser(user: Omit<User, 'id'>): Observable<User> {
     const payload = {
       ...user,
-      role: user.role === 'Realtor' ? 'Real Estate Agency' : user.role, // Ajusta Realtor para Real Estate Agency
+      role: user.role === 'Realtor' ? 'Real Estate Agency' : user.role,
     };
     return this.http.post<User>(`${this.apiUrl}/users`, payload);
   }

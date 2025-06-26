@@ -6,16 +6,15 @@
   text-align: center;
 }
 
-/* NOVA ESTRUTURA DE LAYOUT */
 .page-layout {
   display: grid;
-  grid-template-columns: 1fr; // Padrão para telas pequenas
-  gap: 8rem; // Aumente este valor (ex: de 2rem para 3rem)
+  grid-template-columns: 1fr;
+  gap: 8rem;
   padding: 1rem 2rem;
   background-color: var(--mFF);
 
   @media (min-width: 1024px) {
-    grid-template-columns: 1fr 1fr; // Duas colunas em telas maiores
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -23,15 +22,13 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--titleAC);
-  margin: 0; /* Remove a margem padrão do h3 */
-  /* A borda foi removida daqui */
+  margin: 0;
 }
 
 .column-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* A borda agora é aplicada aqui, garantindo que ocupe toda a largura */
   border-bottom: 2px solid var(--purpleWeak);
   padding-bottom: 0.5rem;
   margin-bottom: 1.5rem;
@@ -44,7 +41,6 @@
   }
 }
 
-// ESTILO PARA O NOVO INFO BOX
 .info-box {
   display: flex;
   align-items: flex-start;
@@ -74,11 +70,9 @@
 
 .activity-container {
   display: grid;
-  // Duas colunas de cards, para se assemelhar à home
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 
-  // Em telas menores, volta para uma única coluna para não ficar apertado
   @media (max-width: 1400px) {
     grid-template-columns: 1fr;
   }
@@ -86,7 +80,6 @@
 
 .home-listing {
   display: flex;
-  // flex: 0 1 370px; // REMOVIDO: Esta propriedade limitava o tamanho de forma incorreta
   flex-direction: column;
   overflow: hidden;
   position: relative;
@@ -218,7 +211,7 @@
   color: var(--text-color);
 
   p {
-    margin-bottom: 8px; // Espaço entre os parágrafos no rodapé
+    margin-bottom: 8px;
     &:last-child {
       margin-bottom: 0;
     }
@@ -256,16 +249,15 @@
 }
 
 .Tob {
-  font-size: 1rem; // Matching icon size with text line-height is often a good practice
-  height: 1rem; // Explicitly set height
-  width: 1rem; // Explicitly set width
+  font-size: 1rem;
+  height: 1rem;
+  width: 1rem;
 }
 
-// ESTILOS PARA CARDS EXPIRADOS
 .expired-card {
   filter: grayscale(95%);
   opacity: 0.65;
-  position: relative; // Necessário para posicionar as ações de hover
+  position: relative;
 
   .hover-actions {
     position: absolute;
@@ -274,7 +266,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
-    border-radius: 30px; // Para combinar com o card
+    border-radius: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -282,7 +274,7 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
-    pointer-events: auto; // Garante que os botões sejam clicáveis
+    pointer-events: auto;
   }
 
   &:hover .hover-actions {

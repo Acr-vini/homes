@@ -1,7 +1,6 @@
-/* house-list.component.scss */
 .houses-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // 4 colunas
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   justify-items: stretch;
   align-items: stretch;

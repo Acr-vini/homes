@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(40, 40, 60, 0.75); // fundo escuro semi-transparente
+  background: rgba(40, 40, 60, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,7 +95,7 @@ button.mat-icon-button {
   }
 }
 .create-progress-bar {
-  margin-bottom: 1.5rem; // Adiciona espaço abaixo da barra
-  border-radius: 5px; // Bordas arredondadas para um visual mais suave
-  height: 8px !important; // Torna a barra um pouco mais espessa e visível
+  margin-bottom: 1.5rem;
+  border-radius: 5px;
+  height: 8px !important;
 }

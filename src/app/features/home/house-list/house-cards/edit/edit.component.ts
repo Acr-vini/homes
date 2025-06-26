@@ -21,7 +21,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-// CORREÇÃO: Adiciona 'finalize' à lista de imports do rxjs
 import { map, Observable, startWith, finalize } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
@@ -41,14 +40,13 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatSelectModule,
     MatAutocompleteModule,
     MatCheckboxModule,
-    MatTooltipModule, // O import duplicado foi removido
+    MatTooltipModule,
     NgxSpinnerModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
 })
 export class EditComponent implements OnInit {
-  // SECTION: Properties
   form!: FormGroup;
   stateControl = new FormControl<string>('', {
     nonNullable: true,
@@ -108,7 +106,6 @@ export class EditComponent implements OnInit {
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {}
 
-  // SECTION: Lifecycle Hooks
   ngOnInit(): void {
     const id = this.data?.id || this.route.snapshot.paramMap.get('id') || '';
     if (!id) {
@@ -151,7 +148,6 @@ export class EditComponent implements OnInit {
           this.onCancel(); // Fecha o dialog ou redireciona
         }
 
-        // CORREÇÃO: Lógica robusta para preencher o formulário, tratando dados inválidos.
         const stateName = this._findStateName(house.state); // Tenta encontrar o nome do estado a partir do código.
         this.stateControl.setValue(stateName || ''); // Se não encontrar, deixa o campo em branco.
 
@@ -166,13 +162,12 @@ export class EditComponent implements OnInit {
           this.cityControl.setValue(''); // E o campo de cidade também.
         }
 
-        // CORREÇÃO: O formulário agora é inicializado apenas uma vez e corretamente.
         this.form = this.fb.group({
           name: [house.name || '', Validators.required],
           state: this.stateControl,
           city: this.cityControl,
           availableUnits: [
-            house.availableUnits || 0, // CORRIGIDO: Usar || 0 para manter o tipo numérico
+            house.availableUnits || 0,
             [Validators.required, Validators.min(1)],
           ],
           photo: [house.photo || ''],
@@ -194,9 +189,7 @@ export class EditComponent implements OnInit {
     });
   }
 
-  // SECTION: Form and Submission Logic
   onSubmit(): void {
-    // CORREÇÃO 2: Adiciona uma verificação de segurança para garantir que os dados da casa foram carregados.
     if (!this.housingLocation) {
       this.snackBar.open('Cannot save, house data is not available.', 'Close', {
         duration: 3000,
@@ -239,7 +232,6 @@ export class EditComponent implements OnInit {
     };
 
     this.housingService
-      // CORREÇÃO 1: O nome do método correto é 'updateHousingLocation'.
       .updateHousingLocation(this.housingLocation.id, updatedHouseData)
       .pipe(finalize(() => this.spinner.hide()))
       .subscribe({
@@ -247,7 +239,6 @@ export class EditComponent implements OnInit {
           this.snackBar.open('✅ House updated successfully!', 'Close', {
             duration: 3000,
           });
-          // CORREÇÃO 3: Trata tanto o fechamento do modal quanto a navegação.
           if (this.dialogRef) {
             this.dialogRef.close(true);
           } else {
@@ -268,7 +259,6 @@ export class EditComponent implements OnInit {
   }
 
   onDelete(): void {
-    // CORREÇÃO 2: Adiciona a mesma verificação de segurança aqui.
     if (!this.housingLocation) {
       this.snackBar.open(
         'Cannot delete, house data is not available.',
@@ -306,7 +296,6 @@ export class EditComponent implements OnInit {
 
             this.housingService.notifyHouseListUpdated();
 
-            // CORREÇÃO 3: Trata tanto o fechamento do modal quanto a navegação.
             if (this.dialogRef) {
               this.dialogRef.close(true);
             } else {
@@ -324,7 +313,6 @@ export class EditComponent implements OnInit {
   }
 
   onCancel(): void {
-    // CORREÇÃO 3: Trata tanto o fechamento do modal quanto a navegação.
     if (this.dialogRef) {
       this.dialogRef.close(false);
     } else {
@@ -332,20 +320,17 @@ export class EditComponent implements OnInit {
     }
   }
 
-  // SECTION: Private Helpers and Utilities
   private _setupFilters(): void {
     this.filteredStates = this.stateControl.valueChanges.pipe(
       startWith<string>(this.stateControl.value),
       map((val: string) => this._filterStates(val))
     );
 
-    // CORREÇÃO: Define o filtro de cidades UMA VEZ.
     this.filteredCities = this.cityControl.valueChanges.pipe(
       startWith<string>(this.cityControl.value || ''),
       map((value: string) => this._filterCities(value))
     );
 
-    // CORREÇÃO: A inscrição em `stateControl` agora só atualiza a lista de cidades e reseta o campo.
     this.stateControl.valueChanges.subscribe((stateName: string) => {
       const iso = this._findStateIso(stateName);
       // Atualiza a fonte de dados para as cidades.

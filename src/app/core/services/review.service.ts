@@ -25,7 +25,6 @@ export class ReviewService {
   }
 
   updateReview(id: string, review: Partial<Review>): Observable<Review> {
-    // This method will perform a PATCH request to update the review
     return this.http.patch<Review>(`${this.apiUrl}/${id}`, review);
   }
 }

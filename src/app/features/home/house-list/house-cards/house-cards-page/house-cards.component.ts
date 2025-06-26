@@ -9,7 +9,7 @@ import { EditComponent } from '../edit/edit.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { CompareService } from '../../../../../core/services/compare.service'; // Importe o novo serviço
+import { CompareService } from '../../../../../core/services/compare.service';
 
 @Component({
   selector: 'app-house-cards',
@@ -27,16 +27,15 @@ import { CompareService } from '../../../../../core/services/compare.service'; /
 })
 export class HouseCardsComponent {
   @Input() housingLocation!: HousingLocation;
-  @Input() compareMode = false; // Recebe o modo de comparação
-  @Input() displayMode: 'grid' | 'list' = 'grid'; // Recebe o modo de visualização
-  @Output() houseUpdated = new EventEmitter<void>(); // NOVO: Evento para notificar a atualização
+  @Input() compareMode = false;
+  @Input() displayMode: 'grid' | 'list' = 'grid';
+  @Output() houseUpdated = new EventEmitter<void>();
 
-  // Injeção dos serviços
-  private dialog = inject(MatDialog); // ADICIONE ESTA LINHA
+  private dialog = inject(MatDialog);
   private spinner = inject(NgxSpinnerService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
-  private compareService = inject(CompareService); // Injete o serviço
+  private compareService = inject(CompareService);
 
   applications: any[] = [];
 
@@ -99,7 +98,6 @@ export class HouseCardsComponent {
   }
 
   openEditHouse(id: string): void {
-    // Agora `this.dialog` existe e o método funcionará
     const dialogRef = this.dialog.open(EditComponent, {
       width: '500px',
       data: this.housingLocation, // Passa os dados da casa para o diálogo
@@ -132,7 +130,6 @@ export class HouseCardsComponent {
     return false;
   }
 
-  // CORREÇÃO: Renomeie o método e chame a nova função 'toggleCompare'
   toggleCompareItem(house: HousingLocation): void {
     this.compareService.toggleCompare(house);
   }

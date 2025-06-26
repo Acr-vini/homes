@@ -21,7 +21,6 @@ export class NotificationService {
   checkForNewApplications(): void {
     const checkRequestTimestamp = Date.now();
 
-    // --- LINHA CORRIGIDA ---
     // Acessamos o usuário e depois a sua propriedade .id, sem "()".
     // O "?" (optional chaining) previne erros se getCurrentUser() retornar null.
     const currentUserId = this.authService.getCurrentUser()?.id;

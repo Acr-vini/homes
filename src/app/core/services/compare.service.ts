@@ -13,7 +13,6 @@ export class CompareService {
 
   constructor(private snackBar: MatSnackBar) {}
 
-  // NOVO MÉTODO: Lógica para alternar
   toggleCompare(house: HousingLocation): void {
     const currentList = this.getCompareList();
     const houseIndex = currentList.findIndex((h) => h.id === house.id);
@@ -39,7 +38,6 @@ export class CompareService {
       return;
     }
 
-    // CORREÇÃO: Adiciona a regra de validação de tipo de negócio
     if (currentList.length > 0) {
       const existingType = currentList[0].typeOfBusiness;
       if (house.typeOfBusiness !== existingType) {

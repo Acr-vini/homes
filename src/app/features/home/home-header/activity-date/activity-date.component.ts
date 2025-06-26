@@ -30,9 +30,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
   styleUrls: ['./activity-date.component.scss'],
 })
 export class ActivityDateComponent implements OnInit {
-  // Mantenha a lista original se precisar dela em outro lugar
   applications: Array<Application & { photoUrl?: string }> = [];
-  // Crie as duas novas listas para a UI
   upcomingApplications: Array<Application & { photoUrl?: string }> = [];
   expiredApplications: Array<Application & { photoUrl?: string }> = [];
 
@@ -75,8 +73,6 @@ export class ActivityDateComponent implements OnInit {
 
     this.loadApplications();
 
-    // 2. ADICIONAR A CHAMADA PARA O MÉTODO DE LIMPEZA
-    // Esta linha executa a limpeza da notificação.
     this.notificationService.clearNotifications();
   }
 
@@ -114,7 +110,7 @@ export class ActivityDateComponent implements OnInit {
       .subscribe({
         next: (appsCompletas) => {
           this.applications = appsCompletas;
-          this.sortApplications(appsCompletas); // Chama o novo método de separação
+          this.sortApplications(appsCompletas);
           this.isLoading = false;
         },
         error: (err) => {
@@ -128,13 +124,11 @@ export class ActivityDateComponent implements OnInit {
   }
 
   sortApplications(apps: Array<Application & { photoUrl?: string }>): void {
-    const now = new Date(); // Usa a data e hora atuais para a comparação
-
+    const now = new Date();
     this.upcomingApplications = [];
     this.expiredApplications = [];
 
     apps.forEach((app) => {
-      // Para aluguéis, a lógica de expiração baseada apenas no dia de check-in está correta.
       if (app.typeOfBusiness === 'rent') {
         const checkInDateStr = app.checkInDate;
         if (!checkInDateStr) {
@@ -157,24 +151,21 @@ export class ActivityDateComponent implements OnInit {
         } else {
           this.upcomingApplications.push(app);
         }
-      }
-      // Para visitas, precisamos comparar a data e a hora.
-      else if (app.typeOfBusiness === 'sell') {
+      } else if (app.typeOfBusiness === 'sell') {
         const visitDateStr = app.visitDate;
         const visitTimeStr = app.visitTime;
 
         if (!visitDateStr || !visitTimeStr) {
-          this.upcomingApplications.push(app); // Dados incompletos, assume como futuro.
+          this.upcomingApplications.push(app);
           return;
         }
 
-        // Combina a data e a hora para criar um objeto Date preciso para a visita.
         const visitDateTime = new Date(`${visitDateStr}T${visitTimeStr}`);
 
         if (visitDateTime < now) {
-          this.expiredApplications.push(app); // A hora da visita já passou.
+          this.expiredApplications.push(app);
         } else {
-          this.upcomingApplications.push(app); // A visita ainda vai acontecer.
+          this.upcomingApplications.push(app);
         }
       }
     });
@@ -253,7 +244,7 @@ export class ActivityDateComponent implements OnInit {
       .pipe(finalize(() => this.spinner.hide()))
       .subscribe(() => {
         this.snackBar.open('✅ Application deleted!', '', { duration: 2000 });
-        this.loadApplications(); // <-- ADICIONE ESTA LINHA
+        this.loadApplications();
       });
   }
 
@@ -296,7 +287,6 @@ export class ActivityDateComponent implements OnInit {
                 'Close',
                 { duration: 3000 }
               );
-              // A chamada já existe aqui, o que é ótimo!
               this.loadApplications();
             },
             error: (err) => {

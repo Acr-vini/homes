@@ -1,8 +1,6 @@
 <mat-card class="edit-card">
   <mat-card-title>Edit your application</mat-card-title>
   <form [formGroup]="form" (ngSubmit)="save()">
-    <!-- Adicionado (ngSubmit) -->
-    <!-- Name -->
     <mat-form-field class="full-width">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" />
@@ -82,7 +80,6 @@
         <mat-label>Visit Time</mat-label>
         <mat-select formControlName="visitTime">
           <mat-option value="" disabled>Select a time</mat-option>
-          <!-- Certifique-se que data.visitHours é passado ao abrir o modal -->
           <mat-option *ngFor="let hour of data.visitHours || []" [value]="hour">
             {{ hour }}
           </mat-option>
@@ -156,7 +153,6 @@
         matTooltip="Save changes"
       >
         <mat-icon>save</mat-icon>
-        <!-- Usar mat-icon -->
       </button>
       <button
         mat-icon-button
@@ -167,7 +163,6 @@
         matTooltip="Cancel editing"
       >
         <mat-icon>cancel</mat-icon>
-        <!-- Usar mat-icon -->
       </button>
     </div>
   </form>
