@@ -103,6 +103,8 @@ export class SCFComponent implements OnInit, OnDestroy {
 
   compareMode = false;
 
+  orderBy: 'priceAsc' | 'priceDesc' = 'priceAsc';
+
   // 3. Crie o novo método para alternar o modo de comparação
   toggleCompareMode(): void {
     this.compareMode = !this.compareMode;
@@ -198,6 +200,17 @@ export class SCFComponent implements OnInit, OnDestroy {
       );
     });
 
+    // Ordenação
+    let filtered = [...this.filteredLocationList];
+
+    if (this.orderBy === 'priceAsc') {
+      filtered.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+    } else if (this.orderBy === 'priceDesc') {
+      filtered.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+    }
+
+    this.filteredLocationList = filtered;
+
     this.pageIndex = 0;
     this.updatePagedList();
   }
@@ -257,6 +270,11 @@ export class SCFComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(() => {
       this.loadLocations();
     });
+  }
+
+  onOrderChange(order: 'priceAsc' | 'priceDesc') {
+    this.orderBy = order;
+    this.filterResults(); // Ou chame o método que atualiza a lista
   }
 
   ngOnDestroy() {

@@ -128,6 +128,19 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
+          <!-- ORDENAR POR -->
+          <mat-form-field appearance="outline" class="order-by-select">
+            <mat-label>sort by...</mat-label>
+            <mat-select
+              [(ngModel)]="orderBy"
+              (selectionChange)="onOrderChange($event.value)"
+            >
+              <mat-option value="priceAsc">lowest price</mat-option>
+              <mat-option value="priceDesc">highest price</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Search bar vem logo depois -->
           <mat-form-field
             class="filters-form-container__city-filter"
             appearance="outline"
