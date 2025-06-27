@@ -257,6 +257,7 @@ export class CreateComponent implements OnInit {
       deletedBy: '',
       deleted: false,
       ownerId: currentUser.id,
+      listedDate: new Date().toISOString(),
     };
 
     this.housingService.createHousingLocation(payload).subscribe({

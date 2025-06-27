@@ -102,7 +102,7 @@ export class SCFComponent implements OnInit {
 
   compareMode = false;
 
-  orderBy: 'relevance' | 'priceAsc' | 'priceDesc' = 'relevance';
+  orderBy: 'relevance' | 'priceAsc' | 'priceDesc' | 'dateDesc' = 'relevance';
 
   // 3. Crie o novo método para alternar o modo de comparação
   toggleCompareMode(): void {
@@ -206,6 +206,13 @@ export class SCFComponent implements OnInit {
       filtered.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
     } else if (this.orderBy === 'priceDesc') {
       filtered.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+    } else if (this.orderBy === 'dateDesc') {
+      filtered.sort((a, b) => {
+        const timeA = new Date(a.listedDate).getTime();
+        const timeB = new Date(b.listedDate).getTime();
+        // Se a data for inválida (NaN), trate-a como mais antiga (0)
+        return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+      });
     }
 
     this.filteredLocationList = filtered;
@@ -271,7 +278,7 @@ export class SCFComponent implements OnInit {
     });
   }
 
-  onOrderChange(order: 'priceAsc' | 'priceDesc') {
+  onOrderChange(order: 'relevance' | 'priceAsc' | 'priceDesc' | 'dateDesc') {
     this.orderBy = order;
     this.filterResults(); // Ou chame o método que atualiza a lista
   }
