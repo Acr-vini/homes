@@ -16,6 +16,14 @@
   align-items: center;
   justify-content: space-between;
   transition: background-color 0.3s ease;
+
+  // Regra geral para aumentar o tamanho de todos os ícones no header
+  mat-icon {
+    font-size: 28px; /* Novo tamanho da fonte */
+    width: 28px; /* Largura do contêiner igual à fonte */
+    height: 28px; /* Altura do contêiner igual à fonte */
+    line-height: 28px; /* Alinhamento vertical */
+  }
 }
 
 .app-header-left {
@@ -63,7 +71,6 @@
   font-weight: 500;
 
   mat-icon {
-    font-size: 20px;
     color: white;
     transition: color 0.3s ease;
   }
@@ -90,7 +97,6 @@ mat-slide-toggle {
   color: white;
 
   mat-icon {
-    font-size: 24px;
     color: var(--toggle);
     transition: color 0.3s ease;
   }
@@ -115,7 +121,6 @@ button[aria-label="Perfil"] mat-icon {
 
 button.profile-icon-btn mat-icon {
   color: #fff !important;
-  font-size: 24px;
 }
 
 .app-header-section.app-header-left {
