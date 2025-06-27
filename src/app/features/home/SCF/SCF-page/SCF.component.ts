@@ -48,12 +48,12 @@ import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tra
     MatButtonToggleModule,
     MatTooltipModule,
     MatSidenavModule,
-    CompareTrayComponent
-],
+    CompareTrayComponent,
+  ],
   templateUrl: './SCF.component.html',
   styleUrls: ['./SCF.component.scss'],
 })
-export class SCFComponent implements OnInit, OnDestroy {
+export class SCFComponent implements OnInit {
   private housingService = inject(HousingService);
   private destroy$ = new Subject<void>();
 
@@ -64,7 +64,7 @@ export class SCFComponent implements OnInit, OnDestroy {
   filteredLocationList: HousingLocation[] = [];
 
   filterForm: FormGroup;
-  displayMode: 'grid' | 'list' = 'grid';
+  displayMode: 'grid' | 'list' = 'grid'; // Define 'grid' como padrão
 
   propertyTypes = ['No Preference', 'house', 'apartment', 'terrain', 'studio'];
 
@@ -276,8 +276,13 @@ export class SCFComponent implements OnInit, OnDestroy {
     this.filterResults(); // Ou chame o método que atualiza a lista
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  /**
+   * Atualiza o modo de visualização quando o usuário clica nos botões.
+   * @param mode O novo modo: 'grid' ou 'list'.
+   */
+  onDisplayModeChange(mode: 'grid' | 'list'): void {
+    if (mode) {
+      this.displayMode = mode;
+    }
   }
 }
