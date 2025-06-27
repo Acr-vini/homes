@@ -2,189 +2,163 @@
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 @if (housingLocation) {
-  <article class="page-container">
-    <!-- A imagem é envolvida por um container para posicionar o botão -->
-    <div class="listing-photo-container">
-      <img
-        class="listing-photo housing-image"
-        [src]="housingLocation.photo"
-        alt="Exterior photo of {{ housingLocation.name }}"
-        />
-        <button
-          mat-icon-button
-          class="favorite-details-button"
-          (click)="toggleFavorite()"
-          [ngClass]="{ favorited: isFavorited() }"
+<article class="page-container">
+  <!-- A imagem é envolvida por um container para posicionar o botão -->
+  <div class="listing-photo-container">
+    <img
+      class="listing-photo housing-image"
+      [src]="housingLocation.photo"
+      alt="Exterior photo of {{ housingLocation.name }}"
+    />
+    <button
+      mat-icon-button
+      class="favorite-details-button"
+      (click)="toggleFavorite()"
+      [ngClass]="{ favorited: isFavorited() }"
       [matTooltip]="
         isFavorited() ? 'Remove from favorites' : 'Add to favorites'
       "
-          type="button"
-          >
-          <mat-icon>
-            {{ isFavorited() ? "favorite" : "favorite_border" }}
-          </mat-icon>
-        </button>
+      type="button"
+    >
+      <mat-icon>
+        {{ isFavorited() ? "favorite" : "favorite_border" }}
+      </mat-icon>
+    </button>
+  </div>
+  @if (housingLocation) {
+  <section class="listing-description">
+    <h2 class="listing-heading">{{ housingLocation.name }}</h2>
+    <p class="listing-location">
+      {{ housingLocation.city }}, {{ housingLocation.state }}
+    </p>
+  </section>
+  }
+  <!-- Seção de informações adicionais -->
+  <section class="listing-features">
+    <h2 class="section-heading">About this housing location</h2>
+    <ul>
+      <li>✔ Units available: {{ housingLocation.availableUnits }}</li>
+      <li>
+        <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
+        Does this location have wifi: {{ housingLocation.wifi }}
+      </li>
+      <li>
+        <mat-icon inline style="vertical-align: middle"
+          >local_laundry_service</mat-icon
+        >
+        Does this location have laundry: {{ housingLocation.laundry }}
+      </li>
+    </ul>
+  </section>
+  <!-- Formulário de aplicação -->
+  <section class="listing-apply">
+    <h2 class="section-heading">Apply now to live here</h2>
+    <form
+      class="apply-form"
+      [formGroup]="applyForm"
+      (submit)="submitApplication()"
+    >
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" class="form-input" />
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        class="form-input"
+      />
+      <label for="phone">Phone</label>
+      <input
+        id="phone"
+        type="text"
+        formControlName="phone"
+        class="form-input"
+      />
+      <label for="location">Location</label>
+      <input
+        id="location"
+        type="text"
+        formControlName="location"
+        class="form-input"
+      />
+      <!-- SELL -->
+      @if (housingLocation.typeOfBusiness === 'sell') {
+      <label for="visit-date">Date of Visit</label>
+      <input
+        id="visit-date"
+        type="date"
+        formControlName="visitDate"
+        class="form-input"
+        [min]="today"
+      />
+      @if ( applyForm.get('visitDate')?.invalid &&
+      (applyForm.get('visitDate')?.dirty || applyForm.get('visitDate')?.touched)
+      ) {
+      <div class="error-message">
+        @if (applyForm.get('visitDate')?.hasError('required')) {
+        <div>Visit date is required.</div>
+        }
       </div>
-      @if (housingLocation) {
-        <section class="listing-description">
-          <h2 class="listing-heading">{{ housingLocation.name }}</h2>
-          <p class="listing-location">
-            {{ housingLocation.city }}, {{ housingLocation.state }}
-          </p>
-        </section>
       }
-      <!-- Seção de informações adicionais -->
-      <section class="listing-features">
-        <h2 class="section-heading">About this housing location</h2>
-        <ul>
-          <li>✔ Units available: {{ housingLocation.availableUnits }}</li>
-          <li>
-            <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
-            Does this location have wifi: {{ housingLocation.wifi }}
-          </li>
-          <li>
-            <mat-icon inline style="vertical-align: middle"
-              >local_laundry_service</mat-icon
-              >
-              Does this location have laundry: {{ housingLocation.laundry }}
-            </li>
-          </ul>
-        </section>
-        <!-- Formulário de aplicação -->
-        <section class="listing-apply">
-          <h2 class="section-heading">Apply now to live here</h2>
-          <form
-            class="apply-form"
-            [formGroup]="applyForm"
-            (submit)="submitApplication()"
-            >
-            <label for="name">Name</label>
-            <input id="name" type="text" formControlName="name" class="form-input" />
-            <label for="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              class="form-input"
-              />
-              <label for="phone">Phone</label>
-              <input
-                id="phone"
-                type="text"
-                formControlName="phone"
-                class="form-input"
-                />
-                <label for="location">Location</label>
-                <input
-                  id="location"
-                  type="text"
-                  formControlName="location"
-                  class="form-input"
-                  />
-                  <!-- SELL -->
-                  @if (housingLocation?.typeOfBusiness === 'sell') {
-                    <label for="visit-date">Date of Visit</label>
-                    <input
-                      id="visit-date"
-                      type="date"
-                      formControlName="visitDate"
-                      class="form-input"
-                      [min]="today"
-                      />
-                      @if (
-                        applyForm.get('visitDate')?.invalid &&
-                        (applyForm.get('visitDate')?.dirty ||
-                        applyForm.get('visitDate')?.touched)
-                        ) {
-                        <div
-                          class="error-message"
-                          >
-                          @if (applyForm.get('visitDate')?.hasError('required')) {
-                            <div>
-                              Visit date is required.
-                            </div>
-                          }
-                        </div>
-                      }
-                      <label for="visit-time">Visit Time</label>
-                      <mat-form-field class="form-field">
-                        <mat-select formControlName="visitTime">
-                          <mat-option value="" disabled>Select a time</mat-option>
-                          @for (hour of filteredVisitHours; track hour) {
-                            <mat-option [value]="hour">
-                              {{ hour }}
-                            </mat-option>
-                          }
-                        </mat-select>
-                        @if (
-                          applyForm.get('visitTime')?.hasError('required') &&
-                          applyForm.get('visitTime')?.touched
-                          ) {
-                          <mat-error
-                            >
-                            Visit time is required.
-                          </mat-error>
-                        }
-                      </mat-form-field>
-                    }
-                    <!-- RENT -->
-                    @if (housingLocation?.typeOfBusiness === 'rent') {
-                      <label for="check-in-date">Check-in Date</label>
-                      <input
-                        id="check-in-date"
-                        type="date"
-                        formControlName="checkInDate"
-                        class="form-input"
-                        [min]="today"
-                        />
-                        @if (
-                          applyForm.get('checkInDate')?.invalid &&
-                          (applyForm.get('checkInDate')?.dirty ||
-                          applyForm.get('checkInDate')?.touched)
-                          ) {
-                          <div
-                            class="error-message"
-                            >
-                            @if (applyForm.get('checkInDate')?.hasError('required')) {
-                              <div>
-                                Check-in date is required.
-                              </div>
-                            }
-                          </div>
-                        }
-                        <label for="check-out-date">Check-out Date</label>
-                        <input
-                          id="check-out-date"
-                          type="date"
-                          formControlName="checkOutDate"
-                          class="form-input"
-                          [min]="applyForm.get('checkInDate')?.value || today"
-                          />
-                          @if (
-                            applyForm.get('checkOutDate')?.invalid &&
-                            (applyForm.get('checkOutDate')?.dirty ||
-                            applyForm.get('checkOutDate')?.touched)
-                            ) {
-                            <div
-                              class="error-message"
-                              >
-                              @if (applyForm.get('checkOutDate')?.hasError('required')) {
-                                <div>
-                                  Check-out date is required.
-                                </div>
-                              }
-                            </div>
-                          }
-                        }
-                        <button type="submit" class="primary">Apply now</button>
-                      </form>
-                    </section>
-                  </article>
-                }
-
-                @if (housingLocation?.id) {
-                  <app-reviews
-                    [housingLocationId]="housingLocation!.id"
-                    [currentUser]="currentUser"
-                  ></app-reviews>
-                }
+      <label for="visit-time">Visit Time</label>
+      <mat-form-field class="form-field">
+        <mat-select formControlName="visitTime">
+          <mat-option value="" disabled>Select a time</mat-option>
+          @for (hour of filteredVisitHours; track hour) {
+          <mat-option [value]="hour">
+            {{ hour }}
+          </mat-option>
+          }
+        </mat-select>
+        @if ( applyForm.get('visitTime')?.hasError('required') &&
+        applyForm.get('visitTime')?.touched ) {
+        <mat-error> Visit time is required. </mat-error>
+        }
+      </mat-form-field>
+      }
+      <!-- RENT -->
+      @if (housingLocation.typeOfBusiness === 'rent') {
+      <label for="check-in-date">Check-in Date</label>
+      <input
+        id="check-in-date"
+        type="date"
+        formControlName="checkInDate"
+        class="form-input"
+        [min]="today"
+      />
+      @if ( applyForm.get('checkInDate')?.invalid &&
+      (applyForm.get('checkInDate')?.dirty ||
+      applyForm.get('checkInDate')?.touched) ) {
+      <div class="error-message">
+        @if (applyForm.get('checkInDate')?.hasError('required')) {
+        <div>Check-in date is required.</div>
+        }
+      </div>
+      }
+      <label for="check-out-date">Check-out Date</label>
+      <input
+        id="check-out-date"
+        type="date"
+        formControlName="checkOutDate"
+        class="form-input"
+        [min]="applyForm.get('checkInDate')?.value || today"
+      />
+      @if ( applyForm.get('checkOutDate')?.invalid &&
+      (applyForm.get('checkOutDate')?.dirty ||
+      applyForm.get('checkOutDate')?.touched) ) {
+      <div class="error-message">
+        @if (applyForm.get('checkOutDate')?.hasError('required')) {
+        <div>Check-out date is required.</div>
+        }
+      </div>
+      } }
+      <button type="submit" class="primary">Apply now</button>
+    </form>
+  </section>
+</article>
+} @if (housingLocation?.id) {
+<app-reviews
+  [housingLocationId]="housingLocation!.id"
+  [currentUser]="currentUser"
+></app-reviews>
+}
