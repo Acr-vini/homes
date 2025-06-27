@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   FormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +23,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   selector: 'app-user-create',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatCardModule,
@@ -33,8 +32,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSelectModule,
     MatSnackBarModule,
     NgxSpinnerModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
 })

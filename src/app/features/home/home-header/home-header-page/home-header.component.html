@@ -5,7 +5,7 @@
       [routerLink]="isLoggedIn ? ['/home'] : null"
       class="app-header-logo"
       [class.disabled]="!isLoggedIn"
-    >
+      >
       <img
         src="assets/Homes.png"
         alt="logo"
@@ -13,77 +13,91 @@
         width="150"
         height="50"
         loading="eager"
-      />
-    </a>
-  </div>
+        />
+      </a>
+      <button
+        mat-icon-button
+      [matTooltip]="
+        currentUser ? 'Logged in as: ' + currentUser.name : 'Profile'
+      "
+        (click)="goToProfile()"
+        aria-label="Profile"
+        class="profile-icon-btn"
+        >
+        <mat-icon>account_box</mat-icon>
+      </button>
+    </div>
 
-  <!-- MENU CENTRAL -->
-  <div class="app-header-section app-header-center">
-    <!-- Users -->
-    <a
-      *ngIf="userRole === 'Admin' || userRole === 'Manager'"
-      mat-button
-      [routerLink]="['/users']"
-      class="app-header-nav-link"
-    >
-      <mat-icon>person</mat-icon>
-      <span>Users</span>
-    </a>
-    <span
-      *ngIf="userRole === 'Admin' || userRole === 'Manager'"
-      class="app-header-divider"
-      >|</span
-    >
+    <!-- MENU CENTRAL -->
+    <div class="app-header-section app-header-center">
+      <!-- Users -->
+      @if (userRole === 'Admin' || userRole === 'Manager') {
+        <a
+          mat-button
+          [routerLink]="['/users']"
+          class="app-header-nav-link"
+          >
+          <mat-icon>person</mat-icon>
+          <span>Users</span>
+        </a>
+      }
+      @if (userRole === 'Admin' || userRole === 'Manager') {
+        <span
+          class="app-header-divider"
+          >|</span
+          >
+      }
 
-    <!-- About (acessível sempre) -->
-    <a mat-button [routerLink]="['/about']" class="app-header-nav-link">
-      <mat-icon>info</mat-icon>
-      <span>About</span>
-    </a>
-    <span class="app-header-divider">|</span>
+      <!-- About (acessível sempre) -->
+      <a mat-button [routerLink]="['/about']" class="app-header-nav-link">
+        <mat-icon>info</mat-icon>
+        <span>About</span>
+      </a>
+      <span class="app-header-divider">|</span>
 
-    <!-- Contact (acessível sempre) -->
-    <a mat-button [routerLink]="['/contact']" class="app-header-nav-link">
-      <mat-icon>mail</mat-icon>
-      <span>Contact</span>
-    </a>
-    <span class="app-header-divider">|</span>
+      <!-- Contact (acessível sempre) -->
+      <a mat-button [routerLink]="['/contact']" class="app-header-nav-link">
+        <mat-icon>mail</mat-icon>
+        <span>Contact</span>
+      </a>
+      <span class="app-header-divider">|</span>
 
-    <a mat-button [routerLink]="['/activity-date']" class="app-header-nav-link">
-      <mat-icon
-        [matBadge]="newApplicationCount > 0 ? newApplicationCount : null"
-        matBadgeColor="warn"
-        matBadgeSize="small"
-        >event</mat-icon
-      >
-      <span>Activity Date</span>
-    </a>
-  </div>
+      <a mat-button [routerLink]="['/activity-date']" class="app-header-nav-link">
+        <mat-icon
+          [matBadge]="newApplicationCount > 0 ? newApplicationCount : null"
+          matBadgeColor="warn"
+          matBadgeSize="small"
+          >event</mat-icon
+          >
+          <span>Activity Date</span>
+        </a>
+      </div>
 
-  <!-- TEMA E LOGOUT -->
-  <div class="app-header-section app-header-right">
-    <mat-slide-toggle
-      [checked]="isDark"
-      (change)="toggleDark($event.checked)"
-      class="app-header-toggle"
-    >
-      <mat-icon>{{ isDark ? "dark_mode" : "light_mode" }}</mat-icon>
-    </mat-slide-toggle>
+      <!-- TEMA E LOGOUT -->
+      <div class="app-header-section app-header-right">
+        <mat-slide-toggle
+          [checked]="isDark"
+          (change)="toggleDark($event.checked)"
+          class="app-header-toggle"
+          >
+          <mat-icon>{{ isDark ? "dark_mode" : "light_mode" }}</mat-icon>
+        </mat-slide-toggle>
 
-    <!-- Só mostra logout se logado -->
-    <button
-      *ngIf="isLoggedIn"
-      mat-icon-button
-      (click)="logout()"
-      aria-label="Logout"
-    >
-      <mat-icon>logout</mat-icon>
-    </button>
-  </div>
-</mat-toolbar>
+        <!-- Só mostra logout se logado -->
+        @if (isLoggedIn) {
+          <button
+            mat-icon-button
+            (click)="logout()"
+            aria-label="Logout"
+            >
+            <mat-icon>logout</mat-icon>
+          </button>
+        }
+      </div>
+    </mat-toolbar>
 
-<router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 
-<script>
-  currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-</script>
+    <script>
+      currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    </script>

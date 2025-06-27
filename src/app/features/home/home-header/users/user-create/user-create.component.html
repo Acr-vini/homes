@@ -17,35 +17,38 @@
     <mat-form-field class="full-width">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
-      <mat-error
-        *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched"
-      >
-        Name is required
-      </mat-error>
+      @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
+        <mat-error
+          >
+          Name is required
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Email -->
     <mat-form-field class="full-width">
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" required />
-      <mat-error
-        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
-      >
-        Valid email is required
-      </mat-error>
+      @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+        <mat-error
+          >
+          Valid email is required
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Password -->
     <mat-form-field class="full-width">
       <mat-label>Password</mat-label>
       <input matInput formControlName="password" type="password" required />
-      <mat-error
-        *ngIf="
-          userForm.get('password')?.invalid && userForm.get('password')?.touched
-        "
-      >
-        Password is required
-      </mat-error>
+      @if (
+        userForm.get('password')?.invalid && userForm.get('password')?.touched
+        ) {
+        <mat-error
+          >
+          Password is required
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Phone -->
@@ -74,11 +77,11 @@
 
     <!-- CPF Field (only for Realtors) -->
     @if (userForm.get('role')?.value === 'Realtor') {
-    <mat-form-field class="full-width">
-      <mat-label>CPF</mat-label>
-      <input matInput formControlName="cpf" required />
-      <mat-error>CPF is required for Realtors</mat-error>
-    </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>CPF</mat-label>
+        <input matInput formControlName="cpf" required />
+        <mat-error>CPF is required for Realtors</mat-error>
+      </mat-form-field>
     }
 
     <!-- Status -->
@@ -88,13 +91,14 @@
         <mat-option value="active">Active</mat-option>
         <mat-option value="disabled">Disabled</mat-option>
       </mat-select>
-      <mat-error
-        *ngIf="
-          userForm.get('status')?.invalid && userForm.get('status')?.touched
-        "
-      >
-        Status is required
-      </mat-error>
+      @if (
+        userForm.get('status')?.invalid && userForm.get('status')?.touched
+        ) {
+        <mat-error
+          >
+          Status is required
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Actions -->
@@ -105,7 +109,7 @@
         type="submit"
         aria-label="Save"
         matTooltip="Save"
-      >
+        >
         <span class="material-symbols-outlined">save</span>
       </button>
       <button
@@ -115,7 +119,7 @@
         (click)="onCancel()"
         aria-label="Cancel"
         matTooltip="Cancel"
-      >
+        >
         <span class="material-symbols-outlined">cancel</span>
       </button>
     </div>

@@ -10,13 +10,14 @@
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Email</mat-label>
         <input matInput type="email" formControlName="email" />
-        <mat-error
-          *ngIf="
-            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
-          "
-        >
-          Email is required and must be valid.
-        </mat-error>
+        @if (
+          loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          ) {
+          <mat-error
+            >
+            Email is required and must be valid.
+          </mat-error>
+        }
       </mat-form-field>
 
       <!-- Password field -->
@@ -26,49 +27,50 @@
           matInput
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password"
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          (click)="hidePassword = !hidePassword"
-        >
-          <mat-icon>{{
-            hidePassword ? "visibility_off" : "visibility"
-          }}</mat-icon>
-        </button>
-        <mat-error
-          *ngIf="
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+            >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          @if (
             loginForm.get('password')?.invalid &&
             loginForm.get('password')?.touched
-          "
-        >
-          Password is required.
-        </mat-error>
-      </mat-form-field>
+            ) {
+            <mat-error
+              >
+              Password is required.
+            </mat-error>
+          }
+        </mat-form-field>
 
-      <div class="actions">
-        <!-- Login button -->
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="loginForm.invalid"
-        >
-          Login
-        </button>
+        <div class="actions">
+          <!-- Login button -->
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loginForm.invalid"
+            >
+            Login
+          </button>
 
-        <!-- Forgot password link -->
-        <div class="forgot-password-link">
-          <a (click)="onForgotPassword($event)">Forgot your password?</a>
+          <!-- Forgot password link -->
+          <div class="forgot-password-link">
+            <a (click)="onForgotPassword($event)">Forgot your password?</a>
+          </div>
+
+          <!-- Register link -->
+          <div class="register-link">
+            <span>Don't have an account? </span>
+            <a routerLink="/register">Create one</a>
+          </div>
         </div>
-
-        <!-- Register link -->
-        <div class="register-link">
-          <span>Don't have an account? </span>
-          <a routerLink="/register">Create one</a>
-        </div>
-      </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+      </form>
+    </mat-card-content>
+  </mat-card>

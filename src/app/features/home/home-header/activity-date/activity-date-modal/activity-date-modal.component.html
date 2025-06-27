@@ -4,46 +4,50 @@
     <mat-form-field class="full-width">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" />
-      <mat-error
-        *ngIf="
-          form.get('name')?.hasError('required') && form.get('name')?.touched
-        "
-      >
-        Name is required.
-      </mat-error>
+      @if (
+        form.get('name')?.hasError('required') && form.get('name')?.touched
+        ) {
+        <mat-error
+          >
+          Name is required.
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Email -->
     <mat-form-field class="full-width">
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" />
-      <mat-error
-        *ngIf="
-          form.get('email')?.hasError('required') && form.get('email')?.touched
-        "
-      >
-        Email is required.
-      </mat-error>
-      <mat-error
-        *ngIf="
-          form.get('email')?.hasError('email') && form.get('email')?.touched
-        "
-      >
-        Please enter a valid email.
-      </mat-error>
+      @if (
+        form.get('email')?.hasError('required') && form.get('email')?.touched
+        ) {
+        <mat-error
+          >
+          Email is required.
+        </mat-error>
+      }
+      @if (
+        form.get('email')?.hasError('email') && form.get('email')?.touched
+        ) {
+        <mat-error
+          >
+          Please enter a valid email.
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Phone -->
     <mat-form-field class="full-width">
       <mat-label>Phone</mat-label>
       <input matInput formControlName="phone" />
-      <mat-error
-        *ngIf="
-          form.get('phone')?.hasError('required') && form.get('phone')?.touched
-        "
-      >
-        Phone is required.
-      </mat-error>
+      @if (
+        form.get('phone')?.hasError('required') && form.get('phone')?.touched
+        ) {
+        <mat-error
+          >
+          Phone is required.
+        </mat-error>
+      }
     </mat-form-field>
 
     <!-- Location (apenas exibição) -->
@@ -53,7 +57,7 @@
     </mat-form-field>
 
     <!-- SELL -->
-    <ng-container *ngIf="data.typeOfBusiness === 'sell'">
+    @if (data.typeOfBusiness === 'sell') {
       <mat-form-field class="full-width">
         <mat-label>Date of Visit</mat-label>
         <input
@@ -61,109 +65,115 @@
           [matDatepicker]="visitDatePicker"
           formControlName="visitDate"
           [min]="today"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="visitDatePicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #visitDatePicker></mat-datepicker>
-        <mat-error
-          *ngIf="
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="visitDatePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #visitDatePicker></mat-datepicker>
+          @if (
             form.get('visitDate')?.hasError('required') &&
             form.get('visitDate')?.touched
-          "
-        >
-          Visit date is required.
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Visit Time</mat-label>
-        <mat-select formControlName="visitTime">
-          <mat-option value="" disabled>Select a time</mat-option>
-          <mat-option *ngFor="let hour of data.visitHours || []" [value]="hour">
-            {{ hour }}
-          </mat-option>
-        </mat-select>
-        <mat-error
-          *ngIf="
+            ) {
+            <mat-error
+              >
+              Visit date is required.
+            </mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Visit Time</mat-label>
+          <mat-select formControlName="visitTime">
+            <mat-option value="" disabled>Select a time</mat-option>
+            @for (hour of data.visitHours || []; track hour) {
+              <mat-option [value]="hour">
+                {{ hour }}
+              </mat-option>
+            }
+          </mat-select>
+          @if (
             form.get('visitTime')?.hasError('required') &&
             form.get('visitTime')?.touched
-          "
-        >
-          Visit time is required.
-        </mat-error>
-      </mat-form-field>
-    </ng-container>
+            ) {
+            <mat-error
+              >
+              Visit time is required.
+            </mat-error>
+          }
+        </mat-form-field>
+      }
 
-    <!-- RENT -->
-    <ng-container *ngIf="data.typeOfBusiness === 'rent'">
-      <mat-form-field class="full-width">
-        <mat-label>Check-in Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="checkInPicker"
-          formControlName="checkInDate"
-          [min]="today"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="checkInPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #checkInPicker></mat-datepicker>
-        <mat-error
-          *ngIf="
-            form.get('checkInDate')?.hasError('required') &&
-            form.get('checkInDate')?.touched
-          "
-        >
-          Check-in date is required.
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Check-out Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="checkOutPicker"
-          formControlName="checkOutDate"
-          [min]="form.get('checkInDate')?.value || today"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="checkOutPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #checkOutPicker></mat-datepicker>
-        <mat-error
-          *ngIf="
-            form.get('checkOutDate')?.hasError('required') &&
-            form.get('checkOutDate')?.touched
-          "
-        >
-          Check-out date is required.
-        </mat-error>
-      </mat-form-field>
-    </ng-container>
+      <!-- RENT -->
+      @if (data.typeOfBusiness === 'rent') {
+        <mat-form-field class="full-width">
+          <mat-label>Check-in Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="checkInPicker"
+            formControlName="checkInDate"
+            [min]="today"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="checkInPicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #checkInPicker></mat-datepicker>
+            @if (
+              form.get('checkInDate')?.hasError('required') &&
+              form.get('checkInDate')?.touched
+              ) {
+              <mat-error
+                >
+                Check-in date is required.
+              </mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field class="full-width">
+            <mat-label>Check-out Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="checkOutPicker"
+              formControlName="checkOutDate"
+              [min]="form.get('checkInDate')?.value || today"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="checkOutPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #checkOutPicker></mat-datepicker>
+              @if (
+                form.get('checkOutDate')?.hasError('required') &&
+                form.get('checkOutDate')?.touched
+                ) {
+                <mat-error
+                  >
+                  Check-out date is required.
+                </mat-error>
+              }
+            </mat-form-field>
+          }
 
-    <div class="actions">
-      <button
-        mat-icon-button
-        class="save-btn"
-        type="submit"
-        [disabled]="form.invalid"
-        aria-label="Save changes"
-        matTooltip="Save changes"
-      >
-        <mat-icon>save</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        type="button"
-        class="cancel-btn"
-        (click)="close()"
-        aria-label="Cancel editing"
-        matTooltip="Cancel editing"
-      >
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </div>
-  </form>
-</mat-card>
+          <div class="actions">
+            <button
+              mat-icon-button
+              class="save-btn"
+              type="submit"
+              [disabled]="form.invalid"
+              aria-label="Save changes"
+              matTooltip="Save changes"
+              >
+              <mat-icon>save</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              type="button"
+              class="cancel-btn"
+              (click)="close()"
+              aria-label="Cancel editing"
+              matTooltip="Cancel editing"
+              >
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </div>
+        </form>
+      </mat-card>

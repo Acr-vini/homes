@@ -13,112 +13,113 @@
       type="text"
       (keyup)="applyFilter($event)"
       placeholder="Type to filter..."
-    />
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
 
-  <mat-card-content>
-    <!-- Tabela de usuários -->
-    <table
-      mat-table
-      [dataSource]="dataSource"
-      class="full-width-table mat-elevation-z8"
-    >
-      <!-- Coluna Nome -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name:</th>
-        <td mat-cell *matCellDef="let user">{{ user.name }}</td>
-      </ng-container>
+    <mat-card-content>
+      <!-- Tabela de usuários -->
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="full-width-table mat-elevation-z8"
+        >
+        <!-- Coluna Nome -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name:</th>
+          <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+        </ng-container>
 
-      <!-- Coluna Email -->
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email:</th>
-        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
-      </ng-container>
+        <!-- Coluna Email -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email:</th>
+          <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+        </ng-container>
 
-      <!-- Coluna Status -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status:</th>
-        <td mat-cell *matCellDef="let user">{{ user.status }}</td>
-      </ng-container>
+        <!-- Coluna Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status:</th>
+          <td mat-cell *matCellDef="let user">{{ user.status }}</td>
+        </ng-container>
 
-      <!-- Coluna Role -->
-      <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef>Role:</th>
-        <td mat-cell *matCellDef="let user">{{ user.role }}</td>
-      </ng-container>
+        <!-- Coluna Role -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Role:</th>
+          <td mat-cell *matCellDef="let user">{{ user.role }}</td>
+        </ng-container>
 
-      <!-- Coluna Phone -->
-      <ng-container matColumnDef="phone">
-        <th mat-header-cell *matHeaderCellDef>Phone:</th>
-        <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
-      </ng-container>
+        <!-- Coluna Phone -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Phone:</th>
+          <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
+        </ng-container>
 
-      <!-- Coluna Location -->
-      <ng-container matColumnDef="location">
-        <th mat-header-cell *matHeaderCellDef>Location:</th>
-        <td mat-cell *matCellDef="let user">{{ user.location }}</td>
-      </ng-container>
+        <!-- Coluna Location -->
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Location:</th>
+          <td mat-cell *matCellDef="let user">{{ user.location }}</td>
+        </ng-container>
 
-      <!-- Coluna Ações -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>
-          <button
-            class="add_button"
-            mat-stroked-button
-            color="primary"
-            [matTooltip]="'New User'"
-            aria-label="New User"
-            (click)="openCreateUser()"
-          >
-            <mat-icon>person_add</mat-icon>
-            <span style="margin-left: 2px">New user</span>
-          </button>
-        </th>
-        <td mat-cell *matCellDef="let user">
-          <!-- Edit -->
-          <button
-            mat-icon-button
-            (click)="openEditUser(user.id)"
-            matTooltip="Edit user"
-            aria-label="Edit user"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <!-- Delete -->
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="onDelete(user.id)"
-            *ngIf="canDelete(user)"
-            [matTooltip]="'Delete user'"
-            aria-label="Delete user"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-          <!-- Details -->
-          <button
-            mat-icon-button
-            color="accent"
-            (click)="openUserDetails(user)"
-            [matTooltip]="'User details'"
-            aria-label="User details"
-          >
-            <mat-icon>info</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+        <!-- Coluna Ações -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>
+            <button
+              class="add_button"
+              mat-stroked-button
+              color="primary"
+              [matTooltip]="'New User'"
+              aria-label="New User"
+              (click)="openCreateUser()"
+              >
+              <mat-icon>person_add</mat-icon>
+              <span style="margin-left: 2px">New user</span>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let user">
+            <!-- Edit -->
+            <button
+              mat-icon-button
+              (click)="openEditUser(user.id)"
+              matTooltip="Edit user"
+              aria-label="Edit user"
+              >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <!-- Delete -->
+            @if (canDelete(user)) {
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onDelete(user.id)"
+                [matTooltip]="'Delete user'"
+                aria-label="Delete user"
+                >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+            <!-- Details -->
+            <button
+              mat-icon-button
+              color="accent"
+              (click)="openUserDetails(user)"
+              [matTooltip]="'User details'"
+              aria-label="User details"
+              >
+              <mat-icon>info</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-      <!-- Cabeçalho e linhas -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </mat-card-content>
-  <div style="height: 2rem"></div>
+        <!-- Cabeçalho e linhas -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+    <div style="height: 2rem"></div>
 
-  <mat-paginator
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 15, 20, 30, 50]"
-    showFirstLastButtons
-  ></mat-paginator>
-</mat-card>
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 15, 20, 30, 50]"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card>

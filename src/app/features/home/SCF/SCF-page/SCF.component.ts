@@ -1,7 +1,7 @@
 // Importe o FormBuilder e FormGroup
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // ALTERADO
-import { CommonModule } from '@angular/common';
+
 import { HousingService } from '../../../../core/services/housing.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HouseCardsComponent } from '../../house-list/house-cards/house-cards-page/house-cards.component';
@@ -31,7 +31,6 @@ import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tra
   selector: 'app-SCF',
   standalone: true,
   imports: [
-    CommonModule,
     HouseCardsComponent,
     HttpClientModule,
     ReactiveFormsModule,
@@ -49,8 +48,8 @@ import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tra
     MatButtonToggleModule,
     MatTooltipModule,
     MatSidenavModule,
-    CompareTrayComponent,
-  ],
+    CompareTrayComponent
+],
   templateUrl: './SCF.component.html',
   styleUrls: ['./SCF.component.scss'],
 })

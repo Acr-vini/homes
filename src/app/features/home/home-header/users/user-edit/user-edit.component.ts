@@ -7,7 +7,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,7 +29,6 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
   imports: [
     RouterModule,
     FormsModule,
-    CommonModule,
     MatCardModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -41,8 +40,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatTooltipModule,
-    NgxSpinnerModule,
-  ],
+    NgxSpinnerModule
+],
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.scss',
 })

@@ -45,7 +45,15 @@ const routes: Routes = [
         title: 'Details',
       },
 
-      // users | about | contact | activity-date
+      // profile | users | about | contact | activity-date
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/home/home-header/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+        title: 'Profile',
+      },
       {
         path: 'users',
         loadComponent: () =>

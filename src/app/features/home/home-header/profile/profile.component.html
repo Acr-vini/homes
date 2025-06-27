@@ -1,0 +1,107 @@
+<div class="profile-container">
+  <mat-card class="profile-card">
+    <mat-card-title>User Profile</mat-card-title>
+    <mat-card-content>
+      <!-- Formulário para Mudar a Role -->
+      @if (showRoleForm) {
+        <form
+          [formGroup]="roleForm"
+          (ngSubmit)="onRoleSubmit()"
+          class="role-form"
+          >
+          <h3>Become a Seller</h3>
+          <p>Fill in the details below to list properties.</p>
+          <div class="form-fields">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>New Role</mat-label>
+              <mat-select formControlName="role">
+                <mat-option value="Owner">Owner</mat-option>
+                <mat-option value="Real Estate Agency"
+                  >Real Estate Agency</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>CPF</mat-label>
+                <input
+                  matInput
+                  formControlName="cpf"
+                  required
+                  placeholder="123.456.789-00"
+                  />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Location</mat-label>
+                  <input matInput formControlName="location" />
+                </mat-form-field>
+              </div>
+              <div class="actions">
+                <button mat-button type="button" (click)="showRoleForm = false">
+                  Cancel
+                </button>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="roleForm.invalid"
+                  >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- Visualização Principal do Perfil -->
+          @if (!showRoleForm) {
+            <div>
+              <div class="user-info">
+                <p><strong>Name:</strong> {{ user.name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Role:</strong> {{ user.role }}</p>
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="showRoleForm = true"
+                  >
+                  Change Role
+                </button>
+              </div>
+              <mat-divider></mat-divider>
+              <form
+                [formGroup]="passwordForm"
+                (ngSubmit)="resetPassword()"
+                class="password-form"
+                >
+                <h3>Reset Password</h3>
+                <div class="form-fields">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>New Password</mat-label>
+                    <input matInput type="password" formControlName="password" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Confirm New Password</mat-label>
+                    <input matInput type="password" formControlName="confirm" />
+                  </mat-form-field>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="!passwordForm.valid"
+                    >
+                    Reset Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>

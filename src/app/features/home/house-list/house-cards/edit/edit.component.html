@@ -4,178 +4,186 @@
 <mat-card class="edit-card">
   <mat-card-title>Edit house</mat-card-title>
 
-  <form class="form" *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name" required />
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <mat-label>State</mat-label>
-      <input
-        matInput
-        [formControl]="stateControl"
-        [matAutocomplete]="autoState"
-      />
-      <mat-autocomplete #autoState="matAutocomplete">
-        <mat-option
-          *ngFor="let st of filteredStates | async; trackBy: trackByStateId"
-          [value]="st.name"
-        >
-          {{ st.name }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <mat-label>City</mat-label>
-      <input
-        matInput
-        [formControl]="cityControl"
-        [matAutocomplete]="autoCity"
-      />
-      <mat-autocomplete #autoCity="matAutocomplete">
-        <mat-option
-          *ngFor="let city of filteredCities | async; trackBy: trackByCityId"
-          [value]="city"
-        >
-          {{ city }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <mat-label>Available Units</mat-label>
-      <input matInput type="number" formControlName="availableUnits" required />
-      <mat-error
-        *ngIf="
-          form.get('availableUnits')?.invalid &&
-          form.get('availableUnits')?.touched
-        "
-      >
-        This field is required and must be greater than 0.
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <mat-label>Type of Business</mat-label>
-      <mat-select formControlName="typeOfBusiness" required>
-        <mat-option value="sell">Sell</mat-option>
-        <mat-option value="rent">Rent</mat-option>
-      </mat-select>
-      <mat-error
-        *ngIf="
-          form.get('typeOfBusiness')?.invalid &&
-          form.get('typeOfBusiness')?.touched
-        "
-      >
-        This field is required.
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <mat-label>Property Type</mat-label>
-      <mat-select formControlName="propertyType" required>
-        <mat-optgroup label="Residential">
-          <mat-option
-            *ngFor="let type of residentialPropertyTypes"
-            [value]="type.value"
-          >
-            <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
-            {{ type.viewValue }}
-          </mat-option>
-        </mat-optgroup>
-        <mat-optgroup label="Commercial">
-          <mat-option
-            *ngFor="let type of commercialPropertyTypes"
-            [value]="type.value"
-          >
-            <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
-            {{ type.viewValue }}
-          </mat-option>
-        </mat-optgroup>
-      </mat-select>
-      <mat-error
-        *ngIf="
-          form.get('propertyType')?.invalid && form.get('propertyType')?.touched
-        "
-      >
-        This field is required.
-      </mat-error>
-    </mat-form-field>
-
-    <!-- CAMPO DE PREÇO ADICIONADO -->
-    <mat-form-field class="full-width">
-      <mat-label>Price (USD)</mat-label>
-      <input matInput type="number" formControlName="price" required min="1" />
-      <mat-error *ngIf="form.get('price')?.hasError('required')">
-        Price is required.
-      </mat-error>
-      <mat-error *ngIf="form.get('price')?.hasError('min')">
-        Price must be positive.
-      </mat-error>
-    </mat-form-field>
-
-    <div class="checkbox-group">
-      <!-- Wi-Fi Available -->
-      <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
-
-      <!-- Laundry Available -->
-      <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
-    </div>
-
-    <!-- Image Preview & Upload -->
-    <div *ngIf="imagePreview" class="image-preview">
-      <img [src]="imagePreview" alt="Preview foto" />
-    </div>
-
-    <div class="edit-file-upload">
-      <button
-        mat-icon-button
-        class="upload-btn"
-        (click)="fileInput.click()"
-        aria-label="Upload image"
-      >
-        <mat-icon>upload</mat-icon>
-      </button>
-      <span>Select image</span>
-      <input #fileInput type="file" hidden (change)="onImageSelected($event)" />
-    </div>
-
-    <!-- Actions -->
-    <div class="actions" *ngIf="canPerformActions">
-      <button
-        mat-icon-button
-        class="delete-btn"
-        type="button"
-        (click)="onDelete()"
-        aria-label="Delete house"
-        matTooltip="Delete house"
-      >
-        <span class="material-symbols-outlined">delete</span>
-      </button>
-
-      <button
-        mat-icon-button
-        class="save-btn"
-        type="submit"
-        aria-label="Save changes"
-        matTooltip="Save changes"
-        [disabled]="form.invalid || !form.dirty"
-      >
-        <span class="material-symbols-outlined">save</span>
-      </button>
-
-      <button
-        mat-icon-button
-        type="button"
-        class="cancel-btn"
-        (click)="onCancel()"
-        aria-label="Cancel editing"
-        matTooltip="Cancel editing"
-      >
-        <span class="material-symbols-outlined">cancel</span>
-      </button>
-    </div>
-  </form>
-</mat-card>
+  @if (form) {
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>State</mat-label>
+        <input
+          matInput
+          [formControl]="stateControl"
+          [matAutocomplete]="autoState"
+          />
+          <mat-autocomplete #autoState="matAutocomplete">
+            @for (st of filteredStates | async; track trackByStateId($index, st)) {
+              <mat-option
+                [value]="st.name"
+                >
+                {{ st.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>City</mat-label>
+          <input
+            matInput
+            [formControl]="cityControl"
+            [matAutocomplete]="autoCity"
+            />
+            <mat-autocomplete #autoCity="matAutocomplete">
+              @for (city of filteredCities | async; track trackByCityId($index, city)) {
+                <mat-option
+                  [value]="city"
+                  >
+                  {{ city }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field class="full-width">
+            <mat-label>Available Units</mat-label>
+            <input matInput type="number" formControlName="availableUnits" required />
+            @if (
+              form.get('availableUnits')?.invalid &&
+              form.get('availableUnits')?.touched
+              ) {
+              <mat-error
+                >
+                This field is required and must be greater than 0.
+              </mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field class="full-width">
+            <mat-label>Type of Business</mat-label>
+            <mat-select formControlName="typeOfBusiness" required>
+              <mat-option value="sell">Sell</mat-option>
+              <mat-option value="rent">Rent</mat-option>
+            </mat-select>
+            @if (
+              form.get('typeOfBusiness')?.invalid &&
+              form.get('typeOfBusiness')?.touched
+              ) {
+              <mat-error
+                >
+                This field is required.
+              </mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field class="full-width">
+            <mat-label>Property Type</mat-label>
+            <mat-select formControlName="propertyType" required>
+              <mat-optgroup label="Residential">
+                @for (type of residentialPropertyTypes; track type) {
+                  <mat-option
+                    [value]="type.value"
+                    >
+                    @if (type.icon) {
+                      <mat-icon>{{ type.icon }}</mat-icon>
+                    }
+                    {{ type.viewValue }}
+                  </mat-option>
+                }
+              </mat-optgroup>
+              <mat-optgroup label="Commercial">
+                @for (type of commercialPropertyTypes; track type) {
+                  <mat-option
+                    [value]="type.value"
+                    >
+                    @if (type.icon) {
+                      <mat-icon>{{ type.icon }}</mat-icon>
+                    }
+                    {{ type.viewValue }}
+                  </mat-option>
+                }
+              </mat-optgroup>
+            </mat-select>
+            @if (
+              form.get('propertyType')?.invalid && form.get('propertyType')?.touched
+              ) {
+              <mat-error
+                >
+                This field is required.
+              </mat-error>
+            }
+          </mat-form-field>
+          <!-- CAMPO DE PREÇO ADICIONADO -->
+          <mat-form-field class="full-width">
+            <mat-label>Price (USD)</mat-label>
+            <input matInput type="number" formControlName="price" required min="1" />
+            @if (form.get('price')?.hasError('required')) {
+              <mat-error>
+                Price is required.
+              </mat-error>
+            }
+            @if (form.get('price')?.hasError('min')) {
+              <mat-error>
+                Price must be positive.
+              </mat-error>
+            }
+          </mat-form-field>
+          <div class="checkbox-group">
+            <!-- Wi-Fi Available -->
+            <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
+            <!-- Laundry Available -->
+            <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
+          </div>
+          <!-- Image Preview & Upload -->
+          @if (imagePreview) {
+            <div class="image-preview">
+              <img [src]="imagePreview" alt="Preview foto" />
+            </div>
+          }
+          <div class="edit-file-upload">
+            <button
+              mat-icon-button
+              class="upload-btn"
+              (click)="fileInput.click()"
+              aria-label="Upload image"
+              >
+              <mat-icon>upload</mat-icon>
+            </button>
+            <span>Select image</span>
+            <input #fileInput type="file" hidden (change)="onImageSelected($event)" />
+          </div>
+          <!-- Actions -->
+          @if (canPerformActions) {
+            <div class="actions">
+              <button
+                mat-icon-button
+                class="delete-btn"
+                type="button"
+                (click)="onDelete()"
+                aria-label="Delete house"
+                matTooltip="Delete house"
+                >
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+              <button
+                mat-icon-button
+                class="save-btn"
+                type="submit"
+                aria-label="Save changes"
+                matTooltip="Save changes"
+                [disabled]="form.invalid || !form.dirty"
+                >
+                <span class="material-symbols-outlined">save</span>
+              </button>
+              <button
+                mat-icon-button
+                type="button"
+                class="cancel-btn"
+                (click)="onCancel()"
+                aria-label="Cancel editing"
+                matTooltip="Cancel editing"
+                >
+                <span class="material-symbols-outlined">cancel</span>
+              </button>
+            </div>
+          }
+        </form>
+      }
+    </mat-card>

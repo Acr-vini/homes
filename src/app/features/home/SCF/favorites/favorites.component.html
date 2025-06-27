@@ -1,27 +1,29 @@
 <h2 class="favorites-title">Your Favorite Houses</h2>
 
-<button
-  class="clear-favorites-btn"
-  (click)="clearFavorites()"
-  *ngIf="favoriteHouses.length"
->
-  <mat-icon>delete_sweep</mat-icon>
-  Clear All Favorites
-</button>
+@if (favoriteHouses.length) {
+  <button
+    class="clear-favorites-btn"
+    (click)="clearFavorites()"
+    >
+    <mat-icon>delete_sweep</mat-icon>
+    Clear All Favorites
+  </button>
+}
 
-<div
-  *ngIf="favoriteHouses.length; else noFavs"
-  class="housing-location-container"
->
-  <div *ngFor="let house of favoriteHouses" class="favorite-card">
-    <app-house-cards
-      [housingLocation]="house"
-      [attr.aria-label]="getFavoriteAriaLabel(house)"
-    ></app-house-cards>
+@if (favoriteHouses.length) {
+  <div
+    class="housing-location-container"
+    >
+    @for (house of favoriteHouses; track house) {
+      <div class="favorite-card">
+        <app-house-cards
+          [housingLocation]="house"
+          [attr.aria-label]="getFavoriteAriaLabel(house)"
+        ></app-house-cards>
+      </div>
+    }
   </div>
-</div>
-
-<ng-template #noFavs>
+} @else {
   <div class="no-favs-container">
     <mat-card class="no-favs-card">
       <mat-card-title>❌</mat-card-title>
@@ -30,4 +32,5 @@
       </mat-card-content>
     </mat-card>
   </div>
-</ng-template>
+}
+

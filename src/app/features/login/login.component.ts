@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import {
   FormBuilder,
@@ -20,7 +20,6 @@ import { MatCardModule } from '@angular/material/card';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -30,8 +29,8 @@ import { MatCardModule } from '@angular/material/card';
     NgxSpinnerModule,
     MatIconButton,
     RouterLink,
-    MatCardModule,
-  ],
+    MatCardModule
+],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

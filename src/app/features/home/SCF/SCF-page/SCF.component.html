@@ -17,221 +17,226 @@
               <mat-option value="Owner">Owner</mat-option>
               <mat-option value="Real Estate Agency"
                 >Real Estate Agency</mat-option
-              >
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Filtro de tipo de propriedade -->
-          <mat-form-field appearance="outline">
-            <mat-label>Property Type</mat-label>
-            <mat-select formControlName="propertyType">
-              <mat-optgroup label="Residential">
-                <mat-option
-                  *ngFor="let type of residentialPropertyTypes"
-                  [value]="type.value"
                 >
-                  <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
-                  {{ type.viewValue }}
-                </mat-option>
-              </mat-optgroup>
-              <mat-optgroup label="Commercial">
-                <mat-option
-                  *ngFor="let type of commercialPropertyTypes"
-                  [value]="type.value"
-                >
-                  <mat-icon *ngIf="type.icon">{{ type.icon }}</mat-icon>
-                  {{ type.viewValue }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
+              </mat-select>
+            </mat-form-field>
 
-          <label class="mat-body-strong">Transaction Type</label>
-          <mat-button-toggle-group
-            formControlName="typeOfBusiness"
-            class="filtro-roxo-toggle"
-            aria-label="Transaction Type"
-          >
-            <mat-button-toggle value="sell">Sell</mat-button-toggle>
-            <mat-button-toggle value="rent">Rent</mat-button-toggle>
-          </mat-button-toggle-group>
+            <!-- Filtro de tipo de propriedade -->
+            <mat-form-field appearance="outline">
+              <mat-label>Property Type</mat-label>
+              <mat-select formControlName="propertyType">
+                <mat-optgroup label="Residential">
+                  @for (type of residentialPropertyTypes; track type) {
+                    <mat-option
+                      [value]="type.value"
+                      >
+                      @if (type.icon) {
+                        <mat-icon>{{ type.icon }}</mat-icon>
+                      }
+                      {{ type.viewValue }}
+                    </mat-option>
+                  }
+                </mat-optgroup>
+                <mat-optgroup label="Commercial">
+                  @for (type of commercialPropertyTypes; track type) {
+                    <mat-option
+                      [value]="type.value"
+                      >
+                      @if (type.icon) {
+                        <mat-icon>{{ type.icon }}</mat-icon>
+                      }
+                      {{ type.viewValue }}
+                    </mat-option>
+                  }
+                </mat-optgroup>
+              </mat-select>
+            </mat-form-field>
 
-          <label class="mat-body-strong">Amenities</label>
-          <div class="filtro-roxo-checkbox-group">
-            <mat-checkbox formControlName="wifi">
-              <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
-              Wi-Fi
-            </mat-checkbox>
-            <mat-checkbox formControlName="laundry">
-              <mat-icon inline style="vertical-align: middle"
-                >local_laundry_service</mat-icon
+            <label class="mat-body-strong">Transaction Type</label>
+            <mat-button-toggle-group
+              formControlName="typeOfBusiness"
+              class="filtro-roxo-toggle"
+              aria-label="Transaction Type"
               >
-              Laundry
-            </mat-checkbox>
-          </div>
+              <mat-button-toggle value="sell">Sell</mat-button-toggle>
+              <mat-button-toggle value="rent">Rent</mat-button-toggle>
+            </mat-button-toggle-group>
 
-          <!-- Filtro de preço -->
-          <ng-container *ngIf="filterForm.get('typeOfBusiness')?.value">
-            <div class="price-filter-group">
-              <mat-form-field appearance="outline" class="price-filter">
-                <mat-label>Price From</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="priceFrom"
-                  placeholder="Ex: 1000"
-                />
-              </mat-form-field>
+            <label class="mat-body-strong">Amenities</label>
+            <div class="filtro-roxo-checkbox-group">
+              <mat-checkbox formControlName="wifi">
+                <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
+                Wi-Fi
+              </mat-checkbox>
+              <mat-checkbox formControlName="laundry">
+                <mat-icon inline style="vertical-align: middle"
+                  >local_laundry_service</mat-icon
+                  >
+                  Laundry
+                </mat-checkbox>
+              </div>
 
-              <mat-form-field appearance="outline" class="price-filter">
-                <mat-label>Price To</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="priceTo"
-                  placeholder="Ex: 5000"
-                />
-              </mat-form-field>
-            </div>
-          </ng-container>
-        </div>
+              <!-- Filtro de preço -->
+              @if (filterForm.get('typeOfBusiness')?.value) {
+                <div class="price-filter-group">
+                  <mat-form-field appearance="outline" class="price-filter">
+                    <mat-label>Price From</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="priceFrom"
+                      placeholder="Ex: 1000"
+                      />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="price-filter">
+                      <mat-label>Price To</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        formControlName="priceTo"
+                        placeholder="Ex: 5000"
+                        />
+                      </mat-form-field>
+                    </div>
+                  }
+                </div>
 
-        @if(filterForm.dirty) {
-        <div class="clear-filters-wrapper">
-          <button
-            mat-raised-button
-            class="clear-filters-button"
-            (click)="clearFilters()"
-          >
-            <mat-icon>delete_sweep</mat-icon>
-            Clear Filters
-          </button>
-        </div>
-        }
-      </div>
-    </mat-sidenav>
+                @if(filterForm.dirty) {
+                  <div class="clear-filters-wrapper">
+                    <button
+                      mat-raised-button
+                      class="clear-filters-button"
+                      (click)="clearFilters()"
+                      >
+                      <mat-icon>delete_sweep</mat-icon>
+                      Clear Filters
+                    </button>
+                  </div>
+                }
+              </div>
+            </mat-sidenav>
 
-    <mat-sidenav-content>
-      <div class="home-filter-wrapper">
-        <!-- GRUPO DA ESQUERDA -->
-        <div class="toolbar-left-group">
-          <mat-button-toggle-group
-            [(ngModel)]="displayMode"
-            aria-label="Display Mode"
-            class="view-toggle"
-          >
-            <mat-button-toggle value="grid" matTooltip="Grid View">
-              <mat-icon>grid_view</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="list" matTooltip="List View">
-              <mat-icon>view_list</mat-icon>
-            </mat-button-toggle>
-          </mat-button-toggle-group>
+            <mat-sidenav-content>
+              <div class="home-filter-wrapper">
+                <!-- GRUPO DA ESQUERDA -->
+                <div class="toolbar-left-group">
+                  <mat-button-toggle-group
+                    [(ngModel)]="displayMode"
+                    aria-label="Display Mode"
+                    class="view-toggle"
+                    >
+                    <mat-button-toggle value="grid" matTooltip="Grid View">
+                      <mat-icon>grid_view</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="list" matTooltip="List View">
+                      <mat-icon>view_list</mat-icon>
+                    </mat-button-toggle>
+                  </mat-button-toggle-group>
 
-          <!-- ORDENAR POR -->
-          <mat-form-field appearance="outline" class="order-by-select">
-            <mat-label>sort by...</mat-label>
-            <mat-select
-              [(ngModel)]="orderBy"
-              (selectionChange)="onOrderChange($event.value)"
-            >
-              <mat-option value="relevance">relevance</mat-option>
-              <mat-option value="priceAsc">lowest price</mat-option>
-              <mat-option value="priceDesc">highest price</mat-option>
-            </mat-select>
-          </mat-form-field>
+                  <!-- ORDENAR POR -->
+                  <mat-form-field appearance="outline" class="order-by-select">
+                    <mat-label>sort by...</mat-label>
+                    <mat-select
+                      [(ngModel)]="orderBy"
+                      (selectionChange)="onOrderChange($event.value)"
+                      >
+                      <mat-option value="relevance">relevance</mat-option>
+                      <mat-option value="priceAsc">lowest price</mat-option>
+                      <mat-option value="priceDesc">highest price</mat-option>
+                    </mat-select>
+                  </mat-form-field>
 
-          <!-- Search bar vem logo depois -->
-          <mat-form-field
-            class="filters-form-container__city-filter"
-            appearance="outline"
-          >
-            <mat-label>Search by city</mat-label>
-            <input matInput formControlName="city" placeholder="Ex: Oakland" />
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
+                  <!-- Search bar vem logo depois -->
+                  <mat-form-field
+                    class="filters-form-container__city-filter"
+                    appearance="outline"
+                    >
+                    <mat-label>Search by city</mat-label>
+                    <input matInput formControlName="city" placeholder="Ex: Oakland" />
+                    <mat-icon matSuffix>search</mat-icon>
+                  </mat-form-field>
 
-          <button
-            mat-stroked-button
-            (click)="sidenav.open()"
-            class="create-button compact-button"
-          >
-            <mat-icon>filter_list</mat-icon>
-            Filters
-          </button>
+                  <button
+                    mat-stroked-button
+                    (click)="sidenav.open()"
+                    class="create-button compact-button"
+                    >
+                    <mat-icon>filter_list</mat-icon>
+                    Filters
+                  </button>
 
-          <!-- 4. Botão de Limpar Filtros -->
-          @if(filterForm.dirty) {
-          <button
-            mat-icon-button
-            (click)="clearFilters()"
-            matTooltip="Clear filters"
-            class="clear-icon-button"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-          }
-        </div>
+                  <!-- 4. Botão de Limpar Filtros -->
+                  @if(filterForm.dirty) {
+                    <button
+                      mat-icon-button
+                      (click)="clearFilters()"
+                      matTooltip="Clear filters"
+                      class="clear-icon-button"
+                      >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  }
+                </div>
 
-        <!-- GRUPO DA DIREITA -->
-        <div class="toolbar-right-group">
-          @if(currentUserRole === 'Admin' || currentUserRole === 'Manager' ||
-          currentUserRole === 'Owner' || currentUserRole === 'Real Estate
-          Agency') {
-          <button
-            mat-flat-button
-            class="main-action-btn"
-            (click)="openCreateHouse()"
-          >
-            + Create a House
-          </button>
-          }
-          <button
-            mat-flat-button
-            class="main-action-btn"
-            routerLink="/favorites"
-            aria-label="Favorites"
-          >
-            <mat-icon>favorite_border</mat-icon>
-            Favorites
-          </button>
-          <button
-            mat-flat-button
-            class="main-action-btn"
-            (click)="toggleCompareMode()"
-            [class.active]="compareMode"
-          >
-            <mat-icon>compare_arrows</mat-icon>
-            Compare Houses
-          </button>
-        </div>
-      </div>
+                <!-- GRUPO DA DIREITA -->
+                <div class="toolbar-right-group">
+                  @if(currentUserRole === 'Admin' || currentUserRole === 'Manager' ||
+                    currentUserRole === 'Owner' || currentUserRole === 'Real Estate
+                    Agency') {
+                    <button
+                      mat-flat-button
+                      class="main-action-btn"
+                      (click)="openCreateHouse()"
+                      >
+                      + Create a House
+                    </button>
+                  }
+                  <button
+                    mat-flat-button
+                    class="main-action-btn"
+                    routerLink="/favorites"
+                    aria-label="Favorites"
+                    >
+                    <mat-icon>favorite_border</mat-icon>
+                    Favorites
+                  </button>
+                  <button
+                    mat-flat-button
+                    class="main-action-btn"
+                    (click)="toggleCompareMode()"
+                    [class.active]="compareMode"
+                    >
+                    <mat-icon>compare_arrows</mat-icon>
+                    Compare Houses
+                  </button>
+                </div>
+              </div>
 
-      <section
-        class="housing-location-container"
-        [class.list-view]="displayMode === 'list'"
-      >
-        @for (housingLocation of pagedLocationList; track housingLocation.id) {
-        <app-house-cards
-          [housingLocation]="housingLocation"
-          (houseUpdated)="loadLocations()"
-          [compareMode]="compareMode"
-          [displayMode]="displayMode"
-        />
-        }
-      </section>
+              <section
+                class="housing-location-container"
+                [class.list-view]="displayMode === 'list'"
+                >
+                @for (housingLocation of pagedLocationList; track housingLocation.id) {
+                  <app-house-cards
+                    [housingLocation]="housingLocation"
+                    (houseUpdated)="loadLocations()"
+                    [compareMode]="compareMode"
+                    [displayMode]="displayMode"
+                    />
+                  }
+                </section>
 
-      <mat-paginator
-        [length]="filteredLocationList.length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 20, 50]"
-        (page)="onPageChange($event)"
-      >
-      </mat-paginator>
-      <app-legal-info></app-legal-info>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</form>
+                <mat-paginator
+                  [length]="filteredLocationList.length"
+                  [pageSize]="pageSize"
+                  [pageSizeOptions]="[5, 10, 20, 50]"
+                  (page)="onPageChange($event)"
+                  >
+                </mat-paginator>
+                <app-legal-info></app-legal-info>
+              </mat-sidenav-content>
+            </mat-sidenav-container>
+          </form>
 
-<!-- ADICIONE A BANDEJA DE COMPARAÇÃO AQUI -->
-<app-compare-tray></app-compare-tray>
+          <!-- ADICIONE A BANDEJA DE COMPARAÇÃO AQUI -->
+          <app-compare-tray></app-compare-tray>

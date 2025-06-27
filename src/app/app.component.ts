@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CommonModule } from '@angular/common';
+
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -17,7 +17,6 @@ import { MatInputModule } from '@angular/material/input';
   standalone: true,
   imports: [
     RouterOutlet,
-    CommonModule,
     MatSelectModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -27,8 +26,8 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatInputModule,
     MatSlideToggleModule,
-    MatToolbarModule,
-  ],
+    MatToolbarModule
+],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

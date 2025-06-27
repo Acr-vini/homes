@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule } from '@angular/router';
 import {
   FormBuilder,
@@ -21,7 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
   selector: 'app-register',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     ReactiveFormsModule,
     MatCardModule,
@@ -31,8 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatIconModule,
     MatSnackBarModule,
     NgxSpinnerModule,
-    MatSelectModule,
-  ],
+    MatSelectModule
+],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })

@@ -10,7 +10,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -26,7 +26,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   selector: 'app-activity-date-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -36,8 +35,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatTooltipModule,
     MatButtonModule,
     MatIconModule,
-    MatDatepickerModule,
-  ],
+    MatDatepickerModule
+],
   templateUrl: './activity-date-modal.component.html',
   styleUrls: ['./activity-date-modal.component.scss'],
 

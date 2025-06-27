@@ -39,58 +39,59 @@
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password"
           required
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          (click)="hidePassword = !hidePassword"
-          type="button"
-        >
-          <mat-icon>{{
-            hidePassword ? "visibility_off" : "visibility"
-          }}</mat-icon>
-        </button>
-        <mat-error>Password is required (min. 6 characters)</mat-error>
-      </mat-form-field>
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hidePassword = !hidePassword"
+            type="button"
+            >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          <mat-error>Password is required (min. 6 characters)</mat-error>
+        </mat-form-field>
 
-      <!-- Phone -->
-      <mat-form-field class="full-width">
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phone" required />
-        <mat-error>Phone is required</mat-error>
-      </mat-form-field>
+        <!-- Phone -->
+        <mat-form-field class="full-width">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" required />
+          <mat-error>Phone is required</mat-error>
+        </mat-form-field>
 
-      <!-- CPF Field (conditionally required) -->
-      <mat-form-field
-        class="full-width"
-        *ngIf="
+        <!-- CPF Field (conditionally required) -->
+        @if (
           registerForm.get('role')?.value === 'Owner' ||
           registerForm.get('role')?.value === 'Real Estate Agency'
-        "
-      >
-        <mat-label>CPF</mat-label>
-        <input matInput formControlName="cpf" required />
-        <mat-error>CPF is required for this account type</mat-error>
-      </mat-form-field>
+          ) {
+          <mat-form-field
+            class="full-width"
+            >
+            <mat-label>CPF</mat-label>
+            <input matInput formControlName="cpf" required />
+            <mat-error>CPF is required for this account type</mat-error>
+          </mat-form-field>
+        }
 
-      <!-- Location -->
-      <mat-form-field class="full-width">
-        <mat-label>Location (e.g., City, Country)</mat-label>
-        <input matInput formControlName="location" required />
-        <mat-error>Location is required</mat-error>
-      </mat-form-field>
+        <!-- Location -->
+        <mat-form-field class="full-width">
+          <mat-label>Location (e.g., City, Country)</mat-label>
+          <input matInput formControlName="location" required />
+          <mat-error>Location is required</mat-error>
+        </mat-form-field>
 
-      <div class="actions">
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="registerForm.invalid"
-        >
-          Register
-        </button>
-        <a mat-button routerLink="/login">Back to Login</a>
-      </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+        <div class="actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="registerForm.invalid"
+            >
+            Register
+          </button>
+          <a mat-button routerLink="/login">Back to Login</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>

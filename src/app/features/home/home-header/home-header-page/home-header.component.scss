@@ -108,3 +108,22 @@ mat-slide-toggle {
   opacity: 0.5;
   cursor: default;
 }
+
+button[aria-label="Perfil"] mat-icon {
+  color: #fff !important;
+}
+
+button.profile-icon-btn mat-icon {
+  color: #fff !important;
+  font-size: 24px;
+}
+
+.app-header-section.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.profile-icon-btn {
+  margin-left: -8px; // Adjust as needed for spacing
+}

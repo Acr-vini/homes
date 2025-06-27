@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule, Router } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,6 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
   selector: 'app-users',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatCardModule,
     MatTableModule,
@@ -34,8 +33,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatInputModule,
     MatPaginator,
     MatTooltipModule,
-    NgxSpinnerModule,
-  ],
+    NgxSpinnerModule
+],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })

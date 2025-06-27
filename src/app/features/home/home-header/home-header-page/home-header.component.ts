@@ -6,7 +6,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,12 +16,12 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Subscription } from 'rxjs';
-
+import { Router } from '@angular/router';
+import { MatTooltip } from '@angular/material/tooltip';
 @Component({
   selector: 'app-home-header',
   standalone: true,
   imports: [
-    CommonModule,
     RouterLink,
     RouterOutlet,
     MatToolbarModule,
@@ -30,7 +30,8 @@ import { Subscription } from 'rxjs';
     MatIconModule,
     NgxSpinnerModule,
     MatBadgeModule,
-  ],
+    MatTooltip
+],
   templateUrl: './home-header.component.html',
   styleUrls: ['./home-header.component.scss'],
 })
@@ -38,13 +39,16 @@ export class homeheaderComponent implements OnInit, OnDestroy {
   // --- INJEÇÃO DE SERVIÇOS ---
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
-  private cdr = inject(ChangeDetectorRef); // Injeta o ChangeDetectorRef
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   // --- PROPRIEDADES DO COMPONENTE ---
   loading = true;
   newApplicationCount = 0;
   private notificationSub!: Subscription;
   isDark = false;
+  currentUser = this.getCurrentUser();
+  showUserName = false;
 
   // --- GETTERS ---
   get isLoggedIn(): boolean {
@@ -66,6 +70,14 @@ export class homeheaderComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.notificationService.clearNotifications();
+  }
+
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem('currentUser') || 'null');
+  }
+
+  goToProfile() {
+    this.router.navigate(['/profile']);
   }
 
   ngOnInit(): void {

@@ -2,8 +2,9 @@
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 <div class="houses-list">
-  <app-house-cards
-    *ngFor="let house of houses"
-    [housingLocation]="house"
-  ></app-house-cards>
+  @for (house of houses; track house) {
+    <app-house-cards
+      [housingLocation]="house"
+    ></app-house-cards>
+  }
 </div>
