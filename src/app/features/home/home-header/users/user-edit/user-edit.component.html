@@ -11,10 +11,7 @@
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" required />
         @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
-          <mat-error
-            >
-            Name is required
-          </mat-error>
+        <mat-error> Name is required </mat-error>
         }
       </mat-form-field>
     </div>
@@ -24,10 +21,7 @@
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" required />
       @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
-        <mat-error
-          >
-          Valid email is required
-        </mat-error>
+      <mat-error> Valid email is required </mat-error>
       }
     </mat-form-field>
 
@@ -54,10 +48,22 @@
       <mat-label>Role</mat-label>
       <mat-select formControlName="role" required>
         <mat-option value="User">User</mat-option>
+        <mat-option value="Owner">Owner</mat-option>
+        <mat-option value="Real Estate Agency">Real Estate Agency</mat-option>
         <mat-option value="Manager">Manager</mat-option>
         <mat-option value="Admin">Admin</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <!-- CPF Field (conditionally required) -->
+    @if ( userForm.get('role')?.value === 'Owner' || userForm.get('role')?.value
+    === 'Real Estate Agency' ) {
+    <mat-form-field class="full-width">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf" required />
+      <mat-error>CPF is required for this account type</mat-error>
+    </mat-form-field>
+    }
 
     <!-- Status -->
     <mat-form-field class="full-width">
@@ -80,7 +86,7 @@
         [disabled]="userForm.invalid"
         aria-label="Save changes"
         matTooltip="Save changes"
-        >
+      >
         <span class="material-symbols-outlined">save</span>
       </button>
 
@@ -91,7 +97,7 @@
         (click)="onCancel()"
         aria-label="Cancel editing"
         matTooltip="Cancel editing"
-        >
+      >
         <span class="material-symbols-outlined">cancel</span>
       </button>
     </div>

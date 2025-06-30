@@ -40,8 +40,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatTooltipModule,
-    NgxSpinnerModule
-],
+    NgxSpinnerModule,
+  ],
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.scss',
 })
@@ -82,6 +82,18 @@ export class UserEditComponent implements OnInit {
       location: [''],
       role: [''],
       status: ['', Validators.required],
+      cpf: [''], // Adiciona o campo CPF
+    });
+
+    // Lógica para tornar o CPF obrigatório condicionalmente
+    this.userForm.get('role')?.valueChanges.subscribe((role) => {
+      const cpfControl = this.userForm.get('cpf');
+      if (role === 'Owner' || role === 'Real Estate Agency') {
+        cpfControl?.setValidators(Validators.required);
+      } else {
+        cpfControl?.clearValidators();
+      }
+      cpfControl?.updateValueAndValidity();
     });
 
     this.userService.getUserById(this.userId).subscribe((user) => {
@@ -93,6 +105,7 @@ export class UserEditComponent implements OnInit {
         location: user.location,
         role: user.role,
         status: user.status,
+        cpf: user.cpf, // Carrega o valor do CPF
       });
     });
   }
@@ -101,7 +114,17 @@ export class UserEditComponent implements OnInit {
     if (this.userForm.valid) {
       this.spinner.show();
 
-      const updatedUser = { ...this.user, ...this.userForm.value };
+      const formValue = this.userForm.getRawValue();
+      const updatedUser = { ...this.user, ...formValue };
+
+      // Garante que o CPF não seja enviado se a role não exigir
+      if (
+        formValue.role !== 'Owner' &&
+        formValue.role !== 'Real Estate Agency'
+      ) {
+        delete updatedUser.cpf;
+      }
+
       this.userService.updateUser(this.userId, updatedUser).subscribe({
         next: () => {
           this.spinner.hide();

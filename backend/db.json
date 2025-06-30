@@ -525,23 +525,34 @@
     {
       "id": "7aca",
       "name": "manager",
-      "email": "Manager@Example.com.br",
-      "password": "manager123",
+      "email": "Manager@example.com.br",
+      "password": "password123",
       "phone": "123123",
       "location": "abc ab",
       "role": "Manager",
       "status": "active"
     },
     {
-      "name": "asdasdsada",
-      "email": "dasdasd@adsad",
-      "password": "asdasdad",
+      "name": "owner",
+      "email": "owner_user@example.com.br",
+      "password": "password123",
       "status": "active",
       "role": "Owner",
-      "phone": "12312312",
-      "location": "adadsadas",
-      "cpf": "123132124124",
-      "id": "GEvQvUI"
+      "phone": "123123",
+      "location": "abc ab",
+      "cpf": "123123123",
+      "id": "PoRBpb-"
+    },
+    {
+      "name": "Real estate agency",
+      "email": "real_estate_agency_user@example.com.br",
+      "password": "password123",
+      "status": "active",
+      "role": "Real Estate Agency",
+      "phone": "123123",
+      "location": "abc ab",
+      "cpf": "123123123",
+      "id": "ykyXJyW"
     }
   ],
   "reviews": [

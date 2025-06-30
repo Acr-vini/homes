@@ -32,8 +32,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSelectModule,
     MatSnackBarModule,
     NgxSpinnerModule,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+  ],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
 })
@@ -75,7 +75,7 @@ export class UserCreateComponent implements OnInit {
 
     this.userForm.get('role')?.valueChanges.subscribe((role) => {
       const cpfControl = this.userForm.get('cpf');
-      if (role === 'Realtor') {
+      if (role === 'Owner' || role === 'Real Estate Agency') {
         cpfControl?.setValidators(Validators.required);
       } else {
         cpfControl?.clearValidators();
@@ -140,8 +140,8 @@ export class UserCreateComponent implements OnInit {
       location: formValue.location,
     };
 
-    // Adiciona o CPF apenas se a role for Realtor
-    if (formValue.role === 'Realtor') {
+    // Adiciona o CPF apenas se a role for Owner ou Real Estate Agency
+    if (formValue.role === 'Owner' || formValue.role === 'Real Estate Agency') {
       userPayload.cpf = formValue.cpf;
     }
 
