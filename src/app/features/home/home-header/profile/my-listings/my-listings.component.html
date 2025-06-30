@@ -1,0 +1,126 @@
+<div class="my-listings-container">
+  <div class="listings-header">
+    <div class="header-left">
+      <h3>My Listings</h3>
+      @if (deletedListings.length > 0) {
+      <button
+        mat-stroked-button
+        color="warn"
+        class="clear-all-btn"
+        (click)="confirmDeleteAll()"
+      >
+        <mat-icon>delete_sweep</mat-icon>
+        Clear All Deleted
+      </button>
+      }
+    </div>
+    <mat-form-field appearance="outline" class="filter-select">
+      <mat-label>Filter by Status</mat-label>
+      <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilter()">
+        <mat-option value="all">All</mat-option>
+        <mat-option value="active">Active</mat-option>
+        <mat-option value="deleted">Deleted</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (myListings.length > 0) {
+  <div class="table-container">
+    <table
+      mat-table
+      [dataSource]="myListings"
+      class="mat-elevation-z8 listings-table"
+    >
+      <!-- Photo Column -->
+      <ng-container matColumnDef="photo">
+        <th mat-header-cell *matHeaderCellDef>Photo</th>
+        <td mat-cell *matCellDef="let element">
+          <img
+            [src]="element.photo"
+            [alt]="element.name"
+            class="listing-thumbnail"
+          />
+        </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">
+          <span
+            class="status-badge"
+            [class.status-active]="!element.deleted"
+            [class.status-deleted]="element.deleted"
+          >
+            {{ element.deleted ? "Deleted" : "Active" }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Price Column -->
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Price</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.price | currency : "USD" }}
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            (click)="viewDetails(element.id)"
+            matTooltip="View Details"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="editHouse(element)"
+            [matTooltip]="element.deleted ? 'Repost Listing' : 'Edit'"
+          >
+            <mat-icon>{{ element.deleted ? "publish" : "edit" }}</mat-icon>
+          </button>
+          @if (!element.deleted) {
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="deleteHouse(element.id, element.name)"
+            matTooltip="Delete"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          } @else {
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="confirmPermanentDelete(element.id, element.name)"
+            matTooltip="Delete Permanently"
+          >
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  } @else {
+  <div class="no-listings-message">
+    <mat-icon>house</mat-icon>
+    <h3>You have no listings yet.</h3>
+    <p>Create your first listing to see it here.</p>
+  </div>
+  }
+</div>

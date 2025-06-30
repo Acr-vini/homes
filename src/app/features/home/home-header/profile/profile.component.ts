@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
-
+import { CommonModule } from '@angular/common'; // 1. Importe o CommonModule
 import {
   FormBuilder,
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,27 +14,42 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MyListingsComponent } from './my-listings/my-listings.component';
+import { UserService } from '../../../../core/services/user.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
     MatDividerModule,
-    MatIconModule
-],
+    MatIconModule,
+    MatButtonToggleModule,
+    MyListingsComponent,
+    MatSnackBarModule,
+    MatTabsModule,
+  ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent {
   private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  private snackBar = inject(MatSnackBar);
+
   user = JSON.parse(localStorage.getItem('currentUser') || 'null');
   showRoleForm = false;
+  isListingsViewActive = false;
 
   roleForm: FormGroup;
   passwordForm: FormGroup;
@@ -59,17 +75,58 @@ export class ProfileComponent {
     });
   }
 
+  get canHaveListings(): boolean {
+    if (!this.user) return false;
+    const allowedRoles = ['Owner', 'Real Estate Agency', 'Manager', 'Admin'];
+    return allowedRoles.includes(this.user.role);
+  }
+
   onRoleSubmit(): void {
-    if (this.roleForm.valid) {
-      console.log('Updating role:', this.roleForm.getRawValue());
-      // Lógica para submeter a mudança de role
-    }
+    if (!this.roleForm.valid) return;
+    const updatedUserData = this.roleForm.getRawValue();
+
+    this.userService.updateUser(this.user.id, updatedUserData).subscribe({
+      next: (updatedUser) => {
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        this.user = updatedUser;
+        this.showRoleForm = false;
+        this.snackBar.open('✅ Role updated successfully!', 'Close', {
+          duration: 3000,
+        });
+      },
+      error: () =>
+        this.snackBar.open('❌ Error updating role.', 'Close', {
+          duration: 3000,
+        }),
+    });
   }
 
   resetPassword(): void {
-    if (this.passwordForm.valid) {
-      console.log('Resetting password');
-      // Lógica para resetar a senha
+    if (!this.passwordForm.valid) return;
+    const { password, confirm } = this.passwordForm.value;
+
+    if (password !== confirm) {
+      this.snackBar.open('❌ Passwords do not match.', 'Close', {
+        duration: 3000,
+      });
+      return;
     }
+
+    this.userService.updateUser(this.user.id, { password }).subscribe({
+      next: () => {
+        this.passwordForm.reset();
+        this.snackBar.open('✅ Password reset successfully!', 'Close', {
+          duration: 3000,
+        });
+      },
+      error: () =>
+        this.snackBar.open('❌ Error resetting password.', 'Close', {
+          duration: 3000,
+        }),
+    });
+  }
+
+  onTabChange(event: MatTabChangeEvent): void {
+    this.isListingsViewActive = event.index === 1;
   }
 }

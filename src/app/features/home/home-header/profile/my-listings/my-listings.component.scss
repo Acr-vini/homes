@@ -1,0 +1,81 @@
+.my-listings-container {
+  padding: 0 2rem; /* Adiciona espaçamento nas laterais */
+}
+
+.listings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .filter-select {
+    width: 200px;
+
+    // Estilos para diminuir a altura do filtro
+    ::ng-deep .mat-mdc-form-field-flex {
+      height: 48px !important;
+    }
+
+    ::ng-deep .mat-mdc-form-field-infix {
+      padding-top: 12px !important;
+      padding-bottom: 12px !important;
+    }
+  }
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto; // Adiciona a barra de rolagem horizontal ao contêiner
+}
+
+.listings-table {
+  width: 100%;
+  min-width: 800px; // Força a tabela a ter um tamanho mínimo, ativando o scroll
+}
+
+.listing-thumbnail {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+
+  &.status-active {
+    background-color: #4caf50; // Verde
+  }
+
+  &.status-deleted {
+    background-color: #f44336; // Vermelho
+  }
+}
+
+.no-listings-message {
+  text-align: center;
+  padding: 3rem;
+  color: #888;
+
+  mat-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+  }
+}

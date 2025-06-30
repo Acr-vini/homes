@@ -133,9 +133,10 @@
 
           <!-- ORDENAR POR -->
           <mat-form-field appearance="outline" class="order-by-select">
-            <mat-label>sort by...</mat-label>
+            <mat-label>Order by</mat-label>
             <mat-select
               [(ngModel)]="orderBy"
+              [ngModelOptions]="{ standalone: true }"
               (selectionChange)="onOrderChange($event.value)"
             >
               <mat-option value="relevance">relevance</mat-option>

@@ -51,7 +51,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 })
 export class CreateComponent implements OnInit {
   form: FormGroup;
-  progress = 0;
+  imagePreview: string | null = null;
+  progress = 0; // FIX 1: Declare a propriedade 'progress'
 
   stateControl = new FormControl<string>('', {
     nonNullable: true,
@@ -67,8 +68,6 @@ export class CreateComponent implements OnInit {
 
   filteredStates!: Observable<{ name: string; isoCode: string }[]>;
   filteredCities!: Observable<string[]>;
-
-  imagePreview: string | ArrayBuffer | null = null;
 
   residentialPropertyTypes = [
     { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
@@ -97,6 +96,12 @@ export class CreateComponent implements OnInit {
     { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
   ];
 
+  // Adicione este getter
+  get priceLabel(): string {
+    const type = this.form.get('typeOfBusiness')?.value;
+    return type === 'rent' ? 'Price per day (USD)' : 'Price (USD)';
+  }
+
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -107,8 +112,6 @@ export class CreateComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
       photo: ['', Validators.required],
       availableUnits: [0, Validators.required],
       wifi: [false],
@@ -121,7 +124,13 @@ export class CreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Filtra estados conforme digita
+    const currentUser = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    );
+    if (currentUser) {
+      this.form.patchValue({ ownerId: currentUser.id });
+    }
+
     this.filteredStates = this.stateControl.valueChanges.pipe(
       startWith(this.stateControl.value),
       map((value) => this._filterStates(value))
@@ -291,7 +300,8 @@ export class CreateComponent implements OnInit {
     if (input.files?.[0]) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.imagePreview = reader.result;
+        // FIX 2: Garante que o resultado seja tratado como string
+        this.imagePreview = reader.result as string;
         this.form.get('photo')?.setValue(reader.result as string);
       };
       reader.readAsDataURL(input.files[0]);

@@ -48,6 +48,9 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 })
 export class EditComponent implements OnInit {
   form!: FormGroup;
+  housingLocation!: HousingLocation;
+  imagePreview: string | null = null;
+
   stateControl = new FormControl<string>('', {
     nonNullable: true,
     validators: [Validators.required],
@@ -63,8 +66,6 @@ export class EditComponent implements OnInit {
   filteredStates!: Observable<IState[]>;
   filteredCities!: Observable<string[]>;
 
-  imagePreview: string | ArrayBuffer | null = null;
-  housingLocation!: HousingLocation;
   currentUserRole: string | null = null;
   canPerformActions = false;
 
@@ -95,6 +96,16 @@ export class EditComponent implements OnInit {
     { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
   ];
 
+  // Adicione este getter
+  get priceLabel(): string {
+    // Verifica se o formulário já foi inicializado para evitar erros
+    if (!this.form) {
+      return 'Price (USD)';
+    }
+    const type = this.form.get('typeOfBusiness')?.value;
+    return type === 'rent' ? 'Price per day (USD)' : 'Price (USD)';
+  }
+
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -107,17 +118,18 @@ export class EditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = this.data?.id || this.route.snapshot.paramMap.get('id') || '';
-    if (!id) {
+    this.spinner.show();
+    const houseId = this.data?.id;
+
+    if (!houseId) {
       this.router.navigateByUrl('/');
       return;
     }
 
-    this.spinner.show();
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
     this.currentUserRole = user?.role || null;
 
-    this.housingService.getHousingLocationById(id).subscribe({
+    this.housingService.getHousingLocationById(houseId).subscribe({
       next: (house) => {
         if (!house) {
           this.router.navigateByUrl('/');
@@ -162,31 +174,35 @@ export class EditComponent implements OnInit {
           this.cityControl.setValue(''); // E o campo de cidade também.
         }
 
-        this.form = this.fb.group({
-          name: [house.name || '', Validators.required],
-          state: this.stateControl,
-          city: this.cityControl,
-          availableUnits: [
-            house.availableUnits || 0,
-            [Validators.required, Validators.min(1)],
-          ],
-          photo: [house.photo || ''],
-          wifi: [house.wifi || false],
-          laundry: [house.laundry || false],
-          typeOfBusiness: [house.typeOfBusiness, Validators.required],
-          propertyType: [house.propertyType, Validators.required],
-          // O preço agora é carregado corretamente a partir dos dados da casa.
-          price: [house.price || 0, [Validators.required, Validators.min(1)]],
-        });
-
-        this._setupFilters();
-        this.spinner.hide();
+        this._initializeForm(house);
       },
       error: () => {
         this.spinner.hide();
         this.router.navigateByUrl('/');
       },
     });
+  }
+
+  private _initializeForm(house: HousingLocation): void {
+    this.form = this.fb.group({
+      name: [house.name || '', Validators.required],
+      state: this.stateControl,
+      city: this.cityControl,
+      availableUnits: [
+        house.availableUnits || 0,
+        [Validators.required, Validators.min(1)],
+      ],
+      photo: [house.photo || ''],
+      wifi: [house.wifi || false],
+      laundry: [house.laundry || false],
+      typeOfBusiness: [house.typeOfBusiness, Validators.required],
+      propertyType: [house.propertyType, Validators.required],
+      // O preço agora é carregado corretamente a partir dos dados da casa.
+      price: [house.price || 0, [Validators.required, Validators.min(1)]],
+    });
+
+    this._setupFilters();
+    this.spinner.hide();
   }
 
   onSubmit(): void {
@@ -230,6 +246,13 @@ export class EditComponent implements OnInit {
       editedBy: currentUserId,
       updatedAt: new Date().toISOString(),
     };
+
+    // Se a casa estava deletada, reativa ela ao salvar
+    if (this.housingLocation.deleted) {
+      updatedHouseData.deleted = false;
+      updatedHouseData.deletedAt = undefined;
+      updatedHouseData.deletedBy = undefined;
+    }
 
     this.housingService
       .updateHousingLocation(this.housingLocation.id, updatedHouseData)
@@ -366,7 +389,8 @@ export class EditComponent implements OnInit {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        this.imagePreview = reader.result;
+        // FIX: Garante que o resultado seja tratado como string
+        this.imagePreview = reader.result as string;
         this.form.patchValue({
           photo: reader.result as string,
         });
@@ -381,5 +405,62 @@ export class EditComponent implements OnInit {
 
   trackByCityId(index: number, city: string): string {
     return city;
+  }
+
+  onSave(): void {
+    if (
+      this.form.invalid ||
+      this.stateControl.invalid ||
+      this.cityControl.invalid
+    ) {
+      this.snackBar.open(
+        '❌ Please fill all required fields correctly.',
+        'Close',
+        { duration: 3000 }
+      );
+      return;
+    }
+
+    this.spinner.show();
+
+    const formValues = this.form.getRawValue();
+    const stateIsoCode = this._findStateIso(this.stateControl.value) || '';
+    const currentUserId = JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    )?.id;
+
+    const updatedHouseData: Partial<HousingLocation> = {
+      ...formValues,
+      state: stateIsoCode,
+      city: this.cityControl.value,
+      price: Number(formValues.price),
+      editedBy: currentUserId,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Se a casa estava deletada, reativa ela ao salvar
+    if (this.housingLocation.deleted) {
+      updatedHouseData.deleted = false;
+      updatedHouseData.deletedAt = undefined;
+      updatedHouseData.deletedBy = undefined;
+    }
+
+    this.housingService
+      .updateHousingLocation(this.housingLocation.id, updatedHouseData)
+      .pipe(finalize(() => this.spinner.hide()))
+      .subscribe({
+        next: () => {
+          this.snackBar.open('✅ House updated successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.dialogRef?.close(true);
+        },
+        error: (err) => {
+          console.error('Error updating house:', err);
+          this.snackBar.open('❌ Error updating house.', 'Close', {
+            duration: 3000,
+          });
+        },
+      });
   }
 }

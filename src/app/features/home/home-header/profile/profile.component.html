@@ -1,41 +1,59 @@
 <div class="profile-container">
-  <mat-card class="profile-card">
+  <mat-card
+    class="profile-card"
+    [class.listings-view-active]="isListingsViewActive"
+  >
     <mat-card-title>User Profile</mat-card-title>
     <mat-card-content>
-      <!-- Formulário para Mudar a Role -->
+      <!-- Se o usuário não pode ter anúncios, mostra o perfil diretamente -->
+      @if (!canHaveListings) {
+      <!-- Conteúdo do Perfil (copiado de baixo para evitar duplicação) -->
       @if (showRoleForm) {
-        <form
-          [formGroup]="roleForm"
-          (ngSubmit)="onRoleSubmit()"
-          class="role-form"
-          >
-          <h3>Become a Seller</h3>
-          <p>Fill in the details below to list properties.</p>
-          <div class="form-fields">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Name</mat-label>
-              <input matInput formControlName="name" />
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" />
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>New Role</mat-label>
-              <mat-select formControlName="role">
-                <mat-option value="Owner">Owner</mat-option>
-                <mat-option value="Real Estate Agency"
-                  >Real Estate Agency</mat-option
-                  >
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>CPF</mat-label>
-                <input
-                  matInput
-                  formControlName="cpf"
-                  required
-                  placeholder="123.456.789-00"
+      <!-- Formulário de mudança de role -->
+      } @else {
+      <!-- Informações do usuário e formulário de reset de senha -->
+      } } @else {
+      <!-- Se pode ter anúncios, mostra as abas -->
+      <mat-tab-group
+        animationDuration="0ms"
+        (selectedTabChange)="onTabChange($event)"
+      >
+        <mat-tab label="My Profile">
+          <div class="profile-content-wrapper">
+            <!-- Conteúdo do Perfil -->
+            @if (showRoleForm) {
+            <form
+              [formGroup]="roleForm"
+              (ngSubmit)="onRoleSubmit()"
+              class="role-form"
+            >
+              <h3>Become a Seller</h3>
+              <p>Fill in the details below to list properties.</p>
+              <div class="form-fields">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>New Role</mat-label>
+                  <mat-select formControlName="role">
+                    <mat-option value="Owner">Owner</mat-option>
+                    <mat-option value="Real Estate Agency"
+                      >Real Estate Agency</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>CPF</mat-label>
+                  <input
+                    matInput
+                    formControlName="cpf"
+                    required
+                    placeholder="123.456.789-00"
                   />
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
@@ -52,15 +70,12 @@
                   color="primary"
                   type="submit"
                   [disabled]="roleForm.invalid"
-                  >
+                >
                   Save Changes
                 </button>
               </div>
             </form>
-          }
-
-          <!-- Visualização Principal do Perfil -->
-          @if (!showRoleForm) {
+            } @else {
             <div>
               <div class="user-info">
                 <p><strong>Name:</strong> {{ user.name }}</p>
@@ -70,8 +85,8 @@
                   mat-stroked-button
                   color="primary"
                   (click)="showRoleForm = true"
-                  >
-                  Change Role
+                >
+                  Become a Seller
                 </button>
               </div>
               <mat-divider></mat-divider>
@@ -79,29 +94,40 @@
                 [formGroup]="passwordForm"
                 (ngSubmit)="resetPassword()"
                 class="password-form"
-                >
+              >
                 <h3>Reset Password</h3>
                 <div class="form-fields">
                   <mat-form-field appearance="outline" class="full-width">
                     <mat-label>New Password</mat-label>
-                    <input matInput type="password" formControlName="password" />
+                    <input
+                      matInput
+                      type="password"
+                      formControlName="password"
+                    />
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Confirm New Password</mat-label>
                     <input matInput type="password" formControlName="confirm" />
                   </mat-form-field>
-                  <button
-                    mat-flat-button
-                    color="primary"
-                    type="submit"
-                    [disabled]="!passwordForm.valid"
-                    >
-                    Reset Password
-                  </button>
                 </div>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="!passwordForm.valid"
+                >
+                  Reset Password
+                </button>
               </form>
             </div>
-          }
-        </mat-card-content>
-      </mat-card>
-    </div>
+            }
+          </div>
+        </mat-tab>
+        <mat-tab label="My Listings">
+          <app-my-listings [userId]="user.id"></app-my-listings>
+        </mat-tab>
+      </mat-tab-group>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

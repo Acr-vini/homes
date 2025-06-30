@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HousingLocation } from '../interfaces/housinglocation.interface';
 import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators'; // Adicione este import
 
 @Injectable({
   providedIn: 'root',
@@ -84,6 +85,13 @@ export class HousingService {
   }
 
   /**
+   * Realiza um "hard delete", removendo a casa permanentemente do banco de dados.
+   */
+  deleteHousingLocationPermanently(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
    * Método legado para submissão de aplicação.
    */
   submitApplication(firstName: string, lastName: string, email: string): void {
@@ -92,5 +100,12 @@ export class HousingService {
 
   getAllLocationsWithHistory(): Observable<HousingLocation[]> {
     return this.http.get<HousingLocation[]>(this.baseUrl);
+  }
+
+  getHousesByCreatorId(creatorId: string): Observable<HousingLocation[]> {
+    // Filtra todos os imóveis (incluindo os deletados) para encontrar os que foram criados pelo usuário.
+    return this.getAllLocationsWithHistory().pipe(
+      map((houses) => houses.filter((house) => house.createBy === creatorId))
+    );
   }
 }
