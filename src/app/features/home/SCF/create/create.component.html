@@ -13,7 +13,8 @@
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field class="full-width">
-      <mat-label>House Name</mat-label>
+      <!-- 1. Altere o rótulo para "Name" -->
+      <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
       @if (form.get('name')?.invalid && form.get('name')?.touched) {
       <mat-error> This field is required. </mat-error>
@@ -21,7 +22,8 @@
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <mat-label>States</mat-label>
+      <!-- 2. Altere o rótulo para "State" -->
+      <mat-label>State</mat-label>
       <input
         type="text"
         matInput
@@ -93,6 +95,37 @@
       }
     </mat-form-field>
 
+    <!-- ADICIONE ESTE BLOCO INTEIRO -->
+    <mat-form-field class="full-width">
+      <mat-label>Property Type</mat-label>
+      <mat-select formControlName="propertyType" required>
+        <mat-optgroup label="Residential">
+          @for (type of residentialPropertyTypes; track type) {
+          <mat-option [value]="type.value">
+            @if (type.icon) {
+            <mat-icon>{{ type.icon }}</mat-icon>
+            }
+            {{ type.viewValue }}
+          </mat-option>
+          }
+        </mat-optgroup>
+        <mat-optgroup label="Commercial">
+          @for (type of commercialPropertyTypes; track type) {
+          <mat-option [value]="type.value">
+            @if (type.icon) {
+            <mat-icon>{{ type.icon }}</mat-icon>
+            }
+            {{ type.viewValue }}
+          </mat-option>
+          }
+        </mat-optgroup>
+      </mat-select>
+      @if ( form.get('propertyType')?.invalid &&
+      form.get('propertyType')?.touched ) {
+      <mat-error> This field is required. </mat-error>
+      }
+    </mat-form-field>
+
     <!-- REFACTOR: Use two separate form fields and show the correct one -->
     @if (form.get('typeOfBusiness')?.value === 'rent') {
     <mat-form-field class="full-width">
@@ -119,19 +152,50 @@
     <div class="checkbox-group">
       <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
 
-      <mat-checkbox formControlName="laundry">Has Laundry</mat-checkbox>
+      <mat-checkbox formControlName="laundry">Laundry Available</mat-checkbox>
     </div>
 
-    <div class="form-actions">
-      <button mat-stroked-button (click)="onCancel()">Cancel</button>
+    <!-- 3. Adicione a seção de upload de imagem, igual ao edit.component -->
+    @if (imagePreview) {
+    <div class="image-preview">
+      <img [src]="imagePreview" alt="Preview foto" />
+    </div>
+    }
+    <div class="create-file-upload">
+      <button
+        mat-icon-button
+        class="upload-btn"
+        type="button"
+        (click)="fileInput.click()"
+        aria-label="Upload image"
+      >
+        <mat-icon>upload</mat-icon>
+      </button>
+      <span>Select image</span>
+      <input #fileInput type="file" hidden (change)="onImageSelected($event)" />
+    </div>
+
+    <div class="actions">
       <button
         mat-icon-button
         class="create-btn"
         type="submit"
-        aria-label="Create a house"
-        matTooltip="Create a house"
+        aria-label="Create house"
+        matTooltip="Create house"
+        [disabled]="form.invalid"
       >
-        <span class="material-symbols-outlined">add_business</span>
+        <span class="material-symbols-outlined">save</span>
+      </button>
+
+      <button
+        mat-icon-button
+        type="button"
+        class="cancel-btn"
+        (click)="onCancel()"
+        aria-label="Cancel creation"
+        matTooltip="Cancel creation"
+      >
+        <span class="material-symbols-outlined">cancel</span>
       </button>
     </div>
   </form>

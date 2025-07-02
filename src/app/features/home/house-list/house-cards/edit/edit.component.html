@@ -4,7 +4,9 @@
 <mat-card class="edit-card">
   <mat-card-title>Edit house</mat-card-title>
 
-  @if (form) {
+  @if (isLoading) {
+  <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+  } @if (form) {
   <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Name</mat-label>

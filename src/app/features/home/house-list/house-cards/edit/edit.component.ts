@@ -24,6 +24,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { map, Observable, startWith, finalize } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar'; // 1. Importe o módulo
 
 @Component({
   selector: 'app-edit',
@@ -42,6 +43,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatCheckboxModule,
     MatTooltipModule,
     NgxSpinnerModule,
+    MatProgressBarModule, // 2. Adicione o módulo aqui
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
@@ -50,6 +52,7 @@ export class EditComponent implements OnInit {
   form!: FormGroup;
   housingLocation!: HousingLocation;
   imagePreview: string | null = null;
+  isLoading = true; // 3. Adicione a flag de carregamento
 
   stateControl = new FormControl<string>('', {
     nonNullable: true,
@@ -118,6 +121,7 @@ export class EditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true; // 4. Garante que a barra apareça ao iniciar
     this.spinner.show();
     const houseId = this.data?.id;
 
@@ -178,6 +182,7 @@ export class EditComponent implements OnInit {
       },
       error: () => {
         this.spinner.hide();
+        this.isLoading = false; // 5. Esconde a barra em caso de erro
         this.router.navigateByUrl('/');
       },
     });
@@ -203,6 +208,7 @@ export class EditComponent implements OnInit {
 
     this._setupFilters();
     this.spinner.hide();
+    this.isLoading = false; // 6. Esconde a barra quando o formulário está pronto
   }
 
   onSubmit(): void {
