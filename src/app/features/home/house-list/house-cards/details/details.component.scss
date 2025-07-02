@@ -48,6 +48,11 @@
   font-weight: 500;
   color: var(--text-color);
   margin-bottom: 25px;
+  /* Adicione estas propriedades para alinhar o ícone e o texto */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Mantém o grupo centralizado */
+  gap: 8px; /* Adiciona um pequeno espaço entre o ícone e o texto */
 }
 
 .listing-features .section-heading {

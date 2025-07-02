@@ -25,6 +25,8 @@ import { ReviewsComponent } from './reviews/reviews.component';
 import { switchMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
+declare const L: any;
+
 @Component({
   selector: 'app-details',
   standalone: true,
@@ -54,6 +56,7 @@ export class DetailsComponent implements OnInit {
   spinner = inject(NgxSpinnerService);
 
   housingLocation: HousingLocation | undefined;
+  private map!: any; // MUDE O TIPO DA PROPRIEDADE 'map' PARA 'any'
 
   applyForm = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -88,8 +91,6 @@ export class DetailsComponent implements OnInit {
   ];
   filteredVisitHours: string[] = [];
 
-  constructor() {}
-
   ngOnInit(): void {
     this.spinner.show();
     this.route.params
@@ -112,6 +113,7 @@ export class DetailsComponent implements OnInit {
           this.housingLocation = location;
           this.setupConditionalValidators();
           this.patchUserForm();
+          this.initMap(); // 3. Chamar a função para iniciar o mapa aqui
           this.spinner.hide();
         },
         error: (err) => {
@@ -127,6 +129,38 @@ export class DetailsComponent implements OnInit {
       // Reseta o horário selecionado quando a data muda
       this.applyForm.get('visitTime')?.reset('');
     });
+  }
+
+  // 4. Adicionar a nova função para inicializar o mapa
+  private initMap(): void {
+    if (
+      this.housingLocation &&
+      this.housingLocation.latitude &&
+      this.housingLocation.longitude
+    ) {
+      // Previne que o mapa seja inicializado múltiplas vezes
+      if (this.map) {
+        this.map.remove();
+      }
+
+      // Cria o mapa e centraliza nas coordenadas do imóvel
+      this.map = L.map('map').setView(
+        [this.housingLocation.latitude, this.housingLocation.longitude],
+        14
+      ); // O '14' é o nível de zoom
+
+      // Adiciona a camada de visualização do mapa (usando OpenStreetMap, que é gratuito)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this.map);
+
+      // Adiciona o marcador (pin) no mapa
+      L.marker([this.housingLocation.latitude, this.housingLocation.longitude])
+        .addTo(this.map)
+        .bindPopup(`<b>${this.housingLocation.name}</b>`) // Texto que aparece ao clicar no pin
+        .openPopup();
+    }
   }
 
   get favoriteKey(): string {

@@ -21,4 +21,6 @@ export interface HousingLocation {
   deleted: boolean;
   ownerId: string;
   listedDate: string;
+  latitude?: number;
+  longitude?: number;
 }

@@ -119,35 +119,11 @@
     <div class="checkbox-group">
       <mat-checkbox formControlName="wifi"> Wi-Fi Available </mat-checkbox>
 
-      <mat-checkbox formControlName="laundry"> Laundry Available </mat-checkbox>
+      <mat-checkbox formControlName="laundry">Has Laundry</mat-checkbox>
     </div>
 
-    @if (imagePreview) {
-    <div class="image-preview">
-      <img [src]="imagePreview" alt="Image preview" />
-    </div>
-    }
-
-    <div class="create-file-upload-wrapper">
-      <div class="create-file-upload">
-        <button mat-icon-button type="button" (click)="fileInput.click()">
-          <mat-icon>upload</mat-icon>
-        </button>
-        <span>Select image (Required)</span>
-        <input
-          #fileInput
-          type="file"
-          accept="image/*"
-          hidden
-          (change)="onImageSelected($event)"
-        />
-      </div>
-      @if (form.get('photo')?.invalid && form.get('photo')?.touched) {
-      <div class="custom-mat-error">A house photo is required.</div>
-      }
-    </div>
-
-    <div class="actions">
+    <div class="form-actions">
+      <button mat-stroked-button (click)="onCancel()">Cancel</button>
       <button
         mat-icon-button
         class="create-btn"
@@ -156,16 +132,6 @@
         matTooltip="Create a house"
       >
         <span class="material-symbols-outlined">add_business</span>
-      </button>
-      <button
-        mat-icon-button
-        class="cancel-btn"
-        type="button"
-        (click)="onCancel()"
-        aria-label="Cancel"
-        matTooltip="Cancel"
-      >
-        <span class="material-symbols-outlined">cancel</span>
       </button>
     </div>
   </form>

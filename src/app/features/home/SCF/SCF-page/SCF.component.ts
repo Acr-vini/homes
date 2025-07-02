@@ -24,8 +24,10 @@ import { Subject } from 'rxjs';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar'; // 1. Importe o MatSnackBar
-import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tray.component'; // 1. Importe o novo componente
+import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tray.component';
+import { MatSliderModule } from '@angular/material/slider';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-SCF',
@@ -49,6 +51,8 @@ import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tra
     MatTooltipModule,
     MatSidenavModule,
     CompareTrayComponent,
+    MatSliderModule,
+    CommonModule,
   ],
   templateUrl: './SCF.component.html',
   styleUrls: ['./SCF.component.scss'],
@@ -64,6 +68,10 @@ export class SCFComponent implements OnInit {
   filteredLocationList: HousingLocation[] = [];
 
   filterForm: FormGroup;
+
+  // 1. Renomeie estas variáveis para representar os limites do slider
+  sliderMinPrice: number = 0;
+  sliderMaxPrice: number = 1000000;
   displayMode: 'grid' | 'list' = 'grid'; // Define 'grid' como padrão
 
   propertyTypes = ['No Preference', 'house', 'apartment', 'terrain', 'studio'];
@@ -95,6 +103,15 @@ export class SCFComponent implements OnInit {
     { value: 'garage', viewValue: 'Garage', icon: 'local_parking' },
     { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
   ];
+
+  formatSliderLabel = (value: number): string => {
+    // Se o valor for maior ou igual ao máximo real, exibe o máximo real formatado
+    if (value >= this.sliderMaxPrice) {
+      return `$${Math.round(this.sliderMaxPrice / 1000)}k`;
+    }
+    // Para outros valores, exibe em milhares (k)
+    return `$${Math.round(value / 1000)}k`;
+  };
 
   pageSize = 20;
   pageIndex = 0;
@@ -128,9 +145,10 @@ export class SCFComponent implements OnInit {
       propertyType: [''],
       wifi: [false],
       laundry: [false],
+      sellerType: [''],
+      // 3. Remova as chaves duplicadas, deixando apenas um par
       priceFrom: [null],
       priceTo: [null],
-      sellerType: [''],
     });
   }
 
@@ -146,14 +164,35 @@ export class SCFComponent implements OnInit {
   }
 
   loadLocations(): void {
-    this.housingService.getAllHousingLocations().subscribe({
-      next: (list) => {
-        this.housingLocationList = list.filter((h) => !h.deletedBy);
-        // Aplica o filtro atual assim que os dados chegam
-        this.filterResults();
-      },
-      error: (err) => console.error('Erro ao buscar os dados:', err),
-    });
+    this.housingService
+      .getAllLocationsWithHistory()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((housingLocationList) => {
+        this.housingLocationList = housingLocationList.filter(
+          (location) => !location.deleted
+        );
+        this.filteredLocationList = [...this.housingLocationList];
+        this.updatePagedList();
+
+        // 3. Calcule os preços min/max para o slider
+        if (this.housingLocationList.length > 0) {
+          const prices = this.housingLocationList
+            .map((h) => h.price)
+            .filter((p): p is number => p != null);
+          // 2. Atualize as variáveis do slider com os valores absolutos
+          this.sliderMinPrice = Math.min(...prices);
+          this.sliderMaxPrice = Math.max(...prices);
+
+          // Define os valores iniciais do slider para o range completo
+          this.filterForm.patchValue(
+            {
+              priceFrom: this.sliderMinPrice,
+              priceTo: this.sliderMaxPrice,
+            },
+            { emitEvent: false }
+          );
+        }
+      });
   }
 
   setupSearchListener(): void {
@@ -227,13 +266,18 @@ export class SCFComponent implements OnInit {
   }
 
   clearFilters(): void {
+    // 3. Modifique o reset para usar os valores absolutos do slider
     this.filterForm.reset({
       city: '',
-      transactionType: '',
+      typeOfBusiness: '',
       propertyType: '',
       wifi: false,
       laundry: false,
+      sellerType: '',
+      priceFrom: this.sliderMinPrice, // Redefine para o mínimo absoluto
+      priceTo: this.sliderMaxPrice, // Redefine para o máximo absoluto
     });
+    // A chamada a filterResults() já é feita pelo valueChanges, então não é necessária aqui.
   }
 
   onPageChange(event: PageEvent) {

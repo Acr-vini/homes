@@ -74,28 +74,36 @@
           </div>
 
           <!-- Filtro de preço -->
-          @if (filterForm.get('typeOfBusiness')?.value) {
-          <div class="price-filter-group">
-            <mat-form-field appearance="outline" class="price-filter">
-              <mat-label>Price From</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="priceFrom"
-                placeholder="Ex: 1000"
-              />
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="price-filter">
-              <mat-label>Price To</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="priceTo"
-                placeholder="Ex: 5000"
-              />
-            </mat-form-field>
+          <div class="price-filter-container">
+            <label class="mat-body-strong">Price Range</label>
+            <mat-slider
+              class="price-slider"
+              [min]="sliderMinPrice"
+              [max]="sliderMaxPrice"
+              [step]="100"
+              thumbLabel
+              [displayWith]="formatSliderLabel"
+            >
+              <input matSliderStartThumb formControlName="priceFrom" />
+              <input matSliderEndThumb formControlName="priceTo" />
+            </mat-slider>
+            <div class="price-labels">
+              <span class="min-price-label"
+                >Min:
+                {{
+                  filterForm.get("priceFrom")?.value
+                    | currency : "USD" : "symbol" : "1.0-0"
+                }}</span
+              >
+              <span class="max-price-label"
+                >Max:
+                {{
+                  filterForm.get("priceTo")?.value
+                    | currency : "USD" : "symbol" : "1.0-0"
+                }}</span
+              >
+            </div>
           </div>
-          }
         </div>
 
         @if(filterForm.dirty) {

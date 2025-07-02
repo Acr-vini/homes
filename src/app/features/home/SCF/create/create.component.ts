@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from '@angular/core';
+import { Component, OnInit, Optional, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -26,6 +26,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { GeocodingService } from '../../../../core/services/geocoding.service'; // 1. Importe o novo serviço
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create',
@@ -102,6 +104,8 @@ export class CreateComponent implements OnInit {
     return type === 'rent' ? 'Price per day (USD)' : 'Price (USD)';
   }
 
+  private geocodingService = inject(GeocodingService); // 2. Injete o serviço
+
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -120,6 +124,9 @@ export class CreateComponent implements OnInit {
       propertyType: ['', Validators.required],
       price: [0, Validators.required],
       ownerId: ['', Validators.required],
+      // Adicionar os novos campos de coordenadas
+      latitude: [0, [Validators.required]],
+      longitude: [0, [Validators.required]],
     });
   }
 
@@ -249,49 +256,60 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    const payload: Omit<HousingLocation, 'id'> = {
-      name: this.form.value.name,
-      city: this.cityControl.value,
-      state: stateIsoCode,
-      photo: this.form.value.photo || (this.imagePreview as string) || '',
-      availableUnits: this.form.value.availableUnits,
-      wifi: this.form.value.wifi,
-      laundry: this.form.value.laundry,
-      typeOfBusiness: this.form.value.typeOfBusiness,
-      propertyType: this.form.value.propertyType,
-      price: this.form.value.price,
-      sellerType: currentUser.role,
-      createBy: String(currentUser?.id ?? ''),
-      editedBy: '',
-      deletedBy: '',
-      deleted: false,
-      ownerId: currentUser.id,
-      listedDate: new Date().toISOString(),
-    };
+    const formValues = this.form.value; // Obter os valores do formulário
 
-    this.housingService.createHousingLocation(payload).subscribe({
-      next: () => {
-        this.snackBar.open('✅ House created!', 'Close', { duration: 3000 });
-        this.form.reset();
-        this.imagePreview = null;
-        this.spinner.hide(); // Notifica outros componentes que a lista mudou
+    // 3. Chame o serviço de geocodificação
+    this.geocodingService
+      .getCoordinates(formValues.city!, formValues.state!)
+      .pipe(
+        // O switchMap nos permite encadear a chamada para salvar o imóvel
+        switchMap((coordinates) => {
+          const payload: Omit<HousingLocation, 'id'> = {
+            name: formValues.name,
+            city: formValues.city,
+            state: formValues.state,
+            photo: formValues.photo,
+            availableUnits: formValues.availableUnits,
+            wifi: formValues.wifi,
+            laundry: formValues.laundry,
+            typeOfBusiness: formValues.typeOfBusiness,
+            propertyType: formValues.propertyType,
+            price: formValues.price,
+            sellerType: formValues.sellerType,
+            createBy: String(currentUser?.id ?? ''),
+            editedBy: '',
+            deletedBy: '',
+            deleted: false,
+            ownerId: formValues.ownerId,
+            listedDate: new Date().toISOString(),
+          };
+          // Retorna o Observable do serviço de criação de imóvel
+          return this.housingService.createHousingLocation(payload);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.snackBar.open('✅ House created!', 'Close', { duration: 3000 });
+          this.form.reset();
+          this.imagePreview = null;
+          this.spinner.hide(); // Notifica outros componentes que a lista mudou
 
-        this.housingService.notifyHouseListUpdated();
+          this.housingService.notifyHouseListUpdated();
 
-        if (this.dialogRef) {
-          this.dialogRef.close(true); // Fecha o dialog indicando sucesso
-        } else {
-          this.router.navigate(['/home']);
-        }
-      },
-      error: (err) => {
-        this.snackBar.open('❌ Error creating house', 'Close', {
-          duration: 3000,
-        });
-        this.spinner.hide();
-        console.error('Create house failed:', err);
-      },
-    });
+          if (this.dialogRef) {
+            this.dialogRef.close(true); // Fecha o dialog indicando sucesso
+          } else {
+            this.router.navigate(['/home']);
+          }
+        },
+        error: (err) => {
+          this.snackBar.open('❌ Error creating house', 'Close', {
+            duration: 3000,
+          });
+          this.spinner.hide();
+          console.error('Create house failed:', err);
+        },
+      });
   }
 
   onImageSelected(event: Event): void {

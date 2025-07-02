@@ -105,6 +105,33 @@
   opacity: 0.6;
 }
 
+.price-filter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Centraliza o slider
+  width: 100%;
+
+  .mat-body-strong {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0; // Remove a margem padrão
+  }
+
+  .price-slider {
+    width: 90%; // Usa 90% da largura para não encostar nas bordas
+  }
+
+  .price-labels {
+    display: flex;
+    justify-content: space-between; // Cria o espaço entre os valores
+    width: 95%;
+    margin-top: -8px; // Sobe um pouco os labels para perto do slider
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.8;
+  }
+}
+
 .home-filter-wrapper {
   width: 100%;
   max-width: 2300px;
