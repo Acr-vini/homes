@@ -22,7 +22,7 @@
       "name": "A113 Transitional Housing",
       "state": "CA",
       "city": "Acalanes Ridge",
-      "availableUnits": 12,
+      "availableUnits": 1,
       "photo": "https://angular.io/assets/images/tutorials/faa/brandon-griggs-wR11KBaB86U-unsplash.jpg",
       "imageUrl": "",
       "wifi": false,
@@ -32,10 +32,11 @@
       "typeOfBusiness": "rent",
       "id": "2",
       "createBy": "1",
-      "deletedBy": "",
+      "deletedBy": "1",
       "propertyType": "apartment",
       "price": 300,
-      "updatedAt": "2025-06-24T11:41:55.811Z"
+      "updatedAt": "2025-07-03T11:48:21.369Z",
+      "deletedAt": "2025-07-03T11:48:18.975Z"
     },
     {
       "name": "Warm Beds Housing Support",

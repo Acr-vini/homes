@@ -87,8 +87,45 @@ export class MyListingsComponent implements OnInit {
     });
   }
 
-  viewDetails(id: string): void {
-    this.router.navigate(['/details', id]);
+  toggleListingStatus(house: HousingLocation): void {
+    const isPausing = !house.deleted;
+    const actionText = isPausing ? 'pause' : 'reactivate';
+
+    const snackBarRef = this.snackBar.open(
+      `Are you sure you want to ${actionText} "${house.name}"?`,
+      `Yes, ${actionText.charAt(0).toUpperCase() + actionText.slice(1)}`,
+      { duration: 5000 }
+    );
+
+    snackBarRef.onAction().subscribe(() => {
+      this.spinner.show();
+      const payload: Partial<HousingLocation> = {
+        deleted: isPausing,
+        deletedAt: isPausing ? new Date().toISOString() : undefined,
+        deletedBy: isPausing ? this.userId : undefined,
+        updatedAt: new Date().toISOString(),
+        editedBy: this.userId,
+      };
+
+      this.housingService
+        .updateHousingLocation(house.id, payload)
+        .pipe(finalize(() => this.spinner.hide()))
+        .subscribe({
+          next: () => {
+            this.snackBar.open(
+              `✅ Listing ${actionText}d successfully!`,
+              'Close',
+              { duration: 3000 }
+            );
+            this.loadListings();
+          },
+          error: () => {
+            this.snackBar.open(`❌ Error updating listing.`, 'Close', {
+              duration: 3000,
+            });
+          },
+        });
+    });
   }
 
   deleteHouse(id: string, name: string): void {

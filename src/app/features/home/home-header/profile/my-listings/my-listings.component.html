@@ -75,13 +75,17 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let element">
+          <!-- Botão dinâmico de Pausar/Reativar -->
           <button
             mat-icon-button
-            (click)="viewDetails(element.id)"
-            matTooltip="View Details"
+            (click)="toggleListingStatus(element)"
+            [matTooltip]="
+              element.deleted ? 'Reactivate Listing' : 'Pause Listing'
+            "
           >
-            <mat-icon>visibility</mat-icon>
+            <mat-icon>{{ element.deleted ? "play_arrow" : "pause" }}</mat-icon>
           </button>
+
           <button
             mat-icon-button
             color="primary"
