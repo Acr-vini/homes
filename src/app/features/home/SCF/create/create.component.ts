@@ -21,13 +21,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Observable, startWith, map } from 'rxjs';
+import { Observable, startWith, map, switchMap, EMPTY } from 'rxjs'; // 1. Importe EMPTY
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { GeocodingService } from '../../../../core/services/geocoding.service'; // 1. Importe o novo serviço
-import { switchMap } from 'rxjs/operators';
+import { MatDividerModule } from '@angular/material/divider';
+import { GeocodingService } from '../../../../core/services/geocoding.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-create',
@@ -47,23 +49,17 @@ import { switchMap } from 'rxjs/operators';
     MatTooltipModule,
     NgxSpinnerModule,
     MatProgressBarModule,
+    MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
-  form: FormGroup;
+  form!: FormGroup;
   imagePreview: string | null = null;
-  progress = 0; // FIX 1: Declare a propriedade 'progress'
-
-  stateControl = new FormControl<string>('', {
-    nonNullable: true,
-    validators: [Validators.required],
-  });
-  cityControl = new FormControl<string>('', {
-    nonNullable: true,
-    validators: [Validators.required],
-  });
+  progress = 0;
 
   allStates = State.getStatesOfCountry('US');
   allCities: string[] = [];
@@ -106,6 +102,30 @@ export class CreateComponent implements OnInit {
 
   private geocodingService = inject(GeocodingService); // 2. Injete o serviço
 
+  // ADICIONE ESTAS DUAS PROPRIEDADES AQUI
+  availableDays = [
+    { name: 'Monday', controlName: 'monday' },
+    { name: 'Tuesday', controlName: 'tuesday' },
+    { name: 'Wednesday', controlName: 'wednesday' },
+    { name: 'Thursday', controlName: 'thursday' },
+    { name: 'Friday', controlName: 'friday' },
+    { name: 'Saturday', controlName: 'saturday' },
+    { name: 'Sunday', controlName: 'sunday' },
+  ];
+  availableTimes = [
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+  ];
+
   constructor(
     private fb: FormBuilder,
     private housingService: HousingService,
@@ -116,6 +136,9 @@ export class CreateComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
+      // ADICIONE os campos de state e city aqui
+      state: ['', Validators.required],
+      city: ['', Validators.required],
       photo: ['', Validators.required],
       availableUnits: [0, Validators.required],
       wifi: [false],
@@ -124,9 +147,34 @@ export class CreateComponent implements OnInit {
       propertyType: ['', Validators.required],
       price: [0, Validators.required],
       ownerId: ['', Validators.required],
-      // Adicionar os novos campos de coordenadas
       latitude: [0, [Validators.required]],
       longitude: [0, [Validators.required]],
+
+      // ADICIONE OS NOVOS CONTROLES DE HORÁRIO AQUI
+      visitStartTime: [null],
+      visitEndTime: [null],
+
+      // Novo grupo para disponibilidade de visitas
+      visitAvailability: this.fb.group({
+        monday: [false],
+        mondayTimes: [[]],
+        tuesday: [false],
+        tuesdayTimes: [[]],
+        wednesday: [false],
+        wednesdayTimes: [[]],
+        thursday: [false],
+        thursdayTimes: [[]],
+        friday: [false],
+        fridayTimes: [[]],
+        saturday: [false],
+        saturdayTimes: [[]],
+        sunday: [false],
+        sundayTimes: [[]],
+      }),
+      // Novos campos para disponibilidade de aluguel
+      checkInStart: [null],
+      checkInEnd: [null],
+      checkInAvailability: [[]],
     });
   }
 
@@ -138,38 +186,33 @@ export class CreateComponent implements OnInit {
       this.form.patchValue({ ownerId: currentUser.id });
     }
 
-    this.filteredStates = this.stateControl.valueChanges.pipe(
-      startWith(this.stateControl.value),
-      map((value) => this._filterStates(value))
-    );
-
-    // Ele vai reagir automaticamente às mudanças no `cityControl`.
-    this.filteredCities = this.cityControl.valueChanges.pipe(
+    // ATUALIZE para usar os controles do formulário principal
+    this.filteredStates = this.form.get('state')!.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filterCities(value))
+      map((value) => this._filterStates(value || ''))
     );
 
-    // A inscrição em `stateControl` agora só atualiza a lista de cidades e reseta o campo.
-    this.stateControl.valueChanges.subscribe((stateName) => {
+    this.filteredCities = this.form.get('city')!.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filterCities(value || ''))
+    );
+
+    this.form.get('state')!.valueChanges.subscribe((stateName) => {
       const iso = this._findStateIso(stateName);
-      // Atualiza a fonte de dados para as cidades.
       this.allCities = iso
         ? City.getCitiesOfState('US', iso).map((c) => c.name)
         : [];
-      // Reseta o campo da cidade, forçando o usuário a escolher uma nova.
-      this.cityControl.setValue('');
+      this.form.get('city')!.setValue('');
     });
 
-    // Inscreva-se nas mudanças do formulário para calcular o progresso
     this.form.valueChanges.subscribe(() => {
       this.calculateProgress();
     });
   } //Método para calcular o progresso do formulário
   private calculateProgress(): void {
-    // Define quais campos são obrigatórios para o progresso
     const requiredControls = [
       'name',
-      'state',
+      'state', // 'state' e 'city' agora fazem parte do form
       'city',
       'availableUnits',
       'typeOfBusiness',
@@ -206,7 +249,6 @@ export class CreateComponent implements OnInit {
   } // Dentro da classe CreateComponent
 
   onSubmit(): void {
-    // 1. Validação inicial do formulário
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.snackBar.open(
@@ -218,8 +260,8 @@ export class CreateComponent implements OnInit {
     }
 
     this.spinner.show();
-    const stateName = this.stateControl.value;
-    const stateIsoCode = this._findStateIso(stateName);
+    const formValues = this.form.getRawValue(); // Obtenha todos os valores de uma vez
+    const stateIsoCode = this._findStateIso(formValues.state);
 
     if (!stateIsoCode) {
       this.snackBar.open(
@@ -256,14 +298,22 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    const formValues = this.form.value; // Obter os valores do formulário
-
-    // 3. Chame o serviço de geocodificação
+    // Chame o serviço de geocodificação com os valores corretos do formulário
     this.geocodingService
-      .getCoordinates(formValues.city!, formValues.state!)
+      .getCoordinates(formValues.city, formValues.state)
       .pipe(
-        // O switchMap nos permite encadear a chamada para salvar o imóvel
         switchMap((coordinates) => {
+          // 2. Adicione a verificação para o caso de 'coordinates' ser nulo
+          if (!coordinates) {
+            this.spinner.hide();
+            this.snackBar.open(
+              '❌ Could not find location. Please check the address.',
+              'Close',
+              { duration: 4000 }
+            );
+            return EMPTY; // Interrompe a cadeia de observáveis
+          }
+
           const payload: Omit<HousingLocation, 'id'> = {
             name: formValues.name,
             city: formValues.city,
@@ -282,8 +332,10 @@ export class CreateComponent implements OnInit {
             deleted: false,
             ownerId: formValues.ownerId,
             listedDate: new Date().toISOString(),
+            // Adiciona as coordenadas ao payload
+            latitude: coordinates.lat,
+            longitude: coordinates.lon, // 3. Corrija 'lng' para 'lon'
           };
-          // Retorna o Observable do serviço de criação de imóvel
           return this.housingService.createHousingLocation(payload);
         })
       )
@@ -331,6 +383,94 @@ export class CreateComponent implements OnInit {
       this.dialogRef.close();
     } else {
       this.router.navigate(['/']);
+    }
+  }
+
+  // NOVO MÉTODO PARA APLICAR OS HORÁRIOS
+  applyTimesToSelectedDays(): void {
+    const startTime = this.form.get('visitStartTime')?.value;
+    const endTime = this.form.get('visitEndTime')?.value;
+
+    if (!startTime || !endTime) {
+      this.snackBar.open('Please select a start and end time.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    // Gera a lista de horários com base no intervalo selecionado
+    const startIndex = this.availableTimes.indexOf(startTime);
+    const endIndex = this.availableTimes.indexOf(endTime);
+    const timeSlots = this.availableTimes.slice(startIndex, endIndex + 1);
+
+    const visitAvailabilityGroup = this.form.get(
+      'visitAvailability'
+    ) as FormGroup;
+
+    // Itera sobre os dias da semana
+    this.availableDays.forEach((day) => {
+      const dayControl = visitAvailabilityGroup.get(day.controlName);
+      // Se o dia estiver selecionado (checkbox marcado), aplica os horários
+      if (dayControl?.value === true) {
+        const timeControl = visitAvailabilityGroup.get(
+          day.controlName + 'Times'
+        );
+        timeControl?.setValue(timeSlots);
+      }
+    });
+
+    this.snackBar.open('✅ Times applied to all selected days!', 'Close', {
+      duration: 2000,
+    });
+  }
+
+  // Métodos para seleção rápida de 'sell'
+  selectWeekdays() {
+    this.form.get('visitAvailability')?.patchValue({
+      monday: true,
+      tuesday: true,
+      wednesday: true,
+      thursday: true,
+      friday: true,
+      saturday: false,
+      sunday: false,
+    });
+  }
+  selectWeekends() {
+    this.form.get('visitAvailability')?.patchValue({
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: true,
+      sunday: true,
+    });
+  }
+  selectAllWeek() {
+    this.form.get('visitAvailability')?.patchValue({
+      monday: true,
+      tuesday: true,
+      wednesday: true,
+      thursday: true,
+      friday: true,
+      saturday: true,
+      sunday: true,
+    });
+  }
+
+  // Método para gerar as datas de 'rent'
+  updateRentAvailability() {
+    const start = this.form.get('checkInStart')?.value;
+    const end = this.form.get('checkInEnd')?.value;
+    if (start && end) {
+      const dates = [];
+      let currentDate = new Date(start);
+      while (currentDate <= end) {
+        dates.push(currentDate.toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      this.form.get('checkInAvailability')?.setValue(dates);
     }
   }
 }

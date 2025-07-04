@@ -1,4 +1,3 @@
-// Importe o FormBuilder e FormGroup
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // ALTERADO
 
@@ -7,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HouseCardsComponent } from '../../house-list/house-cards/house-cards-page/house-cards.component';
 import { HousingLocation } from '../../../../core/interfaces/housinglocation.interface';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox'; // Vamos usar Checkbox
 import { MatButtonModule } from '@angular/material/button';
@@ -63,6 +62,7 @@ export class SCFComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
+  private router = inject(Router); // Certifique-se de que o Router está injetado
 
   housingLocationList: HousingLocation[] = [];
   filteredLocationList: HousingLocation[] = [];
@@ -298,28 +298,11 @@ export class SCFComponent implements OnInit {
   }
 
   openCreateHouse() {
-    const allowedRoles = ['Admin', 'Manager', 'Owner', 'Real Estate Agency'];
-    if (!allowedRoles.includes(this.currentUserRole ?? '')) {
-      this.snackBar.open(
-        'You do not have permission to perform this action.',
-        'Close',
-        {
-          duration: 3000,
-        }
-      );
-      return;
-    }
+    // A lógica antiga de dialog será substituída
+    // this.dialog.open(CreateComponent, ...);
 
-    const dialogRef = this.dialog.open(CreateComponent, {
-      width: '80%',
-      minWidth: '800px',
-      disableClose: true,
-      autoFocus: false,
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.loadLocations();
-    });
+    // Nova lógica de navegação
+    this.router.navigate(['/create-house']);
   }
 
   onOrderChange(order: 'relevance' | 'priceAsc' | 'priceDesc' | 'dateDesc') {

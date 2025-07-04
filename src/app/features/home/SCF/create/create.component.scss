@@ -1,12 +1,9 @@
-:host {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(40, 40, 60, 0.75);
+.create-house-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  padding: 2rem 1rem; // Adiciona espaçamento vertical e horizontal
+  background-color: var(--bg-color);
+  min-height: calc(100vh - 64px); // Ocupa a altura da tela menos o header
 }
 
 .create-form {
@@ -103,9 +100,9 @@
   }
 }
 .edit-card {
-  max-width: 420px;
+  max-width: 1100px;
   width: 100%;
-  max-height: 90vh;
+  // max-height: 90vh; // A altura pode ser automática agora
   overflow-y: auto;
   margin: 0 auto;
   padding: 1.5rem 2rem 2rem 2rem;
@@ -124,6 +121,21 @@
     margin-bottom: 1.2rem;
     color: var(--titleAC, #381c9e);
     text-align: center;
+  }
+
+  // 2. Adicione estilos para os títulos das seções e divisores
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  mat-divider {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   form {

@@ -15,8 +15,8 @@
       "propertyType": "house",
       "createBy": "1",
       "deletedBy": "",
-      "price": 150,
-      "updatedAt": "2025-06-24T11:41:47.893Z"
+      "price": 100,
+      "updatedAt": "2025-07-03T12:59:40.656Z"
     },
     {
       "name": "A113 Transitional Housing",
@@ -194,10 +194,10 @@
       "wifi": true,
       "laundry": false,
       "editedBy": "1",
-      "deleted": false,
+      "deleted": true,
       "id": "15",
       "deletedBy": "1",
-      "deletedAt": "2025-05-15T15:52:59.412Z"
+      "deletedAt": "2025-07-03T13:30:21.730Z"
     },
     {
       "name": "millionare house",

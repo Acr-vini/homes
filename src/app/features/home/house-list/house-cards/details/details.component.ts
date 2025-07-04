@@ -24,6 +24,9 @@ import { User } from '../../../../../core/interfaces/user.interface';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { switchMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 declare const L: any;
 
@@ -43,6 +46,9 @@ declare const L: any;
     MatSelectModule,
     MatOptionModule,
     ReviewsComponent,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
@@ -56,7 +62,7 @@ export class DetailsComponent implements OnInit {
   spinner = inject(NgxSpinnerService);
 
   housingLocation: HousingLocation | undefined;
-  private map!: any; // MUDE O TIPO DA PROPRIEDADE 'map' PARA 'any'
+  private map!: any;
 
   applyForm = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -72,7 +78,7 @@ export class DetailsComponent implements OnInit {
   currentUser: User | null = JSON.parse(
     localStorage.getItem('currentUser') || 'null'
   );
-  today = new Date().toISOString().split('T')[0];
+  today = new Date();
 
   allVisitHours = [
     '08:00',
@@ -90,6 +96,10 @@ export class DetailsComponent implements OnInit {
     '20:00',
   ];
   filteredVisitHours: string[] = [];
+
+  availableVisitDays: number[] = [];
+  availableVisitTimes: string[] = [];
+  availableCheckInDates: string[] = [];
 
   ngOnInit(): void {
     this.spinner.show();
@@ -111,9 +121,11 @@ export class DetailsComponent implements OnInit {
             return;
           }
           this.housingLocation = location;
+          // Processa a disponibilidade assim que os dados chegam
+          this.processAvailability(location);
           this.setupConditionalValidators();
           this.patchUserForm();
-          this.initMap(); // 3. Chamar a função para iniciar o mapa aqui
+          this.initMap();
           this.spinner.hide();
         },
         error: (err) => {
@@ -239,6 +251,56 @@ export class DetailsComponent implements OnInit {
       // Data no passado, nenhum horário disponível.
       this.filteredVisitHours = [];
     }
+  }
+
+  processAvailability(location: HousingLocation) {
+    if (location.typeOfBusiness === 'sell' && location.visitAvailability) {
+      const dayMap: { [key: string]: number } = {
+        sunday: 0,
+        monday: 1,
+        tuesday: 2,
+        wednesday: 3,
+        thursday: 4,
+        friday: 5,
+        saturday: 6,
+      };
+      this.availableVisitDays = Object.keys(location.visitAvailability)
+        .filter((day) => day.includes('Times')) // Apenas dias com horários
+        .map((day) => dayMap[day.replace('Times', '')]);
+    }
+    if (location.typeOfBusiness === 'rent' && location.checkInAvailability) {
+      this.availableCheckInDates = location.checkInAvailability;
+    }
+  }
+
+  // Filtro para o datepicker de 'sell'
+  visitDateFilter = (d: Date | null): boolean => {
+    const day = (d || new Date()).getDay();
+    return this.availableVisitDays.includes(day);
+  };
+
+  // Filtro para o datepicker de 'rent'
+  checkInDateFilter = (d: Date | null): boolean => {
+    if (!d) return false;
+    const dateString = d.toISOString().split('T')[0];
+    return this.availableCheckInDates.includes(dateString);
+  };
+
+  // Atualiza os horários disponíveis quando uma data é selecionada
+  onVisitDateChange(event: any) {
+    const selectedDate: Date = event.value;
+    const dayOfWeek = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+    ][selectedDate.getDay()];
+    this.availableVisitTimes =
+      this.housingLocation?.visitAvailability?.[dayOfWeek + 'Times'] || [];
+    this.applyForm.get('visitTime')?.setValue(''); // Reseta o horário
   }
 
   // Adicionar novo método para configurar validadores condicionais

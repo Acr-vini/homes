@@ -94,75 +94,48 @@
       />
       <!-- SELL -->
       @if (housingLocation.typeOfBusiness === 'sell') {
-      <label for="visit-date">Date of Visit</label>
-      <input
-        id="visit-date"
-        type="date"
-        formControlName="visitDate"
-        class="form-input"
-        [min]="today"
-      />
-      @if ( applyForm.get('visitDate')?.invalid &&
-      (applyForm.get('visitDate')?.dirty || applyForm.get('visitDate')?.touched)
-      ) {
-      <div class="error-message">
-        @if (applyForm.get('visitDate')?.hasError('required')) {
-        <div>Visit date is required.</div>
-        }
-      </div>
-      }
-      <label for="visit-time">Visit Time</label>
-      <mat-form-field class="form-field">
-        <mat-select formControlName="visitTime">
-          <mat-option value="" disabled>Select a time</mat-option>
-          @for (hour of filteredVisitHours; track hour) {
-          <mat-option [value]="hour">
-            {{ hour }}
-          </mat-option>
-          }
-        </mat-select>
-        @if ( applyForm.get('visitTime')?.hasError('required') &&
-        applyForm.get('visitTime')?.touched ) {
-        <mat-error> Visit time is required. </mat-error>
-        }
+      <mat-form-field class="full-width">
+        <mat-label>Date of Visit</mat-label>
+        <input
+          matInput
+          [matDatepicker]="visitPicker"
+          formControlName="visitDate"
+          [min]="today"
+          [matDatepickerFilter]="visitDateFilter"
+          (dateChange)="onVisitDateChange($event)"
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="visitPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #visitPicker></mat-datepicker>
       </mat-form-field>
+
+      <label for="visit-time">Visit Time</label>
+      <select id="visit-time" formControlName="visitTime" class="form-input">
+        @for(time of availableVisitTimes; track time) {
+        <option [value]="time">{{ time }}</option>
+        }
+      </select>
       }
       <!-- RENT -->
       @if (housingLocation.typeOfBusiness === 'rent') {
-      <label for="check-in-date">Check-in Date</label>
-      <input
-        id="check-in-date"
-        type="date"
-        formControlName="checkInDate"
-        class="form-input"
-        [min]="today"
-      />
-      @if ( applyForm.get('checkInDate')?.invalid &&
-      (applyForm.get('checkInDate')?.dirty ||
-      applyForm.get('checkInDate')?.touched) ) {
-      <div class="error-message">
-        @if (applyForm.get('checkInDate')?.hasError('required')) {
-        <div>Check-in date is required.</div>
-        }
-      </div>
+      <mat-form-field class="full-width">
+        <mat-label>Check-in Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="checkinPicker"
+          formControlName="checkInDate"
+          [min]="today"
+          [matDatepickerFilter]="checkInDateFilter"
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="checkinPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #checkinPicker></mat-datepicker>
+      </mat-form-field>
       }
-      <label for="check-out-date">Check-out Date</label>
-      <input
-        id="check-out-date"
-        type="date"
-        formControlName="checkOutDate"
-        class="form-input"
-        [min]="applyForm.get('checkInDate')?.value || today"
-      />
-      @if ( applyForm.get('checkOutDate')?.invalid &&
-      (applyForm.get('checkOutDate')?.dirty ||
-      applyForm.get('checkOutDate')?.touched) ) {
-      <div class="error-message">
-        @if (applyForm.get('checkOutDate')?.hasError('required')) {
-        <div>Check-out date is required.</div>
-        }
-      </div>
-      } }
       <button type="submit" class="primary">Apply now</button>
     </form>
   </section>

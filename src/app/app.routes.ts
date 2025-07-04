@@ -101,6 +101,16 @@ const routes: Routes = [
             (m) => m.FavoritesComponent
           ),
         title: 'Favorites',
+        canActivate: [AuthGuard],
+      },
+      // ADICIONE ESTA NOVA ROTA
+      {
+        path: 'create-house',
+        loadComponent: () =>
+          import('./features/home/SCF/create/create.component').then(
+            (m) => m.CreateComponent
+          ),
+        canActivate: [AuthGuard], // Protege a rota, exigindo login
       },
       {
         path: 'compare',
