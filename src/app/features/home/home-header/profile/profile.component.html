@@ -15,6 +15,7 @@
       } } @else {
       <!-- Se pode ter anúncios, mostra as abas -->
       <mat-tab-group
+        [(selectedIndex)]="selectedTabIndex"
         animationDuration="0ms"
         (selectedTabChange)="onTabChange($event)"
       >
@@ -124,7 +125,9 @@
           </div>
         </mat-tab>
         <mat-tab label="My Listings">
-          <app-my-listings [userId]="user.id"></app-my-listings>
+          <ng-template matTabContent>
+            <app-my-listings [userId]="user.id"></app-my-listings>
+          </ng-template>
         </mat-tab>
       </mat-tab-group>
       }

@@ -54,11 +54,12 @@ declare const L: any;
   styleUrls: ['./details.component.scss'],
 })
 export class DetailsComponent implements OnInit {
-  route: ActivatedRoute = inject(ActivatedRoute);
-  router: Router = inject(Router);
-  housingService = inject(HousingService);
-  applicationService = inject(ApplicationService);
-  snackBar = inject(MatSnackBar);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private housingService = inject(HousingService);
+  private applicationService = inject(ApplicationService);
+  private snackBar = inject(MatSnackBar);
+
   spinner = inject(NgxSpinnerService);
 
   housingLocation: HousingLocation | undefined;
@@ -301,6 +302,18 @@ export class DetailsComponent implements OnInit {
     this.availableVisitTimes =
       this.housingLocation?.visitAvailability?.[dayOfWeek + 'Times'] || [];
     this.applyForm.get('visitTime')?.setValue(''); // Reseta o horário
+  }
+
+  // ADICIONE ESTE MÉTODO PARA NAVEGAR PARA A PÁGINA DE EDIÇÃO
+  editHouse(): void {
+    if (this.housingLocation?.id) {
+      this.router.navigate(['/edit-house', this.housingLocation.id]);
+    }
+  }
+
+  canEditHouse(): boolean {
+    const role = this.currentUser?.role;
+    return role === 'admin' || role === 'agent';
   }
 
   // Adicionar novo método para configurar validadores condicionais

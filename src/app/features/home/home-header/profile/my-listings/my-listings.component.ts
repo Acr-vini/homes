@@ -12,9 +12,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { EditComponent } from '../../../house-list/house-cards/edit/edit.component';
 import { forkJoin, finalize } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-my-listings',
@@ -35,13 +35,14 @@ import { NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./my-listings.component.scss'],
 })
 export class MyListingsComponent implements OnInit {
-  @Input() userId!: string;
+  @Input() userId?: string;
 
   private housingService = inject(HousingService);
-  private router = inject(Router);
+  private router = inject(Router); // 1. Injete o Router
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private spinner = inject(NgxSpinnerService);
+  private authService = inject(AuthService);
 
   allListings: HousingLocation[] = []; // Guarda a lista original
   myListings: HousingLocation[] = []; // Lista filtrada para a tabela
@@ -49,12 +50,20 @@ export class MyListingsComponent implements OnInit {
   filterStatus: 'all' | 'active' | 'deleted' = 'all';
 
   ngOnInit(): void {
+    if (!this.userId) {
+      const currentUser = this.authService.getCurrentUser();
+      if (currentUser) {
+        this.userId = currentUser.id;
+      }
+    }
+
     if (this.userId) {
       this.loadListings();
     }
   }
 
   loadListings(): void {
+    if (!this.userId) return;
     this.housingService
       .getHousesByCreatorId(this.userId)
       .subscribe((listings) => {
@@ -75,16 +84,11 @@ export class MyListingsComponent implements OnInit {
   }
 
   editHouse(house: HousingLocation): void {
-    const dialogRef = this.dialog.open(EditComponent, {
-      width: '500px',
-      data: house,
-    });
+    // 2. Remova a lógica do Dialog
+    // const dialogRef = this.dialog.open(EditComponent, ...);
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.loadListings();
-      }
-    });
+    // 3. Adicione a navegação para a nova rota
+    this.router.navigate(['/edit-house', house.id]);
   }
 
   toggleListingStatus(house: HousingLocation): void {
@@ -136,6 +140,12 @@ export class MyListingsComponent implements OnInit {
     );
 
     snackBarRef.onAction().subscribe(() => {
+      if (!this.userId) {
+        this.snackBar.open('❌ User ID not found. Could not delete.', 'Close', {
+          duration: 3000,
+        });
+        return;
+      }
       this.housingService.deleteHousingLocation(id, this.userId).subscribe({
         next: () => {
           this.snackBar.open('✅ Listing deleted successfully!', 'Close', {

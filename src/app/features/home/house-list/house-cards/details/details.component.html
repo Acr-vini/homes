@@ -3,38 +3,35 @@
 </ngx-spinner>
 @if (housingLocation) {
 <article class="page-container">
-  <!-- A imagem é envolvida por um container para posicionar o botão -->
-  <div class="listing-photo-container">
-    <img
-      class="listing-photo housing-image"
-      [src]="housingLocation.photo"
-      alt="Exterior photo of {{ housingLocation.name }}"
-    />
-    <button
-      mat-icon-button
-      class="favorite-details-button"
-      (click)="toggleFavorite()"
-      [ngClass]="{ favorited: isFavorited() }"
-      [matTooltip]="
-        isFavorited() ? 'Remove from favorites' : 'Add to favorites'
-      "
-      type="button"
-    >
-      <mat-icon>
-        {{ isFavorited() ? "favorite" : "favorite_border" }}
-      </mat-icon>
+  <section class="heading-section">
+    <h1 class="listing-heading">{{ housingLocation.name }}</h1>
+    <!-- ADICIONE O BOTÃO DE EDITAR AQUI -->
+    @if (canEditHouse()) {
+    <button mat-stroked-button color="primary" (click)="editHouse()">
+      <mat-icon>edit</mat-icon>
+      Edit Listing
     </button>
-  </div>
-  @if (housingLocation) {
-  <section class="listing-description">
-    <h2 class="listing-heading">{{ housingLocation.name }}</h2>
-
-    <p class="listing-location">
-      <mat-icon class="material-symbols-outlined"> distance </mat-icon>
-      {{ housingLocation.city }}, {{ housingLocation.state }}
-    </p>
+    }
   </section>
-  }
+
+  <img
+    class="listing-photo housing-image"
+    [src]="housingLocation.photo"
+    alt="Exterior photo of {{ housingLocation.name }}"
+  />
+  <button
+    mat-icon-button
+    class="favorite-details-button"
+    (click)="toggleFavorite()"
+    [ngClass]="{ favorited: isFavorited() }"
+    [matTooltip]="isFavorited() ? 'Remove from favorites' : 'Add to favorites'"
+    type="button"
+  >
+    <mat-icon>
+      {{ isFavorited() ? "favorite" : "favorite_border" }}
+    </mat-icon>
+  </button>
+
   <!-- Seção de informações adicionais -->
   <section class="listing-features">
     <h2 class="section-heading">About this housing location</h2>

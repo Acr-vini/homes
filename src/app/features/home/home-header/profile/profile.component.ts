@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common'; // 1. Importe o CommonModule
 import {
   FormBuilder,
@@ -19,6 +19,7 @@ import { MyListingsComponent } from './my-listings/my-listings.component';
 import { UserService } from '../../../../core/services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -42,14 +43,16 @@ import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private snackBar = inject(MatSnackBar);
+  private route = inject(ActivatedRoute);
 
   user = JSON.parse(localStorage.getItem('currentUser') || 'null');
   showRoleForm = false;
   isListingsViewActive = false;
+  selectedTabIndex = 0;
 
   roleForm: FormGroup;
   passwordForm: FormGroup;
@@ -72,6 +75,14 @@ export class ProfileComponent {
         { value: this.user?.location, disabled: true },
         Validators.required,
       ],
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params['tab'] === 'listings') {
+        this.selectedTabIndex = 1; // Assumindo que 'My Listings' é a segunda aba (índice 1)
+      }
     });
   }
 

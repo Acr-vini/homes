@@ -44,6 +44,22 @@ const routes: Routes = [
           ).then((m) => m.DetailsComponent),
         title: 'Details',
       },
+      {
+        path: 'create-house',
+        loadComponent: () =>
+          import('./features/home/house-form/house-form.component').then(
+            (m) => m.HouseFormComponent
+          ),
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'edit-house/:id',
+        loadComponent: () =>
+          import('./features/home/house-form/house-form.component').then(
+            (m) => m.HouseFormComponent
+          ),
+        canActivate: [AuthGuard],
+      },
 
       // profile | users | about | contact | activity-date
       {
@@ -103,15 +119,17 @@ const routes: Routes = [
         title: 'Favorites',
         canActivate: [AuthGuard],
       },
-      // ADICIONE ESTA NOVA ROTA
+
       {
-        path: 'create-house',
+        path: 'my-listings',
         loadComponent: () =>
-          import('./features/home/SCF/create/create.component').then(
-            (m) => m.CreateComponent
-          ),
-        canActivate: [AuthGuard], // Protege a rota, exigindo login
+          import(
+            './features/home/home-header/profile/my-listings/my-listings.component'
+          ).then((m) => m.MyListingsComponent),
+        title: 'My Listings',
+        canActivate: [AuthGuard],
       },
+
       {
         path: 'compare',
         loadComponent: () =>

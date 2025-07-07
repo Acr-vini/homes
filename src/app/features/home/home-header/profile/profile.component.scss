@@ -1,7 +1,14 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 mat-card {
   max-width: 400px;
   margin: 2rem auto;
   padding: 2rem;
+  width: 100%;
+  max-width: 1200px; /* Ajuste este valor conforme necessário */
 }
 .full-width {
   width: 100%;
@@ -12,9 +19,9 @@ mat-card {
   color: var(--purpleBck);
 }
 .profile-container {
+  padding: 20px;
   display: flex;
   justify-content: center;
-  padding: 2rem;
 }
 
 .profile-card {

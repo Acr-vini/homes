@@ -18,7 +18,6 @@ import { MatInputModule } from '@angular/material/input';
 import { LegalInfoComponent } from '../../legal-info/legal-info-page/legal-info.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateComponent } from '../../../home/SCF/create/create.component';
 import { Subject } from 'rxjs';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
