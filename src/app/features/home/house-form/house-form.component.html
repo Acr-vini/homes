@@ -139,24 +139,35 @@
       <div class="actions">
         @if (isEditMode) {
         <button
-          mat-stroked-button
-          color="warn"
+          mat-button
+          class="custom-icon-button delete-btn"
           type="button"
           (click)="onDelete()"
+          matTooltip="Delete Listing"
+          aria-label="Delete Listing"
         >
-          Delete
+          <span class="material-symbols-outlined">delete</span>
         </button>
         }
-        <button mat-stroked-button type="button" (click)="onCancel()">
-          Cancel
+        <button
+          mat-button
+          class="custom-icon-button cancel-btn"
+          type="button"
+          (click)="onCancel()"
+          matTooltip="Cancel"
+          aria-label="Cancel"
+        >
+          <span class="material-symbols-outlined">cancel</span>
         </button>
         <button
-          mat-flat-button
-          color="primary"
+          mat-button
+          class="custom-icon-button save-btn"
           type="submit"
           [disabled]="form.invalid"
+          [matTooltip]="isEditMode ? 'Save Changes' : 'Create House'"
+          [attr.aria-label]="isEditMode ? 'Save Changes' : 'Create House'"
         >
-          {{ isEditMode ? "Save Changes" : "Create House" }}
+          <span class="material-symbols-outlined">save</span>
         </button>
       </div>
     </form>

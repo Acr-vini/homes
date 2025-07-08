@@ -394,7 +394,7 @@ export class HouseFormComponent implements OnInit {
 
   onCancel(): void {
     if (this.isEditMode) {
-      this.router.navigate(['/profile/my-listings']);
+      this.router.navigate(['/home']);
     } else {
       this.router.navigate(['/home']);
     }

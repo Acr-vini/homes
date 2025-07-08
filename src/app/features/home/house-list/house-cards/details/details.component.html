@@ -3,9 +3,30 @@
 </ngx-spinner>
 @if (housingLocation) {
 <article class="page-container">
+  <div class="image-container">
+    <img
+      class="listing-photo housing-image"
+      [src]="housingLocation.photo"
+      alt="Exterior photo of {{ housingLocation.name }}"
+    />
+    <button
+      mat-icon-button
+      class="favorite-details-button"
+      (click)="toggleFavorite()"
+      [ngClass]="{ favorited: isFavorited() }"
+      [matTooltip]="
+        isFavorited() ? 'Remove from favorites' : 'Add to favorites'
+      "
+      type="button"
+    >
+      <mat-icon>
+        {{ isFavorited() ? "favorite" : "favorite_border" }}
+      </mat-icon>
+    </button>
+  </div>
+
   <section class="heading-section">
     <h1 class="listing-heading">{{ housingLocation.name }}</h1>
-    <!-- ADICIONE O BOTÃO DE EDITAR AQUI -->
     @if (canEditHouse()) {
     <button mat-stroked-button color="primary" (click)="editHouse()">
       <mat-icon>edit</mat-icon>
@@ -13,24 +34,6 @@
     </button>
     }
   </section>
-
-  <img
-    class="listing-photo housing-image"
-    [src]="housingLocation.photo"
-    alt="Exterior photo of {{ housingLocation.name }}"
-  />
-  <button
-    mat-icon-button
-    class="favorite-details-button"
-    (click)="toggleFavorite()"
-    [ngClass]="{ favorited: isFavorited() }"
-    [matTooltip]="isFavorited() ? 'Remove from favorites' : 'Add to favorites'"
-    type="button"
-  >
-    <mat-icon>
-      {{ isFavorited() ? "favorite" : "favorite_border" }}
-    </mat-icon>
-  </button>
 
   <!-- Seção de informações adicionais -->
   <section class="listing-features">

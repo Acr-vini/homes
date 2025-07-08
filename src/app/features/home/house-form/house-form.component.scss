@@ -84,5 +84,40 @@
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+}
+
+button.mat-icon-button {
+  padding: 20px 16px;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+.save-btn {
+  background-color: #381c9e;
+  color: #fff;
+
+  &:hover {
+    background-color: #2a1575;
+  }
+}
+.cancel-btn {
+  background-color: #e0e0e0;
+  color: #424242;
+
+  &:hover {
+    background-color: #afafaf;
+  }
+}
+.delete-btn {
+  background-color: #f44336;
+  color: #fff;
+
+  &:hover {
+    background-color: #d32f2f;
+  }
 }
