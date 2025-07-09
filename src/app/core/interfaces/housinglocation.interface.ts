@@ -24,7 +24,14 @@ export interface HousingLocation {
   latitude?: number;
   longitude?: number;
   visitAvailability?: {
-    [dayOfWeek: string]: string[];
+    startDate: string | null;
+    endDate: string | null;
+    startTime: string | null;
+    endTime: string | null;
   };
   checkInAvailability?: string[];
+  rentDateRange?: {
+    checkInDate: string | null;
+    checkOutDate: string | null;
+  };
 }

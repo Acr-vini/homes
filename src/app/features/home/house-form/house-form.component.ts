@@ -14,6 +14,7 @@ import { Observable, EMPTY } from 'rxjs';
 import { startWith, map, switchMap, finalize } from 'rxjs/operators';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +29,6 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { GeocodingService } from '../../../core/services/geocoding.service';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
@@ -95,15 +95,6 @@ export class HouseFormComponent implements OnInit {
     { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
   ];
 
-  availableDays = [
-    { name: 'Monday', controlName: 'monday' },
-    { name: 'Tuesday', controlName: 'tuesday' },
-    { name: 'Wednesday', controlName: 'wednesday' },
-    { name: 'Thursday', controlName: 'thursday' },
-    { name: 'Friday', controlName: 'friday' },
-    { name: 'Saturday', controlName: 'saturday' },
-    { name: 'Sunday', controlName: 'sunday' },
-  ];
   availableTimes = [
     '08:00',
     '09:00',
@@ -159,45 +150,36 @@ export class HouseFormComponent implements OnInit {
 
   private initializeForm(house?: HousingLocation): void {
     this.form = this.fb.group({
+      id: [house?.id],
       name: [house?.name || '', Validators.required],
-      city: [house?.city || '', Validators.required],
+      // Converte a sigla do estado para o nome completo ao editar
       state: [
-        house ? this._findStateName(house.state) : '',
+        house ? this._findStateName(house.state) || '' : '',
         Validators.required,
       ],
-      photo: [house?.photo || '', Validators.required],
+      city: [house?.city || '', Validators.required],
       availableUnits: [
-        house?.availableUnits ?? 1,
+        house?.availableUnits || 1,
         [Validators.required, Validators.min(0)],
       ],
+      photo: [house?.photo || ''],
+      // Adicione os controles que estão faltando aqui
+      typeOfBusiness: [house?.typeOfBusiness || '', Validators.required],
+      propertyType: [house?.propertyType || '', Validators.required],
+      price: [house?.price || null, [Validators.required, Validators.min(1)]],
       wifi: [house?.wifi || false],
       laundry: [house?.laundry || false],
-      price: [house?.price || 0, [Validators.required, Validators.min(1)]],
-      typeOfBusiness: [house?.typeOfBusiness || 'sell', Validators.required],
-      propertyType: [house?.propertyType || '', Validators.required],
-      sellerType: [house?.sellerType || 'Owner', Validators.required],
-      ownerId: [house?.ownerId || ''],
-      visitStartTime: [null],
-      visitEndTime: [null],
+      // Altere a estrutura do form group de visitAvailability
       visitAvailability: this.fb.group({
-        monday: [!!house?.visitAvailability?.['monday']],
-        mondayTimes: [house?.visitAvailability?.['monday'] || []],
-        tuesday: [!!house?.visitAvailability?.['tuesday']],
-        tuesdayTimes: [house?.visitAvailability?.['tuesday'] || []],
-        wednesday: [!!house?.visitAvailability?.['wednesday']],
-        wednesdayTimes: [house?.visitAvailability?.['wednesday'] || []],
-        thursday: [!!house?.visitAvailability?.['thursday']],
-        thursdayTimes: [house?.visitAvailability?.['thursday'] || []],
-        friday: [!!house?.visitAvailability?.['friday']],
-        fridayTimes: [house?.visitAvailability?.['friday'] || []],
-        saturday: [!!house?.visitAvailability?.['saturday']],
-        saturdayTimes: [house?.visitAvailability?.['saturday'] || []],
-        sunday: [!!house?.visitAvailability?.['sunday']],
-        sundayTimes: [house?.visitAvailability?.['sunday'] || []],
+        startDate: [house?.visitAvailability?.startDate || null],
+        endDate: [house?.visitAvailability?.endDate || null],
+        startTime: [house?.visitAvailability?.startTime || null],
+        endTime: [house?.visitAvailability?.endTime || null],
       }),
-      checkInStart: [null],
-      checkInEnd: [null],
-      checkInAvailability: [house?.checkInAvailability || []],
+      rentDateRange: this.fb.group({
+        checkInDate: [house?.rentDateRange?.checkInDate || null],
+        checkOutDate: [house?.rentDateRange?.checkOutDate || null],
+      }),
     });
   }
 
@@ -211,6 +193,7 @@ export class HouseFormComponent implements OnInit {
           if (house) {
             this.initializeForm(house);
             this.imagePreview = house.photo;
+            // 2. Remova a lógica antiga de patch para checkInAvailability se houver
           } else {
             this.snackBar.open('❌ House not found!', 'Close', {
               duration: 3000,

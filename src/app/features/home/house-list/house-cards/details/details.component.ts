@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HousingService } from '../../../../../core/services/housing.service';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -19,7 +20,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
+import {
+  MatOptionModule,
+  provideNativeDateAdapter,
+  MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+} from '@angular/material/core';
 import { User } from '../../../../../core/interfaces/user.interface';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { switchMap } from 'rxjs/operators';
@@ -27,8 +33,24 @@ import { EMPTY } from 'rxjs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { provideNgxMask } from 'ngx-mask';
+import { Subscription } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 declare const L: any;
+
+// 2. Defina o formato de data personalizado
+export const APP_DATE_FORMATS = {
+  parse: {
+    dateInput: 'L',
+  },
+  display: {
+    dateInput: { year: 'numeric', month: '2-digit', day: '2-digit' },
+    monthYearLabel: { year: 'numeric', month: 'short' },
+    dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+    monthYearA11yLabel: { year: 'numeric', month: 'long' },
+  },
+};
 
 @Component({
   selector: 'app-details',
@@ -50,68 +72,67 @@ declare const L: any;
     MatFormFieldModule,
     MatInputModule,
   ],
+  providers: [
+    provideNativeDateAdapter(),
+    provideNgxMask(),
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    // 3. Forneça o formato personalizado
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+  ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
-export class DetailsComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private housingService = inject(HousingService);
-  private applicationService = inject(ApplicationService);
-  private snackBar = inject(MatSnackBar);
+export class DetailsComponent implements OnInit, OnDestroy {
+  // --- Injeção de Dependências ---
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly housingService = inject(HousingService);
+  private readonly applicationService = inject(ApplicationService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly fb = inject(FormBuilder);
+  readonly spinner = inject(NgxSpinnerService);
 
-  spinner = inject(NgxSpinnerService);
-
+  // --- Propriedades da Classe ---
   housingLocation: HousingLocation | undefined;
   private map!: any;
-
-  applyForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    visitDate: new FormControl(''),
-    visitTime: new FormControl(''),
-    checkInDate: new FormControl(''),
-    checkOutDate: new FormControl(''),
-    phone: new FormControl('', Validators.required),
-    location: new FormControl('', Validators.required),
-  });
-
+  applyForm: FormGroup; // A definição será movida para o construtor
   currentUser: User | null = JSON.parse(
     localStorage.getItem('currentUser') || 'null'
   );
   today = new Date();
-
-  allVisitHours = [
-    '08:00',
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00',
-    '20:00',
-  ];
-  filteredVisitHours: string[] = [];
-
   availableVisitDays: number[] = [];
   availableVisitTimes: string[] = [];
-  availableCheckInDates: string[] = [];
+  availableCheckInDates: string[] = []; // 1. DECLARE a propriedade aqui
+  private dateChangeSub: Subscription | undefined;
+
+  constructor() {
+    // Inicializa o formulário aqui, usando o FormBuilder injetado
+    this.applyForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      location: ['', Validators.required],
+      rentDateRange: this.fb.group({
+        checkInDate: [null],
+        checkOutDate: [null],
+      }),
+      visitDate: [null],
+      visitTime: [null],
+    });
+  }
 
   ngOnInit(): void {
     this.spinner.show();
     this.route.params
       .pipe(
         switchMap((params) => {
-          const housingLocationId = params['id'];
+          const housingLocationId = params['id']; // Mantém como string
           if (!housingLocationId) {
             this.router.navigateByUrl('/');
             return EMPTY;
           }
+          // Passa a string diretamente para o serviço
           return this.housingService.getHousingLocationById(housingLocationId);
         })
       )
@@ -122,7 +143,6 @@ export class DetailsComponent implements OnInit {
             return;
           }
           this.housingLocation = location;
-          // Processa a disponibilidade assim que os dados chegam
           this.processAvailability(location);
           this.setupConditionalValidators();
           this.patchUserForm();
@@ -136,15 +156,87 @@ export class DetailsComponent implements OnInit {
         },
       });
 
-    // Escuta mudanças na data da visita para atualizar os horários disponíveis
-    this.applyForm.get('visitDate')?.valueChanges.subscribe((selectedDate) => {
-      this.updateAvailableHours(selectedDate);
-      // Reseta o horário selecionado quando a data muda
-      this.applyForm.get('visitTime')?.reset('');
+    // Apenas esta chamada deve existir para a lógica de data
+    this.subscribeToDateChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.dateChangeSub?.unsubscribe();
+  }
+
+  buildApplyForm(): void {
+    this.applyForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      location: ['', Validators.required],
+      // Agrupa as datas de aluguel em um FormGroup
+      rentDateRange: this.fb.group({
+        checkInDate: [null, Validators.required],
+        checkOutDate: [null, Validators.required],
+      }),
+      visitDate: [null],
+      visitTime: [null],
     });
   }
 
-  // 4. Adicionar a nova função para inicializar o mapa
+  private subscribeToDateChanges(): void {
+    const visitDateControl = this.applyForm.get('visitDate');
+    if (visitDateControl) {
+      this.dateChangeSub = visitDateControl.valueChanges
+        .pipe(
+          // startWith garante que a lógica rode no carregamento inicial
+          startWith(visitDateControl.value)
+        )
+        .subscribe((value: string | Date | null) => {
+          // O valor pode vir como string ou Date, então normalizamos para Date
+          const selectedDate = value ? new Date(value) : null;
+          this.updateVisitTimes(selectedDate);
+        });
+    }
+  }
+
+  /**
+   * Atualiza a lista de horários de visita disponíveis com base na data selecionada.
+   * Substitua o método onVisitDateChange anterior por este.
+   */
+  updateVisitTimes(selectedDate: Date | null): void {
+    // Reseta a seleção de tempo sempre que a data muda
+    this.applyForm.get('visitTime')?.reset();
+    this.availableVisitTimes = []; // Limpa a lista de horários
+
+    if (
+      !selectedDate ||
+      isNaN(selectedDate.getTime()) ||
+      !this.housingLocation?.visitAvailability
+    ) {
+      return;
+    }
+
+    // Mapeia o dia da semana para o nome usado no objeto de disponibilidade
+    const dayName = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+    ][selectedDate.getDay()];
+
+    // Constrói a chave correta para acessar os horários (ex: 'mondayTimes')
+    const timesKey = (dayName +
+      'Times') as keyof typeof this.housingLocation.visitAvailability;
+
+    // Busca os horários usando a chave correta
+    const times = this.housingLocation.visitAvailability[timesKey];
+
+    if (Array.isArray(times)) {
+      this.availableVisitTimes = times;
+    }
+  }
+
   private initMap(): void {
     if (
       this.housingLocation &&
@@ -220,37 +312,14 @@ export class DetailsComponent implements OnInit {
 
   patchUserForm(): void {
     if (this.currentUser) {
+      const nameParts = this.currentUser.name.split(' ');
       this.applyForm.patchValue({
-        name: this.currentUser.name,
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
         email: this.currentUser.email,
         phone: this.currentUser.phone,
         location: this.currentUser.location,
       });
-    }
-  }
-
-  updateAvailableHours(selectedDateStr: string | null): void {
-    if (!selectedDateStr) {
-      this.filteredVisitHours = [];
-      return;
-    }
-
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-
-    if (selectedDateStr > todayStr) {
-      // Se a data selecionada for no futuro, mostra todos os horários.
-      this.filteredVisitHours = this.allVisitHours;
-    } else if (selectedDateStr === todayStr) {
-      // Se a data for hoje, filtra para mostrar apenas os horários futuros.
-      const currentHour = now.getHours();
-      this.filteredVisitHours = this.allVisitHours.filter((hour) => {
-        const hourPart = parseInt(hour.split(':')[0], 10);
-        return hourPart > currentHour;
-      });
-    } else {
-      // Data no passado, nenhum horário disponível.
-      this.filteredVisitHours = [];
     }
   }
 
@@ -265,10 +334,23 @@ export class DetailsComponent implements OnInit {
         friday: 5,
         saturday: 6,
       };
-      this.availableVisitDays = Object.keys(location.visitAvailability)
-        .filter((day) => day.includes('Times')) // Apenas dias com horários
-        .map((day) => dayMap[day.replace('Times', '')]);
+
+      // Limpa a lista de dias disponíveis antes de recalcular
+      this.availableVisitDays = [];
+
+      // Itera sobre as chaves do mapa de dias para verificar a disponibilidade
+      for (const dayName in dayMap) {
+        const timesKey = (dayName +
+          'Times') as keyof typeof location.visitAvailability;
+        const times = location.visitAvailability[timesKey];
+
+        // Verifica se a chave de horários existe e se é um array com itens
+        if (Array.isArray(times) && times.length > 0) {
+          this.availableVisitDays.push(dayMap[dayName]);
+        }
+      }
     }
+
     if (location.typeOfBusiness === 'rent' && location.checkInAvailability) {
       this.availableCheckInDates = location.checkInAvailability;
     }
@@ -282,27 +364,15 @@ export class DetailsComponent implements OnInit {
 
   // Filtro para o datepicker de 'rent'
   checkInDateFilter = (d: Date | null): boolean => {
-    if (!d) return false;
-    const dateString = d.toISOString().split('T')[0];
+    if (!d) {
+      return false;
+    }
+    const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+      2,
+      '0'
+    )}-${String(d.getDate()).padStart(2, '0')}`;
     return this.availableCheckInDates.includes(dateString);
   };
-
-  // Atualiza os horários disponíveis quando uma data é selecionada
-  onVisitDateChange(event: any) {
-    const selectedDate: Date = event.value;
-    const dayOfWeek = [
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-    ][selectedDate.getDay()];
-    this.availableVisitTimes =
-      this.housingLocation?.visitAvailability?.[dayOfWeek + 'Times'] || [];
-    this.applyForm.get('visitTime')?.setValue(''); // Reseta o horário
-  }
 
   // ADICIONE ESTE MÉTODO PARA NAVEGAR PARA A PÁGINA DE EDIÇÃO
   editHouse(): void {
@@ -380,15 +450,16 @@ export class DetailsComponent implements OnInit {
           houseName: this.housingLocation!.name,
           city: this.housingLocation!.city,
           state: this.housingLocation!.state,
-          // Adicionar os campos do formulário que são relevantes para a aplicação
-          name: this.applyForm.value.name,
+          name: `${this.applyForm.value.firstName} ${this.applyForm.value.lastName}`,
           email: this.applyForm.value.email,
           phone: this.applyForm.value.phone,
           location: this.applyForm.value.location,
           visitDate: this.applyForm.value.visitDate || undefined,
           visitTime: this.applyForm.value.visitTime || undefined,
-          checkInDate: this.applyForm.value.checkInDate || undefined,
-          checkOutDate: this.applyForm.value.checkOutDate || undefined,
+          checkInDate:
+            this.applyForm.value.rentDateRange?.checkInDate || undefined,
+          checkOutDate:
+            this.applyForm.value.rentDateRange?.checkOutDate || undefined,
           timestamp: new Date().toISOString(),
         };
 
@@ -436,5 +507,22 @@ export class DetailsComponent implements OnInit {
         duration: 3000,
       });
     }
+  }
+
+  getHousingLocation(): void {
+    const housingLocationId = this.route.snapshot.params['id']; // Remova a conversão Number()
+    this.housingService
+      .getHousingLocationById(housingLocationId)
+      .subscribe((location) => {
+        if (!location) {
+          this.router.navigateByUrl('/');
+          return;
+        }
+        this.housingLocation = location;
+        this.processAvailability(location);
+        this.setupConditionalValidators();
+        this.patchUserForm();
+        this.initMap();
+      });
   }
 }

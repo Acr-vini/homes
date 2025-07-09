@@ -1,6 +1,16 @@
 :host {
   display: block;
   width: 100%;
+
+  // Estilo para os títulos das abas (My Profile, My Listings)
+  ::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+    color: var(--text-color);
+  }
+
+  // Estilo para o título do formulário de senha
+  .password-form h3 {
+    color: var(--text-color);
+  }
 }
 
 mat-card {

@@ -117,57 +117,131 @@
       </div>
 
       <h4>Property Image</h4>
-      @if (imagePreview) {
-      <div class="image-preview">
-        <img [src]="imagePreview" alt="Preview" />
+      <div class="image-preview" *ngIf="imagePreview">
+        <img [src]="imagePreview" alt="Image Preview" />
       </div>
-      }
-      <div class="file-upload">
-        <button type="button" mat-icon-button (click)="fileInput.click()">
-          <mat-icon>upload</mat-icon>
-        </button>
-        <span>Select image</span>
-        <input
-          #fileInput
-          type="file"
-          hidden
-          (change)="onImageSelected($event)"
-          accept="image/*"
-        />
-      </div>
+
+      <!-- Botão de Upload de Imagem -->
+      <label for="file-upload-input" class="file-upload-label">
+        <mat-icon>upload_file</mat-icon>
+        <span>Select Image</span>
+      </label>
+      <input
+        id="file-upload-input"
+        type="file"
+        (change)="onImageSelected($event)"
+        accept="image/*"
+      />
+
+      <!-- SEÇÃO DE DISPONIBILIDADE CONDICIONAL -->
+      <ng-container [ngSwitch]="form.get('typeOfBusiness')?.value">
+        <!-- PARA VENDA (SELL) -->
+        <ng-container *ngSwitchCase="'sell'">
+          <h4 class="availability-title">Visit Availability</h4>
+          <div formGroupName="visitAvailability">
+            <!-- Seletor de intervalo de datas -->
+            <mat-form-field class="full-width">
+              <mat-label>Available from - until</mat-label>
+              <mat-date-range-input [rangePicker]="visitPicker">
+                <input
+                  matStartDate
+                  placeholder="Start date"
+                  formControlName="startDate"
+                />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  formControlName="endDate"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="visitPicker"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker #visitPicker></mat-date-range-picker>
+            </mat-form-field>
+
+            <!-- Seletor de intervalo de tempo -->
+            <div class="time-range-container">
+              <mat-form-field class="time-field">
+                <mat-label>From</mat-label>
+                <mat-select formControlName="startTime">
+                  @for(time of availableTimes; track time) {
+                  <mat-option [value]="time">{{ time }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="time-field">
+                <mat-label>Until</mat-label>
+                <mat-select formControlName="endTime">
+                  @for(time of availableTimes; track time) {
+                  <mat-option [value]="time">{{ time }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- PARA ALUGUEL (RENT) -->
+        <ng-container *ngSwitchCase="'rent'">
+          <h4 class="availability-title">Rental Availability</h4>
+          <!-- Substitua os dois mat-form-field por este único -->
+          <mat-form-field class="full-width">
+            <mat-label>Available from - until</mat-label>
+            <mat-date-range-input
+              [rangePicker]="picker"
+              formGroupName="rentDateRange"
+            >
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="checkInDate"
+              />
+              <input
+                matEndDate
+                placeholder="End date"
+                formControlName="checkOutDate"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </ng-container>
+      </ng-container>
 
       <div class="actions">
         @if (isEditMode) {
         <button
-          mat-button
-          class="custom-icon-button delete-btn"
+          mat-flat-button
+          class="action-btn delete-btn"
           type="button"
           (click)="onDelete()"
-          matTooltip="Delete Listing"
-          aria-label="Delete Listing"
         >
-          <span class="material-symbols-outlined">delete</span>
+          <mat-icon>delete</mat-icon>
+          Delete
         </button>
         }
         <button
-          mat-button
-          class="custom-icon-button cancel-btn"
+          mat-stroked-button
+          class="action-btn cancel-btn"
           type="button"
           (click)="onCancel()"
-          matTooltip="Cancel"
-          aria-label="Cancel"
         >
-          <span class="material-symbols-outlined">cancel</span>
+          <mat-icon>cancel</mat-icon>
+          Cancel
         </button>
         <button
-          mat-button
-          class="custom-icon-button save-btn"
+          mat-flat-button
+          class="action-btn save-btn"
           type="submit"
           [disabled]="form.invalid"
-          [matTooltip]="isEditMode ? 'Save Changes' : 'Create House'"
-          [attr.aria-label]="isEditMode ? 'Save Changes' : 'Create House'"
         >
-          <span class="material-symbols-outlined">save</span>
+          <mat-icon>save</mat-icon>
+          {{ isEditMode ? "Save Changes" : "Create House" }}
         </button>
       </div>
     </form>

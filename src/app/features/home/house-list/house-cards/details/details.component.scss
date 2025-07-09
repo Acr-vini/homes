@@ -104,7 +104,8 @@ label {
   margin-top: 10px;
 }
 
-input {
+// Altere o seletor de 'input' para '.form-input'
+.form-input {
   font-size: 16pt;
   margin-bottom: 15px;
   padding: 10px;
@@ -117,7 +118,8 @@ input {
   color: var(--text-color);
 }
 
-input:focus {
+// Altere o seletor de 'input:focus' para '.form-input:focus'
+.form-input:focus {
   outline: none;
   border-color: var(--text-color);
 }
@@ -241,4 +243,59 @@ button.primary:hover {
   align-items: center;
   justify-content: space-between;
   margin-top: 2px;
+}
+
+.apply-form {
+  display: grid;
+  gap: 1rem;
+}
+
+// Torne este seletor mais específico para não afetar os campos de data
+.apply-form > .form-input {
+  border: none;
+  border-bottom: 1px solid var(--purpleWeak);
+  padding: 8px 0;
+  font-size: 1rem;
+  background-color: transparent;
+  color: var(--text-color);
+  width: 100%;
+  transition: border-color 0.3s;
+
+  &:focus {
+    outline: none;
+    border-bottom-color: var(--purpleBck);
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  align-items: flex-start; /* Alinha os itens no topo */
+}
+
+/* Nova classe para o seletor de período */
+.form-field-range {
+  width: 100%; /* Faz o seletor de período ocupar toda a largura */
+}
+
+.full-width-btn {
+  width: 100%;
+  margin-top: 1rem; /* Adiciona espaço acima do botão */
+}
+
+.primary {
+  background-color: var(--purpleBck);
+  color: white;
+  font-size: 16pt;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.primary:hover {
+  background-color: #5e34b1;
 }

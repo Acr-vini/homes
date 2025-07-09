@@ -69,8 +69,22 @@
       [formGroup]="applyForm"
       (submit)="submitApplication()"
     >
-      <label for="name">Name</label>
-      <input id="name" type="text" formControlName="name" class="form-input" />
+      <!-- Substitua o campo 'name' pelos campos 'firstName' e 'lastName' -->
+      <label for="firstName">First Name</label>
+      <input
+        id="firstName"
+        type="text"
+        formControlName="firstName"
+        class="form-input"
+      />
+      <label for="lastName">Last Name</label>
+      <input
+        id="lastName"
+        type="text"
+        formControlName="lastName"
+        class="form-input"
+      />
+
       <label for="email">Email</label>
       <input
         id="email"
@@ -92,51 +106,64 @@
         formControlName="location"
         class="form-input"
       />
+
       <!-- SELL -->
       @if (housingLocation.typeOfBusiness === 'sell') {
-      <mat-form-field class="full-width">
-        <mat-label>Date of Visit</mat-label>
-        <input
-          matInput
-          [matDatepicker]="visitPicker"
-          formControlName="visitDate"
-          [min]="today"
-          [matDatepickerFilter]="visitDateFilter"
-          (dateChange)="onVisitDateChange($event)"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="visitPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #visitPicker></mat-datepicker>
-      </mat-form-field>
+      <div class="form-row">
+        <mat-form-field class="form-field">
+          <mat-label>Date of Visit</mat-label>
+          <input
+            matInput
+            [matDatepicker]="visitPicker"
+            formControlName="visitDate"
+            [min]="today"
+            placeholder="dd/mm/yyyy"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="visitPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #visitPicker></mat-datepicker>
+        </mat-form-field>
 
-      <label for="visit-time">Visit Time</label>
-      <select id="visit-time" formControlName="visitTime" class="form-input">
-        @for(time of availableVisitTimes; track time) {
-        <option [value]="time">{{ time }}</option>
-        }
-      </select>
+        <mat-form-field class="form-field">
+          <mat-label>Visit Time</mat-label>
+          <mat-select formControlName="visitTime">
+            @for(time of availableVisitTimes; track time) {
+            <mat-option [value]="time">{{ time }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
       }
+
       <!-- RENT -->
       @if (housingLocation.typeOfBusiness === 'rent') {
-      <mat-form-field class="full-width">
-        <mat-label>Check-in Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="checkinPicker"
-          formControlName="checkInDate"
-          [min]="today"
-          [matDatepickerFilter]="checkInDateFilter"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="checkinPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #checkinPicker></mat-datepicker>
-      </mat-form-field>
+      <div formGroupName="rentDateRange">
+        <mat-form-field class="form-field-range">
+          <mat-label>Check-in - Check-out</mat-label>
+          <mat-date-range-input [rangePicker]="rentPicker" [min]="today">
+            <input
+              matStartDate
+              placeholder="Check-in date"
+              formControlName="checkInDate"
+            />
+            <input
+              matEndDate
+              placeholder="Check-out date"
+              formControlName="checkOutDate"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="rentPicker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #rentPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
       }
-      <button type="submit" class="primary">Apply now</button>
+
+      <button type="submit" class="primary full-width-btn">Apply now</button>
     </form>
   </section>
 </article>

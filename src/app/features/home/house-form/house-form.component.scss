@@ -55,6 +55,11 @@
   display: flex;
   gap: 2rem;
   margin-bottom: 1rem;
+
+  // Seletor específico para o texto da checkbox
+  ::ng-deep .mat-mdc-checkbox .mdc-form-field label {
+    color: var(--text-color) !important;
+  }
 }
 
 .image-preview {
@@ -71,53 +76,107 @@
     border-radius: 4px;
   }
 }
-
-.file-upload {
-  display: flex;
+.file-upload-label {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  color: #666;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Esconde o input de arquivo real */
+#file-upload-input {
+  display: none;
 }
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; /* Centraliza os botões */
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--purpleWeak);
 }
 
-button.mat-icon-button {
-  padding: 20px 16px;
-  width: auto;
-  height: auto;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
+.action-btn {
+  padding: 0 24px !important;
+  height: 48px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem;
 }
+
 .save-btn {
-  background-color: #381c9e;
-  color: #fff;
-
-  &:hover {
-    background-color: #2a1575;
-  }
+  background-color: var(--purpleBck) !important; /* Usa a variável roxa */
+  color: white !important;
 }
-.cancel-btn {
-  background-color: #e0e0e0;
-  color: #424242;
 
-  &:hover {
-    background-color: #afafaf;
-  }
-}
 .delete-btn {
-  background-color: #f44336;
-  color: #fff;
+  background-color: #f44336 !important;
+  color: white !important;
+}
 
-  &:hover {
-    background-color: #d32f2f;
-  }
+.cancel-btn {
+  border-color: var(--purpleBck) !important;
+  color: var(--purpleBck) !important;
+}
+
+.availability-title {
+  margin-top: 2rem;
+  border-top: 1px solid #ccc;
+  padding-top: 1.5rem;
+}
+
+.availability-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.day-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.time-select {
+  width: 100%;
+}
+
+// Estilos para o calendário de aluguel
+.availability-instructions {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.selected-dates-display {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+// Estilo para destacar as datas selecionadas no calendário
+::ng-deep .mat-calendar-body .selected-date .mat-calendar-body-cell-content {
+  background-color: var(--purpleBck) !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+.time-range-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem; // Adicione esta linha para criar o espaçamento
+}
+
+.time-field {
+  flex: 1;
 }
