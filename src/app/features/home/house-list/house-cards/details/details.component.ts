@@ -36,10 +36,8 @@ import { MatInputModule } from '@angular/material/input';
 import { provideNgxMask } from 'ngx-mask';
 import { Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
+import * as L from 'leaflet';
 
-declare const L: any;
-
-// 2. Defina o formato de data personalizado
 export const APP_DATE_FORMATS = {
   parse: {
     dateInput: 'L',
@@ -92,21 +90,19 @@ export class DetailsComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   readonly spinner = inject(NgxSpinnerService);
 
-  // --- Propriedades da Classe ---
   housingLocation: HousingLocation | undefined;
-  private map!: any;
-  applyForm: FormGroup; // A definição será movida para o construtor
+  private map!: L.Map;
+  applyForm: FormGroup;
   currentUser: User | null = JSON.parse(
     localStorage.getItem('currentUser') || 'null'
   );
   today = new Date();
   availableVisitDays: number[] = [];
   availableVisitTimes: string[] = [];
-  availableCheckInDates: string[] = []; // 1. DECLARE a propriedade aqui
+  availableCheckInDates: string[] = [];
   private dateChangeSub: Subscription | undefined;
 
   constructor() {
-    // Inicializa o formulário aqui, usando o FormBuilder injetado
     this.applyForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -127,12 +123,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.route.params
       .pipe(
         switchMap((params) => {
-          const housingLocationId = params['id']; // Mantém como string
+          const housingLocationId = params['id'];
           if (!housingLocationId) {
             this.router.navigateByUrl('/');
             return EMPTY;
           }
-          // Passa a string diretamente para o serviço
           return this.housingService.getHousingLocationById(housingLocationId);
         })
       )
@@ -146,7 +141,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
           this.processAvailability(location);
           this.setupConditionalValidators();
           this.patchUserForm();
-          this.initMap();
+          setTimeout(() => this.initMap(), 0);
           this.spinner.hide();
         },
         error: (err) => {
@@ -156,7 +151,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
         },
       });
 
-    // Apenas esta chamada deve existir para a lógica de data
     this.subscribeToDateChanges();
   }
 
@@ -171,7 +165,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       location: ['', Validators.required],
-      // Agrupa as datas de aluguel em um FormGroup
       rentDateRange: this.fb.group({
         checkInDate: [null, Validators.required],
         checkOutDate: [null, Validators.required],
@@ -185,26 +178,17 @@ export class DetailsComponent implements OnInit, OnDestroy {
     const visitDateControl = this.applyForm.get('visitDate');
     if (visitDateControl) {
       this.dateChangeSub = visitDateControl.valueChanges
-        .pipe(
-          // startWith garante que a lógica rode no carregamento inicial
-          startWith(visitDateControl.value)
-        )
+        .pipe(startWith(visitDateControl.value))
         .subscribe((value: string | Date | null) => {
-          // O valor pode vir como string ou Date, então normalizamos para Date
           const selectedDate = value ? new Date(value) : null;
           this.updateVisitTimes(selectedDate);
         });
     }
   }
 
-  /**
-   * Atualiza a lista de horários de visita disponíveis com base na data selecionada.
-   * Substitua o método onVisitDateChange anterior por este.
-   */
   updateVisitTimes(selectedDate: Date | null): void {
-    // Reseta a seleção de tempo sempre que a data muda
     this.applyForm.get('visitTime')?.reset();
-    this.availableVisitTimes = []; // Limpa a lista de horários
+    this.availableVisitTimes = [];
 
     if (
       !selectedDate ||
@@ -214,7 +198,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Mapeia o dia da semana para o nome usado no objeto de disponibilidade
     const dayName = [
       'sunday',
       'monday',
@@ -225,11 +208,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
       'saturday',
     ][selectedDate.getDay()];
 
-    // Constrói a chave correta para acessar os horários (ex: 'mondayTimes')
     const timesKey = (dayName +
       'Times') as keyof typeof this.housingLocation.visitAvailability;
 
-    // Busca os horários usando a chave correta
     const times = this.housingLocation.visitAvailability[timesKey];
 
     if (Array.isArray(times)) {
@@ -243,33 +224,30 @@ export class DetailsComponent implements OnInit, OnDestroy {
       this.housingLocation.latitude &&
       this.housingLocation.longitude
     ) {
-      // Previne que o mapa seja inicializado múltiplas vezes
       if (this.map) {
         this.map.remove();
       }
 
-      // Cria o mapa e centraliza nas coordenadas do imóvel
-      this.map = L.map('map').setView(
+      this.map = L.map('map', {}).setView(
         [this.housingLocation.latitude, this.housingLocation.longitude],
         14
-      ); // O '14' é o nível de zoom
+      );
 
-      // Adiciona a camada de visualização do mapa (usando OpenStreetMap, que é gratuito)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
           '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(this.map);
 
-      // Adiciona o marcador (pin) no mapa
       L.marker([this.housingLocation.latitude, this.housingLocation.longitude])
         .addTo(this.map)
-        .bindPopup(`<b>${this.housingLocation.name}</b>`) // Texto que aparece ao clicar no pin
+        .bindPopup(`<b>${this.housingLocation.name}</b>`)
         .openPopup();
+
+      this.map.invalidateSize();
     }
   }
 
   get favoriteKey(): string {
-    // Retorna uma chave única por usuário para o localStorage
     return `favoriteHouses_${this.currentUser?.id}`;
   }
 
@@ -335,16 +313,13 @@ export class DetailsComponent implements OnInit, OnDestroy {
         saturday: 6,
       };
 
-      // Limpa a lista de dias disponíveis antes de recalcular
       this.availableVisitDays = [];
 
-      // Itera sobre as chaves do mapa de dias para verificar a disponibilidade
       for (const dayName in dayMap) {
         const timesKey = (dayName +
           'Times') as keyof typeof location.visitAvailability;
         const times = location.visitAvailability[timesKey];
 
-        // Verifica se a chave de horários existe e se é um array com itens
         if (Array.isArray(times) && times.length > 0) {
           this.availableVisitDays.push(dayMap[dayName]);
         }
@@ -356,13 +331,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Filtro para o datepicker de 'sell'
   visitDateFilter = (d: Date | null): boolean => {
     const day = (d || new Date()).getDay();
     return this.availableVisitDays.includes(day);
   };
 
-  // Filtro para o datepicker de 'rent'
   checkInDateFilter = (d: Date | null): boolean => {
     if (!d) {
       return false;
@@ -374,7 +347,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
     return this.availableCheckInDates.includes(dateString);
   };
 
-  // ADICIONE ESTE MÉTODO PARA NAVEGAR PARA A PÁGINA DE EDIÇÃO
   editHouse(): void {
     if (this.housingLocation?.id) {
       this.router.navigate(['/edit-house', this.housingLocation.id]);
@@ -386,11 +358,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
     return role === 'admin' || role === 'agent';
   }
 
-  // Adicionar novo método para configurar validadores condicionais
   setupConditionalValidators(): void {
     if (!this.housingLocation) return;
 
-    // Limpar validadores anteriores para os campos de data/hora
     this.applyForm.get('visitDate')?.clearValidators();
     this.applyForm.get('visitTime')?.clearValidators();
     this.applyForm.get('checkInDate')?.clearValidators();
@@ -404,7 +374,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
       this.applyForm.get('checkOutDate')?.setValidators(Validators.required);
     }
 
-    // Atualizar o estado de validade dos controles
     this.applyForm.get('visitDate')?.updateValueAndValidity();
     this.applyForm.get('visitTime')?.updateValueAndValidity();
     this.applyForm.get('checkInDate')?.updateValueAndValidity();
@@ -413,7 +382,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   submitApplication(): void {
     if (this.applyForm.invalid) {
-      // Verificar se o formulário é inválido primeiro
       this.snackBar.open(
         'Please fill all required fields correctly.',
         'Close',
@@ -421,17 +389,14 @@ export class DetailsComponent implements OnInit, OnDestroy {
           duration: 3000,
         }
       );
-      // Marcar todos os campos como tocados para exibir mensagens de erro
       this.applyForm.markAllAsTouched();
       return;
     }
     if (this.housingLocation) {
-      // housingLocation deve existir para submeter
-      // Adicionada verificação para this.housingLocation
       const snackBarRefConfirm = this.snackBar.open(
         'Are you sure you want to apply?',
         'Yes',
-        { duration: 7000 } // Aumentar duração para dar tempo de clicar
+        { duration: 7000 }
       );
 
       snackBarRefConfirm.onAction().subscribe(() => {
@@ -465,7 +430,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
         this.applicationService.add(newApplicationPayload).subscribe({
           next: (addedApplication) => {
-            // O serviço add pode retornar a aplicação criada
             let snackBarMessage = `Application for ${newApplicationPayload.houseName} submitted. `;
             if (
               newApplicationPayload.typeOfBusiness === 'sell' &&
@@ -487,7 +451,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
               duration: 7000,
             });
 
-            // Navegar para a tela de "activity date"
             this.router.navigate(['/activity-date']);
           },
           error: (err) => {
@@ -510,7 +473,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   getHousingLocation(): void {
-    const housingLocationId = this.route.snapshot.params['id']; // Remova a conversão Number()
+    const housingLocationId = this.route.snapshot.params['id'];
     this.housingService
       .getHousingLocationById(housingLocationId)
       .subscribe((location) => {

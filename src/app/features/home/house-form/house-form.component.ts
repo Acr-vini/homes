@@ -1,18 +1,36 @@
-import { Component, OnInit, Optional, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { HousingService } from '../../../core/services/housing.service';
+  Component,
+  computed,
+  inject,
+  OnInit,
+  Optional,
+  signal,
+  ChangeDetectionStrategy,
+  DestroyRef,
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Observable, of } from 'rxjs';
+import {
+  finalize,
+  debounceTime,
+  distinctUntilChanged,
+  tap,
+  catchError,
+  switchMap,
+} from 'rxjs/operators';
 import { HousingLocation } from '../../../core/interfaces/housinglocation.interface';
-import { State, City, IState } from 'country-state-city';
-import { Observable, EMPTY } from 'rxjs';
-import { startWith, map, switchMap, finalize } from 'rxjs/operators';
+import { HousingService } from '../../../core/services/housing.service';
+import { addressService } from '../../../core/services/address.service';
+import { IState, State } from 'country-state-city';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+// --- Imports dos Módulos ---
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,16 +38,45 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { GeocodingService } from '../../../core/services/geocoding.service';
 import { MatNativeDateModule } from '@angular/material/core';
+
+const AVAILABLE_TIMES = [
+  '08:00',
+  '09:00',
+  '10:00',
+  '11:00',
+  '12:00',
+  '13:00',
+  '14:00',
+  '15:00',
+  '16:00',
+  '17:00',
+  '18:00',
+];
+const RESIDENTIAL_PROPERTY_TYPES = [
+  { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
+  { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
+  { value: 'condo', viewValue: 'Condo', icon: 'domain' },
+  { value: 'studio', viewValue: 'Studio', icon: 'meeting_room' },
+  { value: 'flat', viewValue: 'Flat', icon: 'hotel' },
+  { value: 'loft', viewValue: 'Loft', icon: 'night_shelter' },
+  { value: 'penthouse', viewValue: 'Penthouse', icon: 'roofing' },
+];
+const COMMERCIAL_PROPERTY_TYPES = [
+  { value: 'office', viewValue: 'Office', icon: 'business_center' },
+  { value: 'store', viewValue: 'Store', icon: 'storefront' },
+  { value: 'warehouse', viewValue: 'Warehouse', icon: 'warehouse' },
+  { value: 'industrial', viewValue: 'Industrial', icon: 'factory' },
+  { value: 'terrain', viewValue: 'Terrain', icon: 'landscape' },
+];
 
 @Component({
   selector: 'app-house-form',
@@ -49,136 +96,92 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatTooltipModule,
     NgxSpinnerModule,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
     MatDividerModule,
     MatDatepickerModule,
     MatNativeDateModule,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './house-form.component.html',
   styleUrls: ['./house-form.component.scss'],
 })
 export class HouseFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private housingService = inject(HousingService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+  private spinner = inject(NgxSpinnerService);
+  private route = inject(ActivatedRoute);
+  private addressService = inject(addressService);
+  private destroyRef = inject(DestroyRef);
+
   form!: FormGroup;
-  imagePreview: string | null = null;
-  progress = 0;
-  isEditMode = false;
-  private currentHouseId: string | null = null;
+  progress = signal(0);
+  isZipLoading = signal(false);
+  imagePreviews = signal<string[]>([]);
+  private currentHouseId = signal<string | null>(null);
 
-  allStates: IState[] = State.getStatesOfCountry('US');
-  allCities: string[] = [];
-  filteredStates!: Observable<IState[]>;
-  filteredCities!: Observable<string[]>;
+  isEditMode = computed(() => !!this.currentHouseId());
+  priceLabel = computed(() =>
+    this.form?.get('typeOfBusiness')?.value === 'rent'
+      ? 'Price per day (USD)'
+      : 'Price (USD)'
+  );
 
-  residentialPropertyTypes = [
-    { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
-    { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
-    { value: 'condo', viewValue: 'Condo', icon: 'domain' },
-    { value: 'studio', viewValue: 'Studio', icon: 'meeting_room' },
-    { value: 'flat', viewValue: 'Flat', icon: 'hotel' },
-    { value: 'loft', viewValue: 'Loft', icon: 'roofing' },
-    { value: 'penthouse', viewValue: 'Penthouse', icon: 'villa' },
-    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
-    { value: 'land', viewValue: 'Land/Lot', icon: 'terrain' },
-    { value: 'land_condo', viewValue: 'Land in Condo', icon: 'location_city' },
-  ];
-  commercialPropertyTypes = [
-    { value: 'office', viewValue: 'Office', icon: 'business' },
-    {
-      value: 'commercial_house',
-      viewValue: 'Commercial House',
-      icon: 'home_work',
-    },
-    { value: 'store', viewValue: 'Store', icon: 'store' },
-    { value: 'warehouse', viewValue: 'Warehouse', icon: 'inventory' },
-    { value: 'commercial_land', viewValue: 'Commercial Land', icon: 'terrain' },
-    { value: 'building', viewValue: 'Building', icon: 'apartment' },
-    { value: 'garage', viewValue: 'Garage', icon: 'local_parking' },
-    { value: 'farm', viewValue: 'Farm', icon: 'agriculture' },
-  ];
+  readonly availableTimes = AVAILABLE_TIMES;
+  readonly residentialPropertyTypes = RESIDENTIAL_PROPERTY_TYPES;
+  readonly commercialPropertyTypes = COMMERCIAL_PROPERTY_TYPES;
+  readonly allStates: IState[] = State.getStatesOfCountry('US');
 
-  availableTimes = [
-    '08:00',
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-  ];
-
-  private geocodingService = inject(GeocodingService);
+  private lastFetchedLocation: {
+    lat: number;
+    lon: number;
+    stateCode: string;
+  } | null = null;
 
   constructor(
-    private fb: FormBuilder,
-    private housingService: HousingService,
-    private router: Router,
-    private snackBar: MatSnackBar,
-    private spinner: NgxSpinnerService,
-    private route: ActivatedRoute,
     @Optional() public dialogRef?: MatDialogRef<HouseFormComponent>
   ) {}
 
   ngOnInit(): void {
-    this.currentHouseId = this.route.snapshot.paramMap.get('id');
-    this.isEditMode = !!this.currentHouseId;
-
     this.initializeForm();
 
-    if (this.isEditMode && this.currentHouseId) {
-      this.loadHouseData(this.currentHouseId);
-    } else {
-      const currentUser = JSON.parse(
-        localStorage.getItem('currentUser') || 'null'
-      );
-      if (currentUser) {
-        this.form.patchValue({ ownerId: currentUser.id });
-      }
+    const houseId = this.route.snapshot.paramMap.get('id');
+    this.currentHouseId.set(houseId);
+
+    if (this.isEditMode() && houseId) {
+      this.loadHouseData(houseId);
     }
 
-    this._setupFilters();
-    this.form.valueChanges.subscribe(() => this.calculateProgress());
+    this.setupFormListeners();
   }
 
-  get priceLabel(): string {
-    if (!this.form) return 'Price (USD)';
-    const type = this.form.get('typeOfBusiness')?.value;
-    return type === 'rent' ? 'Price per day (USD)' : 'Price (USD)';
-  }
-
-  private initializeForm(house?: HousingLocation): void {
+  private initializeForm(): void {
     this.form = this.fb.group({
-      id: [house?.id],
-      name: [house?.name || '', Validators.required],
-      // Converte a sigla do estado para o nome completo ao editar
-      state: [
-        house ? this._findStateName(house.state) || '' : '',
-        Validators.required,
-      ],
-      city: [house?.city || '', Validators.required],
-      availableUnits: [
-        house?.availableUnits || 1,
-        [Validators.required, Validators.min(0)],
-      ],
-      photo: [house?.photo || ''],
-      // Adicione os controles que estão faltando aqui
-      typeOfBusiness: [house?.typeOfBusiness || '', Validators.required],
-      propertyType: [house?.propertyType || '', Validators.required],
-      price: [house?.price || null, [Validators.required, Validators.min(1)]],
-      wifi: [house?.wifi || false],
-      laundry: [house?.laundry || false],
-      // Altere a estrutura do form group de visitAvailability
+      id: [''],
+      name: ['', Validators.required],
+      street: ['', Validators.required],
+      number: ['', Validators.required],
+      neighborhood: ['', Validators.required],
+      zipCode: ['', Validators.required],
+      state: [{ value: '', disabled: true }, Validators.required],
+      city: [{ value: '', disabled: true }, Validators.required],
+      availableUnits: [1, [Validators.required, Validators.min(0)]],
+      photo: [''],
+      typeOfBusiness: ['', Validators.required],
+      propertyType: ['', Validators.required],
+      price: [null, [Validators.required, Validators.min(1)]],
+      wifi: [false],
+      laundry: [false],
       visitAvailability: this.fb.group({
-        startDate: [house?.visitAvailability?.startDate || null],
-        endDate: [house?.visitAvailability?.endDate || null],
-        startTime: [house?.visitAvailability?.startTime || null],
-        endTime: [house?.visitAvailability?.endTime || null],
+        startDate: [null],
+        endDate: [null],
+        startTime: [null],
+        endTime: [null],
       }),
       rentDateRange: this.fb.group({
-        checkInDate: [house?.rentDateRange?.checkInDate || null],
-        checkOutDate: [house?.rentDateRange?.checkOutDate || null],
+        checkInDate: [null],
+        checkOutDate: [null],
       }),
     });
   }
@@ -191,9 +194,13 @@ export class HouseFormComponent implements OnInit {
       .subscribe({
         next: (house) => {
           if (house) {
-            this.initializeForm(house);
-            this.imagePreview = house.photo;
-            // 2. Remova a lógica antiga de patch para checkInAvailability se houver
+            const processedHouse = {
+              ...house,
+              state: this._findStateName(house.state),
+            };
+            // CORREÇÃO 1: Adicionar { emitEvent: false } para não disparar o valueChanges
+            this.form.reset(processedHouse, { emitEvent: false });
+            this.imagePreviews.set(house.photo ? [house.photo] : []);
           } else {
             this.snackBar.open('❌ House not found!', 'Close', {
               duration: 3000,
@@ -210,126 +217,96 @@ export class HouseFormComponent implements OnInit {
       });
   }
 
+  private setupFormListeners(): void {
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.calculateProgress());
+    this.setupZipCodeListener();
+  }
+
   onSubmit(): void {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       this.snackBar.open('❌ Please fill all required fields.', 'Close', {
         duration: 3000,
       });
-      this.form.markAllAsTouched();
       return;
     }
 
+    const payload = this._buildPayload();
+    if (!payload) return;
+
     this.spinner.show();
-    if (this.isEditMode) {
-      this.updateHouse();
-    } else {
-      this.createHouse();
-    }
+
+    const saveOperation$ = this.isEditMode()
+      ? this.housingService.updateHousingLocation(
+          this.currentHouseId()!,
+          payload
+        )
+      : this.housingService.createHousingLocation(payload as HousingLocation);
+
+    this._handleSaveResponse(saveOperation$);
   }
 
-  private createHouse(): void {
+  private _buildPayload(): Partial<HousingLocation> | null {
+    if (!this.lastFetchedLocation && !this.isEditMode()) {
+      this.snackBar.open(
+        '❌ Location data is missing. Please re-enter a valid ZIP code.',
+        'Close',
+        { duration: 4000 }
+      );
+      return null;
+    }
     const formValues = this.form.getRawValue();
-    const stateIsoCode = this._findStateIso(formValues.state);
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
     );
 
+    const stateIsoCode = this._findStateIso(formValues.state);
     if (!stateIsoCode) {
-      this.snackBar.open('❌ Invalid state selected.', 'Close', {
+      this.snackBar.open('❌ Invalid state in form.', 'Close', {
         duration: 3000,
       });
-      this.spinner.hide();
-      return;
+      return null;
     }
 
-    this.geocodingService
-      .getCoordinates(formValues.city, stateIsoCode)
-      .pipe(
-        switchMap((coordinates) => {
-          if (!coordinates) {
-            this.snackBar.open(
-              '❌ Could not find location. Please check the address.',
-              'Close',
-              { duration: 4000 }
-            );
-            return EMPTY;
-          }
-
-          const payload: Omit<HousingLocation, 'id'> = {
-            ...formValues,
-            state: stateIsoCode,
-            createBy: String(currentUser?.id ?? ''),
-            deleted: false,
+    return {
+      ...formValues,
+      state: stateIsoCode,
+      latitude: this.lastFetchedLocation?.lat,
+      longitude: this.lastFetchedLocation?.lon,
+      ...(this.isEditMode()
+        ? { editedBy: currentUser?.id, updatedAt: new Date().toISOString() }
+        : {
+            createBy: currentUser?.id,
+            ownerId: currentUser?.id,
             listedDate: new Date().toISOString(),
-            latitude: coordinates.lat,
-            longitude: coordinates.lon,
-          };
-          return this.housingService.createHousingLocation(payload);
-        }),
-        finalize(() => this.spinner.hide())
+          }),
+    };
+  }
+
+  private _handleSaveResponse(obs$: Observable<any>): void {
+    obs$
+      .pipe(
+        finalize(() => this.spinner.hide()),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: () => {
-          this.snackBar.open('✅ House created successfully!', 'Close', {
-            duration: 3000,
-          });
-          this.housingService.notifyHouseListUpdated();
-          this.form.reset();
-          this.imagePreview = null;
-          this.router.navigate(['/profile'], {
-            queryParams: { tab: 'listings' },
-          });
-        },
-        error: (err) => {
-          this.snackBar.open('❌ Error creating house.', 'Close', {
-            duration: 3000,
-          });
-          console.error('Create house failed:', err);
-        },
-      });
-  }
-
-  private updateHouse(): void {
-    if (!this.currentHouseId) return;
-
-    const formValues = this.form.getRawValue();
-    const stateIsoCode = this._findStateIso(formValues.state);
-    const currentUser = JSON.parse(
-      localStorage.getItem('currentUser') || 'null'
-    );
-
-    if (!stateIsoCode) {
-      this.snackBar.open('❌ Invalid state selected.', 'Close', {
-        duration: 3000,
-      });
-      this.spinner.hide();
-      return;
-    }
-
-    const updatedHouseData: Partial<HousingLocation> = {
-      ...formValues,
-      state: stateIsoCode,
-      editedBy: currentUser?.id ?? '',
-      updatedAt: new Date().toISOString(),
-    };
-
-    this.housingService
-      .updateHousingLocation(this.currentHouseId, updatedHouseData)
-      .pipe(finalize(() => this.spinner.hide()))
-      .subscribe({
-        next: () => {
-          this.snackBar.open('✅ House updated successfully!', 'Close', {
-            duration: 3000,
-          });
+          const messageAction = this.isEditMode() ? 'updated' : 'created';
+          this.snackBar.open(
+            `✅ House ${messageAction} successfully!`,
+            'Close',
+            { duration: 3000 }
+          );
           this.housingService.notifyHouseListUpdated();
           this.router.navigate(['/profile'], {
             queryParams: { tab: 'listings' },
           });
         },
         error: (err) => {
-          this.spinner.hide();
-          console.error('Error saving house:', err);
-          this.snackBar.open('❌ Error updating house.', 'Close', {
+          console.error('Save house failed:', err);
+          this.snackBar.open('❌ Error saving house.', 'Close', {
             duration: 3000,
           });
         },
@@ -337,7 +314,8 @@ export class HouseFormComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (!this.currentHouseId) return;
+    if (!this.currentHouseId()) return;
+    const houseId = this.currentHouseId()!;
 
     const snackBarRef = this.snackBar.open(
       'Are you sure you want to delete this listing?',
@@ -345,55 +323,63 @@ export class HouseFormComponent implements OnInit {
       { duration: 5000 }
     );
 
-    snackBarRef.onAction().subscribe(() => {
-      this.spinner.show();
-      const currentUser = JSON.parse(
-        localStorage.getItem('currentUser') || 'null'
-      );
-      if (!currentUser?.id) {
-        this.spinner.hide();
-        this.snackBar.open('❌ Could not verify user.', 'Close', {
-          duration: 3000,
-        });
-        return;
-      }
-      this.housingService
-        .deleteHousingLocation(this.currentHouseId!, currentUser.id)
-        .pipe(finalize(() => this.spinner.hide()))
-        .subscribe({
-          next: () => {
-            this.snackBar.open('✅ Listing deleted successfully!', 'Close', {
-              duration: 3000,
-            });
-            this.router.navigate(['/profile/my-listings']);
-          },
-          error: () =>
-            this.snackBar.open('❌ Error deleting listing.', 'Close', {
-              duration: 3000,
-            }),
-        });
-    });
+    snackBarRef
+      .onAction()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.spinner.show();
+        const currentUser = JSON.parse(
+          localStorage.getItem('currentUser') || 'null'
+        );
+        if (!currentUser?.id) {
+          this.spinner.hide();
+          this.snackBar.open('❌ Could not verify user.', 'Close', {
+            duration: 3000,
+          });
+          return;
+        }
+        this.housingService
+          .deleteHousingLocation(houseId, currentUser.id)
+          .pipe(finalize(() => this.spinner.hide()))
+          .subscribe({
+            next: () => {
+              this.snackBar.open('✅ Listing deleted successfully!', 'Close', {
+                duration: 3000,
+              });
+              this.router.navigate(['/profile/my-listings']);
+            },
+            error: () =>
+              this.snackBar.open('❌ Error deleting listing.', 'Close', {
+                duration: 3000,
+              }),
+          });
+      });
+  }
+
+  onClearForm(): void {
+    const ownerId = this.form.get('ownerId')?.value;
+    this.form.reset();
+    this.imagePreviews.set([]);
+    this.form.patchValue({ ownerId: ownerId });
+    this.snackBar.open('Form cleared', 'Close', { duration: 2000 });
   }
 
   onCancel(): void {
-    if (this.isEditMode) {
-      this.router.navigate(['/home']);
-    } else {
-      this.router.navigate(['/home']);
-    }
+    this.router.navigate(['/home']);
   }
 
   onImageSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result as string;
-        this.form.patchValue({ photo: this.imagePreview });
-        this.form.get('photo')?.markAsDirty();
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      this.imagePreviews.set([result]);
+      this.form.patchValue({ photo: result });
+      this.form.get('photo')?.markAsDirty();
+    };
+    reader.readAsDataURL(file);
   }
 
   calculateProgress(): void {
@@ -404,56 +390,60 @@ export class HouseFormComponent implements OnInit {
         completedFields++;
       }
     }
-    this.progress = (completedFields / totalFields) * 100;
+    this.progress.set((completedFields / totalFields) * 100);
   }
 
-  private _setupFilters(): void {
-    this.filteredStates = this.form.get('state')!.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterStates(value || ''))
-    );
+  private setupZipCodeListener(): void {
+    const zipControl = this.form.get('zipCode');
+    if (!zipControl) return;
 
-    this.filteredCities = this.form.get('city')!.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterCities(value || ''))
-    );
-
-    this.form.get('state')!.valueChanges.subscribe((stateName) => {
-      const iso = this._findStateIso(stateName);
-      this.allCities = iso
-        ? City.getCitiesOfState('US', iso).map((c) => c.name)
-        : [];
-      this.form.get('city')!.setValue('');
-    });
+    zipControl.valueChanges
+      .pipe(
+        // CORREÇÃO 2: Operador 'skip(1)' removido daqui
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => {
+          this.isZipLoading.set(true);
+          this.form.patchValue({ city: '', state: '' }, { emitEvent: false });
+          this.lastFetchedLocation = null;
+        }),
+        switchMap((zip) =>
+          zip && zip.length === 5
+            ? this.addressService.getAddressByZipCode(zip).pipe(
+                catchError(() => {
+                  this.snackBar.open(
+                    'Invalid or not found ZIP Code.',
+                    'Close',
+                    { duration: 2000 }
+                  );
+                  return of(null);
+                })
+              )
+            : of(null)
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((addressInfo) => {
+        this.isZipLoading.set(false);
+        if (addressInfo) {
+          this.form.patchValue(
+            {
+              city: addressInfo.city,
+              state: this._findStateName(addressInfo.state_code),
+            },
+            { emitEvent: false }
+          );
+          this.lastFetchedLocation = {
+            lat: addressInfo.latitude,
+            lon: addressInfo.longitude,
+            stateCode: addressInfo.state_code,
+          };
+        }
+      });
   }
 
-  private _filterStates(value: string): IState[] {
-    const filterValue = value.toLowerCase();
-    return this.allStates.filter((st) =>
-      st.name.toLowerCase().includes(filterValue)
-    );
-  }
-
-  private _filterCities(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allCities.filter((city) =>
-      city.toLowerCase().includes(filterValue)
-    );
-  }
-
-  private _findStateIso(stateName: string): string | undefined {
-    return this.allStates.find((st) => st.name === stateName)?.isoCode;
-  }
-
-  private _findStateName(isoCode: string): string | undefined {
-    return this.allStates.find((st) => st.isoCode === isoCode)?.name;
-  }
-
-  trackByStateId(index: number, item: IState): string {
-    return item.isoCode;
-  }
-
-  trackByCityId(index: number, item: string): string {
-    return item;
-  }
+  private _findStateIso = (stateName: string): string | undefined =>
+    this.allStates.find((st) => st.name === stateName)?.isoCode;
+  private _findStateName = (isoCode: string): string | undefined =>
+    this.allStates.find((st) => st.isoCode === isoCode)?.name;
 }

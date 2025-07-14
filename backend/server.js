@@ -17,6 +17,20 @@ const middlewares = jsonServer.defaults();
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
+// NOVA ROTA DE PROXY PARA O ZIPPOPOTAM
+server.get("/api/zipcode/:zip", async (req, res) => {
+  const zipCode = req.params.zip;
+  try {
+    const response = await axios.get(`https://api.zippopotam.us/us/${zipCode}`);
+    res.json(response.data);
+  } catch (error) {
+    // Se a API externa der erro (ex: 404 para CEP inválido), repassa o erro.
+    res.status(error.response?.status || 500).json({
+      message: "Failed to fetch data from Zippopotam API.",
+    });
+  }
+});
+
 // 4) Rota de login — autentica usando o db.json local
 server.post("/auth/login", (req, res) => {
   const { email, password } = req.body;
@@ -45,10 +59,11 @@ server.post("/auth/login", (req, res) => {
 
 // 5) Middleware de proteção — todas as outras rotas exigem token
 server.use((req, res, next) => {
-  // PERMITE a rota de login E a rota de criação de usuário (registro) sem token
+  // PERMITE a rota de login, a rota de criação de usuário E a rota de CEP sem token
   if (
     req.path === "/auth/login" ||
-    (req.path === "/users" && req.method === "POST")
+    (req.path === "/users" && req.method === "POST") ||
+    req.path.startsWith("/api/zipcode/") // Adicione esta linha
   ) {
     return next(); // Permite o acesso
   }

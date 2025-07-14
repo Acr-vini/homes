@@ -35,6 +35,14 @@
     }
   </section>
 
+  <!-- BLOCO DO MAPA MOVIDO PARA CÁ -->
+  @if (housingLocation.latitude && housingLocation.longitude) {
+  <section class="listing-map">
+    <h2 class="section-heading">Location on Map</h2>
+    <div id="map" style="height: 400px; border-radius: 8px"></div>
+  </section>
+  }
+
   <!-- Seção de informações adicionais -->
   <section class="listing-features">
     <h2 class="section-heading">About this housing location</h2>
@@ -52,14 +60,6 @@
       </li>
     </ul>
   </section>
-
-  <!-- A seção do mapa agora só é renderizada se existirem coordenadas -->
-  @if (housingLocation.latitude && housingLocation.longitude) {
-  <section class="listing-map">
-    <h2 class="section-heading">Location on Map</h2>
-    <div id="map" style="height: 400px; border-radius: 8px"></div>
-  </section>
-  }
 
   <!-- Formulário de aplicação -->
   <section class="listing-apply">

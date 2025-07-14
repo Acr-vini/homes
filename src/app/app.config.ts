@@ -1,18 +1,18 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideProtractorTestingSupport } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
-import routeConfig from './app.routes';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideNativeDateAdapter } from '@angular/material/core'; // 1. Importe o adaptador
+
+import routes from './app.routes';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideProtractorTestingSupport(),
-    provideRouter(routeConfig),
-    provideAnimationsAsync(),
+    provideRouter(routes),
+    provideAnimations(),
     provideHttpClient(),
-    provideNativeDateAdapter(),
+    provideNativeDateAdapter(), // 2. Adicione o provedor aqui
+    importProvidersFrom(NgxSpinnerModule.forRoot()),
   ],
 };

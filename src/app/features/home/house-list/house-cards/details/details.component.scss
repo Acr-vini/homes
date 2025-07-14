@@ -3,10 +3,10 @@
 }
 .page-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
+  flex-wrap: wrap; // PERMITE QUE OS ITENS QUEBREM PARA A PRÓXIMA LINHA
+  gap: 24px;
   padding: 40px;
+  align-items: flex-start;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -298,4 +298,28 @@ button.primary:hover {
 
 .primary:hover {
   background-color: #5e34b1;
+}
+
+.listing-map {
+  grid-column: 1 / -1; /* FAZ O MAPA OCUPAR TODA A LARGURA */
+  width: 50%; // FAZ O MAPA OCUPAR 100% DA LARGURA, FORÇANDO A QUEBRA
+  order: 3; // Garante que ele venha depois da imagem e do formulário
+  margin-top: -70px; /* APROXIMA O MAPA DA IMAGEM */
+}
+.heading-section,
+.listing-features {
+  flex: 1 1 300px; // Define a base e o crescimento das informações
+  order: 2;
+}
+
+.listing-apply {
+  flex: 1 1 350px; // Define a base e o crescimento do formulário
+  order: 2;
+  position: sticky;
+  top: 10px;
+}
+
+.image-container {
+  flex: 1 1 500px; // Define a base e o crescimento da imagem
+  order: 1;
 }

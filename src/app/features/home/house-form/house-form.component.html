@@ -4,17 +4,29 @@
   </ngx-spinner>
   <mat-card class="house-form-card">
     <mat-card-title>{{
-      isEditMode ? "Edit your house" : "Create a new house"
+      isEditMode() ? "Edit your house" : "Create a new house"
     }}</mat-card-title>
 
     <mat-progress-bar
       class="progress-bar"
       mode="determinate"
-      [value]="progress"
+      [value]="progress()"
       color="primary"
     ></mat-progress-bar>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-toolbar">
+      <button
+        mat-icon-button
+        class="clear-form-btn"
+        (click)="onClearForm()"
+        matTooltip="Clear form"
+        type="button"
+      >
+        <mat-icon>restart_alt</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="form">
       <h4>Property Details</h4>
       <mat-form-field class="full-width">
         <mat-label>Name</mat-label>
@@ -36,14 +48,14 @@
         <mat-label>Property Type</mat-label>
         <mat-select formControlName="propertyType" required>
           <mat-optgroup label="Residential">
-            @for (type of residentialPropertyTypes; track type) {
+            @for (type of residentialPropertyTypes; track type.value) {
             <mat-option [value]="type.value">
               <mat-icon>{{ type.icon }}</mat-icon> {{ type.viewValue }}
             </mat-option>
             }
           </mat-optgroup>
           <mat-optgroup label="Commercial">
-            @for (type of commercialPropertyTypes; track type) {
+            @for (type of commercialPropertyTypes; track type.value) {
             <mat-option [value]="type.value">
               <mat-icon>{{ type.icon }}</mat-icon> {{ type.viewValue }}
             </mat-option>
@@ -53,39 +65,57 @@
       </mat-form-field>
 
       <h4>Location</h4>
-      <mat-form-field class="full-width">
-        <mat-label>State</mat-label>
-        <input
-          type="text"
-          matInput
-          formControlName="state"
-          [matAutocomplete]="autoState"
-          required
-        />
-        <mat-autocomplete #autoState="matAutocomplete" autoActiveFirstOption>
-          @for (st of filteredStates | async; track trackByStateId($index, st))
-          {
-          <mat-option [value]="st.name">{{ st.name }}</mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
 
       <mat-form-field class="full-width">
-        <mat-label>City</mat-label>
+        <mat-label>ZIP Code (CEP)</mat-label>
         <input
-          type="text"
           matInput
-          formControlName="city"
-          [matAutocomplete]="autoCity"
+          formControlName="zipCode"
           required
+          placeholder="Enter a 5-digit ZIP code"
         />
-        <mat-autocomplete #autoCity="matAutocomplete" autoActiveFirstOption>
-          @for (city of filteredCities | async; track trackByCityId($index,
-          city)) {
-          <mat-option [value]="city">{{ city }}</mat-option>
-          }
-        </mat-autocomplete>
+        @if (isZipLoading()) {
+        <mat-progress-spinner
+          matSuffix
+          mode="indeterminate"
+          [diameter]="20"
+        ></mat-progress-spinner>
+        }
+        <mat-error>A valid 5-digit ZIP Code is required.</mat-error>
       </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field class="form-field">
+          <mat-label>State</mat-label>
+          <input matInput formControlName="state" required />
+          <mat-error>State is required (auto-filled from ZIP).</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city" required />
+          <mat-error>City is required (auto-filled from ZIP).</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field class="full-width">
+        <mat-label>Street</mat-label>
+        <input matInput formControlName="street" required />
+        <mat-error>Street is required.</mat-error>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field class="form-field">
+          <mat-label>Number</mat-label>
+          <input matInput formControlName="number" required />
+          <mat-error>Number is required.</mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-field">
+          <mat-label>Neighborhood</mat-label>
+          <input matInput formControlName="neighborhood" required />
+          <mat-error>Neighborhood is required.</mat-error>
+        </mat-form-field>
+      </div>
 
       <h4>Pricing & Units</h4>
       <mat-form-field class="full-width">
@@ -100,7 +130,7 @@
       </mat-form-field>
 
       <mat-form-field class="full-width">
-        <mat-label>{{ priceLabel }}</mat-label>
+        <mat-label>{{ priceLabel() }}</mat-label>
         <input
           matInput
           type="number"
@@ -117,11 +147,12 @@
       </div>
 
       <h4>Property Image</h4>
-      <div class="image-preview" *ngIf="imagePreview">
-        <img [src]="imagePreview" alt="Image Preview" />
+      @for (preview of imagePreviews(); track $index) {
+      <div class="image-preview">
+        <img [src]="preview" alt="Image Preview" />
       </div>
+      }
 
-      <!-- Botão de Upload de Imagem -->
       <label for="file-upload-input" class="file-upload-label">
         <mat-icon>upload_file</mat-icon>
         <span>Select Image</span>
@@ -131,15 +162,13 @@
         type="file"
         (change)="onImageSelected($event)"
         accept="image/*"
+        hidden
       />
 
-      <!-- SEÇÃO DE DISPONIBILIDADE CONDICIONAL -->
       <ng-container [ngSwitch]="form.get('typeOfBusiness')?.value">
-        <!-- PARA VENDA (SELL) -->
         <ng-container *ngSwitchCase="'sell'">
           <h4 class="availability-title">Visit Availability</h4>
           <div formGroupName="visitAvailability">
-            <!-- Seletor de intervalo de datas -->
             <mat-form-field class="full-width">
               <mat-label>Available from - until</mat-label>
               <mat-date-range-input [rangePicker]="visitPicker">
@@ -161,7 +190,6 @@
               <mat-date-range-picker #visitPicker></mat-date-range-picker>
             </mat-form-field>
 
-            <!-- Seletor de intervalo de tempo -->
             <div class="time-range-container">
               <mat-form-field class="time-field">
                 <mat-label>From</mat-label>
@@ -183,10 +211,8 @@
           </div>
         </ng-container>
 
-        <!-- PARA ALUGUEL (RENT) -->
         <ng-container *ngSwitchCase="'rent'">
           <h4 class="availability-title">Rental Availability</h4>
-          <!-- Substitua os dois mat-form-field por este único -->
           <mat-form-field class="full-width">
             <mat-label>Available from - until</mat-label>
             <mat-date-range-input
@@ -214,7 +240,7 @@
       </ng-container>
 
       <div class="actions">
-        @if (isEditMode) {
+        @if (isEditMode()) {
         <button
           mat-flat-button
           class="action-btn delete-btn"
@@ -237,11 +263,12 @@
         <button
           mat-flat-button
           class="action-btn save-btn"
-          type="submit"
+          type="button"
+          (click)="onSubmit()"
           [disabled]="form.invalid"
         >
           <mat-icon>save</mat-icon>
-          {{ isEditMode ? "Save Changes" : "Create House" }}
+          {{ isEditMode() ? "Save Changes" : "Create House" }}
         </button>
       </div>
     </form>

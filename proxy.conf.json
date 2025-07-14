@@ -1,0 +1,11 @@
+{
+  "/zip-api": {
+    "target": "https://api.zippopotam.us",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/zip-api": ""
+    },
+    "logLevel": "debug"
+  }
+}
