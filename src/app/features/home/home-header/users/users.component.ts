@@ -14,9 +14,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { User } from '../../../../core/interfaces/user.interface';
 import { UserService } from '../../../../core/services/user.service';
-import { UserEditComponent } from './user-edit/user-edit.component';
+import { UserFormComponent } from './user-form/user-form.component';
 import { UserDetailsModalComponent } from './user-details-modal/user-details-modal.component';
-import { UserCreateComponent } from '../users/user-create/user-create.component';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
@@ -33,8 +32,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
     MatInputModule,
     MatPaginator,
     MatTooltipModule,
-    NgxSpinnerModule
-],
+    NgxSpinnerModule,
+  ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
@@ -170,25 +169,31 @@ export class UsersComponent implements OnInit {
   }
 
   openEditUser(userId: string) {
-    this.dialog
-      .open(UserEditComponent, {
-        width: '440px',
-        data: { id: userId },
-        disableClose: true,
-        autoFocus: false,
-      })
-      .afterClosed()
-      .subscribe(() => this.loadUsers());
+    const dialogRef = this.dialog.open(UserFormComponent, {
+      width: '440px',
+      data: { id: userId },
+      disableClose: true,
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadUsers();
+      }
+    });
   }
 
   openCreateUser() {
-    this.dialog
-      .open(UserCreateComponent, {
-        width: '440px',
-        disableClose: true,
-        autoFocus: false,
-      })
-      .afterClosed()
-      .subscribe(() => this.loadUsers());
+    const dialogRef = this.dialog.open(UserFormComponent, {
+      width: '440px',
+      disableClose: true,
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadUsers();
+      }
+    });
   }
 }

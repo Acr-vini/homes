@@ -1,20 +1,28 @@
 <ngx-spinner size="medium" color="#fff" type="ball-scale-multiple">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
+
 <mat-card class="edit-card">
-  <mat-card-title>Edit User</mat-card-title>
+  <mat-card-title>{{
+    isEditMode() ? "Edit User" : "Create User"
+  }}</mat-card-title>
+
+  <mat-progress-bar
+    class="create-progress-bar"
+    mode="determinate"
+    [value]="progress"
+    color="primary"
+  ></mat-progress-bar>
 
   <form [formGroup]="userForm" (ngSubmit)="onSave()">
     <!-- Name -->
-    <div class="full-width">
-      <mat-form-field class="full-width">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" required />
-        @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
-        <mat-error> Name is required </mat-error>
-        }
-      </mat-form-field>
-    </div>
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
+      <mat-error> Name is required </mat-error>
+      }
+    </mat-form-field>
 
     <!-- Email -->
     <mat-form-field class="full-width">
@@ -29,6 +37,10 @@
     <mat-form-field class="full-width">
       <mat-label>Password</mat-label>
       <input matInput formControlName="password" type="password" required />
+      @if ( userForm.get('password')?.invalid &&
+      userForm.get('password')?.touched ) {
+      <mat-error> Password is required </mat-error>
+      }
     </mat-form-field>
 
     <!-- Phone -->
@@ -53,6 +65,9 @@
         <mat-option value="Manager">Manager</mat-option>
         <mat-option value="Admin">Admin</mat-option>
       </mat-select>
+      @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+      <mat-error> Role is required </mat-error>
+      }
     </mat-form-field>
 
     <!-- CPF Field (conditionally required) -->
@@ -72,31 +87,30 @@
         <mat-option value="active">Active</mat-option>
         <mat-option value="disabled">Disabled</mat-option>
       </mat-select>
+      @if ( userForm.get('status')?.invalid && userForm.get('status')?.touched )
+      {
       <mat-error> Status is required </mat-error>
+      }
     </mat-form-field>
 
     <!-- Actions -->
-
-    <!-- SAVE -->
     <div class="actions">
       <button
         mat-icon-button
         class="save-btn"
         type="submit"
-        [disabled]="userForm.invalid"
-        aria-label="Save changes"
-        matTooltip="Save changes"
+        aria-label="Save"
+        matTooltip="Save"
       >
         <span class="material-symbols-outlined">save</span>
       </button>
-
-      <!-- CANCEL -->
       <button
         mat-icon-button
         class="cancel-btn"
+        type="button"
         (click)="onCancel()"
-        aria-label="Cancel editing"
-        matTooltip="Cancel editing"
+        aria-label="Cancel"
+        matTooltip="Cancel"
       >
         <span class="material-symbols-outlined">cancel</span>
       </button>

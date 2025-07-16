@@ -282,3 +282,11 @@
     visibility: visible;
   }
 }
+.deleted {
+  color: red;
+}
+
+.hours {
+  font-weight: bold;
+  color: var(--purpleBck);
+}
