@@ -90,9 +90,9 @@
             mat-icon-button
             color="primary"
             (click)="editHouse(element)"
-            [matTooltip]="element.deleted ? 'Repost Listing' : 'Edit'"
+            [matTooltip]="element.deleted ? 'Re-edit Listing' : 'Edit'"
           >
-            <mat-icon>{{ element.deleted ? "publish" : "edit" }}</mat-icon>
+            <mat-icon>{{ element.deleted ? "edit" : "edit" }}</mat-icon>
           </button>
           @if (!element.deleted) {
           <button

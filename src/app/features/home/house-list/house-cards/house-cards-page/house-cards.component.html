@@ -49,7 +49,11 @@
             housingLocation.typeOfBusiness === 'rent'
         }"
       >
-        <mat-icon>sell</mat-icon>
+        <mat-icon>{{
+          housingLocation.typeOfBusiness === "sell"
+            ? "sell"
+            : "real_estate_agent"
+        }}</mat-icon>
         {{ housingLocation.typeOfBusiness | titlecase }}
       </span>
 

@@ -9,12 +9,12 @@ import { homeheaderComponent } from './features/home/home-header/home-header-pag
 // Páginas protegidas
 import { AuthGuard } from './core/guards/auth.guard';
 
-import { RegisterComponent } from './features/login/register/register/register.component'; // ADICIONE ESTA IMPORTAÇÃO
+import { RegisterComponent } from './features/login/register/register/register.component';
 
 const routes: Routes = [
   // Rota pública
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }, // ADICIONE ESTA ROTA
+  { path: 'register', component: RegisterComponent },
 
   // Container principal (Shell) para todas as rotas autenticadas
   {
@@ -103,14 +103,6 @@ const routes: Routes = [
         title: 'Activity Date',
       },
       {
-        path: 'users/edit/:id',
-        loadComponent: () =>
-          import(
-            './features/home/home-header/users/user-edit/user-edit.component'
-          ).then((m) => m.UserEditComponent),
-        title: 'Edit User',
-      },
-      {
         path: 'favorites',
         loadComponent: () =>
           import('./features/home/SCF/favorites/favorites.component').then(
@@ -119,7 +111,6 @@ const routes: Routes = [
         title: 'Favorites',
         canActivate: [AuthGuard],
       },
-
       {
         path: 'my-listings',
         loadComponent: () =>
@@ -129,7 +120,6 @@ const routes: Routes = [
         title: 'My Listings',
         canActivate: [AuthGuard],
       },
-
       {
         path: 'compare',
         loadComponent: () =>

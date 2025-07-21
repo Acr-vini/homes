@@ -1,73 +1,58 @@
 <h2 mat-dialog-title>User Activity Details: {{ data.user.name }}</h2>
 <mat-dialog-content class="mat-typography">
   @if (isLoading) {
-    <div class="loading-indicator">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Loading activity...</p>
-    </div>
-  }
-
-  @if (!isLoading) {
-    <div>
-      @if (createdHouses.length > 0) {
-        <section>
-          <h3>Houses Created by User</h3>
-          <ul>
-            @for (house of createdHouses; track trackByHouseId($index, house)) {
-              <li>
-                {{ house.name }} (ID: {{ house.id }}) - Created on:
-                {{ house.createdAt | date : "short" }}
-              </li>
-            }
-          </ul>
-        </section>
-      }
-      @if (
-        createdHouses.length > 0 &&
-        (editedHouses.length > 0 || deletedHouses.length > 0)
-        ) {
-        <mat-divider
-        ></mat-divider>
-      }
-      @if (editedHouses.length > 0) {
-        <section>
-          <h3>Houses Edited by User</h3>
-          <ul>
-            @for (house of editedHouses; track trackByHouseId($index, house)) {
-              <li>
-                {{ house.name }} (ID: {{ house.id }}) - Last edited on:
-                {{ house.updatedAt | date : "short" }}
-              </li>
-            }
-          </ul>
-        </section>
-      }
-      @if (editedHouses.length > 0 && deletedHouses.length > 0) {
-        <mat-divider
-        ></mat-divider>
-      }
-      @if (deletedHouses.length > 0) {
-        <section>
-          <h3>Houses Deleted by User</h3>
-          <ul>
-            @for (house of deletedHouses; track trackByHouseId($index, house)) {
-              <li>
-                {{ house.name }} (ID: {{ house.id }}) - Deleted on:
-                {{ house.deletedAt | date : "short" }}
-              </li>
-            }
-          </ul>
-        </section>
-      }
-      @if (
-        !createdHouses.length && !editedHouses.length && !deletedHouses.length
-        ) {
-        <p
-          >
-          No house creation, edit, or deletion activity found for this user.
-        </p>
-      }
-    </div>
+  <div class="loading-indicator">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading activity...</p>
+  </div>
+  } @if (!isLoading) {
+  <div>
+    @if (createdHouses.length > 0) {
+    <section>
+      <h3>Houses Created by User</h3>
+      <ul>
+        @for (house of createdHouses; track trackByHouseId($index, house)) {
+        <li>
+          {{ house.name }} (ID: {{ house.id }}) - Created on:
+          {{ house.createdAt | date : "short" }}
+        </li>
+        }
+      </ul>
+    </section>
+    } @if ( createdHouses.length > 0 && (editedHouses.length > 0 ||
+    deletedHouses.length > 0) ) {
+    <mat-divider></mat-divider>
+    } @if (editedHouses.length > 0) {
+    <section>
+      <h3>Houses Edited by User</h3>
+      <ul>
+        @for (house of editedHouses; track trackByHouseId($index, house)) {
+        <li>
+          {{ house.name }} (ID: {{ house.id }}) - Last edited on:
+          {{ house.updatedAt | date : "short" }}
+        </li>
+        }
+      </ul>
+    </section>
+    } @if (editedHouses.length > 0 && deletedHouses.length > 0) {
+    <mat-divider></mat-divider>
+    } @if (deletedHouses.length > 0) {
+    <section>
+      <h3>Houses Deleted by User</h3>
+      <ul>
+        @for (house of deletedHouses; track trackByHouseId($index, house)) {
+        <li>
+          {{ house.name }} (ID: {{ house.id }}) - Deleted on:
+          {{ house.deletedAt | date : "short" }}
+        </li>
+        }
+      </ul>
+    </section>
+    } @if ( !createdHouses.length && !editedHouses.length &&
+    !deletedHouses.length ) {
+    <p>No house creation, edit, or deletion activity found for this user.</p>
+    }
+  </div>
   }
 </mat-dialog-content>
 <mat-dialog-actions align="end">

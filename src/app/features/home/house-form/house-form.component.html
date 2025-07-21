@@ -16,13 +16,14 @@
 
     <div class="form-toolbar">
       <button
-        mat-icon-button
+        mat-stroked-button
         class="clear-form-btn"
         (click)="onClearForm()"
         matTooltip="Clear form"
         type="button"
       >
         <mat-icon>restart_alt</mat-icon>
+        <span>Clear form</span>
       </button>
     </div>
 
@@ -39,8 +40,14 @@
       <mat-form-field class="full-width">
         <mat-label>Type of Business</mat-label>
         <mat-select formControlName="typeOfBusiness" required>
-          <mat-option value="sell">Sell</mat-option>
-          <mat-option value="rent">Rent</mat-option>
+          <mat-option value="sell">
+            <mat-icon>sell</mat-icon>
+            <span>Sell</span>
+          </mat-option>
+          <mat-option value="rent">
+            <mat-icon>real_estate_agent</mat-icon>
+            <span>Rent</span>
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -130,7 +137,11 @@
       </mat-form-field>
 
       <mat-form-field class="full-width">
-        <mat-label>{{ priceLabel() }}</mat-label>
+        @if(form.get('typeOfBusiness')?.value === 'rent') {
+        <mat-label>Price per day (USD)</mat-label>
+        } @else {
+        <mat-label>Price (USD)</mat-label>
+        }
         <input
           matInput
           type="number"
@@ -142,8 +153,15 @@
 
       <h4>Amenities</h4>
       <div class="checkbox-group">
-        <mat-checkbox formControlName="wifi">Wi-Fi Available</mat-checkbox>
-        <mat-checkbox formControlName="laundry">Laundry Available</mat-checkbox>
+        <mat-checkbox formControlName="wifi"
+          ><mat-icon inline style="vertical-align: middle">wifi</mat-icon>Wi-Fi
+          Available</mat-checkbox
+        >
+        <mat-checkbox formControlName="laundry"
+          ><mat-icon inline style="vertical-align: middle"
+            >local_laundry_service</mat-icon
+          >Laundry Available</mat-checkbox
+        >
       </div>
 
       <h4>Property Image</h4>
@@ -165,7 +183,7 @@
         hidden
       />
 
-      <ng-container [ngSwitch]="form.get('typeOfBusiness')?.value">
+      <ng-container [ngSwitch]="typeOfBusiness()">
         <ng-container *ngSwitchCase="'sell'">
           <h4 class="availability-title">Visit Availability</h4>
           <div formGroupName="visitAvailability">
@@ -177,7 +195,7 @@
                   placeholder="Start date"
                   formControlName="startDate"
                 />
-                <input
+                <inpu;t
                   matEndDate
                   placeholder="End date"
                   formControlName="endDate"

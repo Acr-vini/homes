@@ -26,9 +26,7 @@ import { HousingLocation } from '../../../core/interfaces/housinglocation.interf
 import { HousingService } from '../../../core/services/housing.service';
 import { addressService } from '../../../core/services/address.service';
 import { IState, State } from 'country-state-city';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-// --- Imports dos Módulos ---
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -47,20 +45,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatNativeDateModule } from '@angular/material/core';
+import { AvailableTimes } from '../../../shared/utils/available-times';
 
-const AVAILABLE_TIMES = [
-  '08:00',
-  '09:00',
-  '10:00',
-  '11:00',
-  '12:00',
-  '13:00',
-  '14:00',
-  '15:00',
-  '16:00',
-  '17:00',
-  '18:00',
-];
+const AVAILABLE_TIMES = AvailableTimes; // Importando os horários disponíveis
+
 const RESIDENTIAL_PROPERTY_TYPES = [
   { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
   { value: 'house', viewValue: 'House & Townhouse', icon: 'home' },
@@ -77,6 +65,8 @@ const COMMERCIAL_PROPERTY_TYPES = [
   { value: 'industrial', viewValue: 'Industrial', icon: 'factory' },
   { value: 'terrain', viewValue: 'Terrain', icon: 'landscape' },
 ];
+
+// Rever consts acima e verificar se são necessárias outras constantes ou enums
 
 @Component({
   selector: 'app-house-form',
@@ -106,27 +96,63 @@ const COMMERCIAL_PROPERTY_TYPES = [
   styleUrls: ['./house-form.component.scss'],
 })
 export class HouseFormComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private housingService = inject(HousingService);
-  private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
-  private spinner = inject(NgxSpinnerService);
-  private route = inject(ActivatedRoute);
-  private addressService = inject(addressService);
-  private destroyRef = inject(DestroyRef);
+  readonly #fb = inject(FormBuilder);
+  readonly #housingService = inject(HousingService);
+  readonly #router = inject(Router);
+  readonly #snackBar = inject(MatSnackBar);
+  readonly #spinner = inject(NgxSpinnerService);
+  readonly #route = inject(ActivatedRoute);
+  readonly #addressService = inject(addressService);
+  readonly #destroyRef = inject(DestroyRef);
 
-  form!: FormGroup;
+  form: FormGroup = this.#fb.group({
+    id: [''],
+    name: ['', Validators.required],
+    street: ['', Validators.required],
+    number: ['', Validators.required],
+    neighborhood: ['', Validators.required],
+    zipCode: ['', Validators.required],
+    state: [{ value: '', disabled: true }, Validators.required],
+    city: [{ value: '', disabled: true }, Validators.required],
+    availableUnits: [1, [Validators.required, Validators.min(0)]],
+    photo: [''],
+    typeOfBusiness: ['', Validators.required],
+    propertyType: ['', Validators.required],
+    price: [null, [Validators.required, Validators.min(1)]],
+    wifi: [false],
+    laundry: [false],
+    visitAvailability: this.#fb.group({
+      startDate: [null],
+      endDate: [null],
+      startTime: [null],
+      endTime: [null],
+    }),
+    rentDateRange: this.#fb.group({
+      checkInDate: [null],
+      checkOutDate: [null],
+    }),
+  });
+
+  house = signal<HousingLocation | null>(null);
   progress = signal(0);
   isZipLoading = signal(false);
   imagePreviews = signal<string[]>([]);
   private currentHouseId = signal<string | null>(null);
 
+  // REMOVA a linha antiga:
+  // typeOfBusiness = signal<'sell' | 'rent' | ''>('');
+
+  // ADICIONE a nova versão com toSignal:
+  typeOfBusiness = toSignal(this.form.get('typeOfBusiness')!.valueChanges, {
+    initialValue: this.form.get('typeOfBusiness')!.value,
+  });
+
   isEditMode = computed(() => !!this.currentHouseId());
-  priceLabel = computed(() =>
-    this.form?.get('typeOfBusiness')?.value === 'rent'
-      ? 'Price per day (USD)'
-      : 'Price (USD)'
-  );
+  // priceLabel = computed(() =>
+  //   this.form?.get('typeOfBusiness')?.value === 'rent'
+  //     ? 'Price per day (USD)'
+  //     : 'Price (USD)'
+  // );
 
   readonly availableTimes = AVAILABLE_TIMES;
   readonly residentialPropertyTypes = RESIDENTIAL_PROPERTY_TYPES;
@@ -144,20 +170,21 @@ export class HouseFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initializeForm();
-
-    const houseId = this.route.snapshot.paramMap.get('id');
+    const houseId = this.#route.snapshot.paramMap.get('id');
     this.currentHouseId.set(houseId);
 
-    if (this.isEditMode() && houseId) {
-      this.loadHouseData(houseId);
+    if (this.isEditMode()) {
+      this.loadHouseData(houseId!);
     }
 
-    this.setupFormListeners();
+    this.form.valueChanges.subscribe(() => {
+      this.calculateProgress();
+    });
+    this.setupZipCodeListener();
   }
 
   private initializeForm(): void {
-    this.form = this.fb.group({
+    this.form = this.#fb.group({
       id: [''],
       name: ['', Validators.required],
       street: ['', Validators.required],
@@ -173,13 +200,13 @@ export class HouseFormComponent implements OnInit {
       price: [null, [Validators.required, Validators.min(1)]],
       wifi: [false],
       laundry: [false],
-      visitAvailability: this.fb.group({
+      visitAvailability: this.#fb.group({
         startDate: [null],
         endDate: [null],
         startTime: [null],
         endTime: [null],
       }),
-      rentDateRange: this.fb.group({
+      rentDateRange: this.#fb.group({
         checkInDate: [null],
         checkOutDate: [null],
       }),
@@ -187,39 +214,37 @@ export class HouseFormComponent implements OnInit {
   }
 
   private loadHouseData(id: string): void {
-    this.spinner.show();
-    this.housingService
+    this.#spinner.show();
+    this.#housingService
       .getHousingLocationById(id)
-      .pipe(finalize(() => this.spinner.hide()))
+      .pipe(finalize(() => this.#spinner.hide()))
       .subscribe({
         next: (house) => {
           if (house) {
-            const processedHouse = {
-              ...house,
-              state: this._findStateName(house.state),
-            };
-            // CORREÇÃO 1: Adicionar { emitEvent: false } para não disparar o valueChanges
-            this.form.reset(processedHouse, { emitEvent: false });
+            this.form.patchValue(house);
+
+            // Opcional: Atualize outras partes da UI, como a pré-visualização da imagem
             this.imagePreviews.set(house.photo ? [house.photo] : []);
+            this.house.set(house); // Se você ainda precisar disso
           } else {
-            this.snackBar.open('❌ House not found!', 'Close', {
+            this.#snackBar.open('❌ House not found!', 'Close', {
               duration: 3000,
             });
-            this.router.navigate(['/home']);
+            this.#router.navigate(['/home']);
           }
         },
         error: () => {
-          this.snackBar.open('❌ Error loading house data.', 'Close', {
+          this.#snackBar.open('❌ Error loading house data.', 'Close', {
             duration: 3000,
           });
-          this.router.navigate(['/home']);
+          this.#router.navigate(['/home']);
         },
       });
   }
 
   private setupFormListeners(): void {
     this.form.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => this.calculateProgress());
     this.setupZipCodeListener();
   }
@@ -227,7 +252,7 @@ export class HouseFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.snackBar.open('❌ Please fill all required fields.', 'Close', {
+      this.#snackBar.open('❌ Please fill all required fields.', 'Close', {
         duration: 3000,
       });
       return;
@@ -236,21 +261,21 @@ export class HouseFormComponent implements OnInit {
     const payload = this._buildPayload();
     if (!payload) return;
 
-    this.spinner.show();
+    this.#spinner.show();
 
     const saveOperation$ = this.isEditMode()
-      ? this.housingService.updateHousingLocation(
+      ? this.#housingService.updateHousingLocation(
           this.currentHouseId()!,
           payload
         )
-      : this.housingService.createHousingLocation(payload as HousingLocation);
+      : this.#housingService.createHousingLocation(payload as HousingLocation);
 
     this._handleSaveResponse(saveOperation$);
   }
 
   private _buildPayload(): Partial<HousingLocation> | null {
     if (!this.lastFetchedLocation && !this.isEditMode()) {
-      this.snackBar.open(
+      this.#snackBar.open(
         '❌ Location data is missing. Please re-enter a valid ZIP code.',
         'Close',
         { duration: 4000 }
@@ -264,7 +289,7 @@ export class HouseFormComponent implements OnInit {
 
     const stateIsoCode = this._findStateIso(formValues.state);
     if (!stateIsoCode) {
-      this.snackBar.open('❌ Invalid state in form.', 'Close', {
+      this.#snackBar.open('❌ Invalid state in form.', 'Close', {
         duration: 3000,
       });
       return null;
@@ -288,25 +313,25 @@ export class HouseFormComponent implements OnInit {
   private _handleSaveResponse(obs$: Observable<any>): void {
     obs$
       .pipe(
-        finalize(() => this.spinner.hide()),
-        takeUntilDestroyed(this.destroyRef)
+        finalize(() => this.#spinner.hide()),
+        takeUntilDestroyed(this.#destroyRef)
       )
       .subscribe({
         next: () => {
           const messageAction = this.isEditMode() ? 'updated' : 'created';
-          this.snackBar.open(
+          this.#snackBar.open(
             `✅ House ${messageAction} successfully!`,
             'Close',
             { duration: 3000 }
           );
-          this.housingService.notifyHouseListUpdated();
-          this.router.navigate(['/profile'], {
+          this.#housingService.notifyHouseListUpdated();
+          this.#router.navigate(['/profile'], {
             queryParams: { tab: 'listings' },
           });
         },
         error: (err) => {
           console.error('Save house failed:', err);
-          this.snackBar.open('❌ Error saving house.', 'Close', {
+          this.#snackBar.open('❌ Error saving house.', 'Close', {
             duration: 3000,
           });
         },
@@ -317,7 +342,7 @@ export class HouseFormComponent implements OnInit {
     if (!this.currentHouseId()) return;
     const houseId = this.currentHouseId()!;
 
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.#snackBar.open(
       'Are you sure you want to delete this listing?',
       'Yes, Delete',
       { duration: 5000 }
@@ -325,31 +350,31 @@ export class HouseFormComponent implements OnInit {
 
     snackBarRef
       .onAction()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
-        this.spinner.show();
+        this.#spinner.show();
         const currentUser = JSON.parse(
           localStorage.getItem('currentUser') || 'null'
         );
         if (!currentUser?.id) {
-          this.spinner.hide();
-          this.snackBar.open('❌ Could not verify user.', 'Close', {
+          this.#spinner.hide();
+          this.#snackBar.open('❌ Could not verify user.', 'Close', {
             duration: 3000,
           });
           return;
         }
-        this.housingService
+        this.#housingService
           .deleteHousingLocation(houseId, currentUser.id)
-          .pipe(finalize(() => this.spinner.hide()))
+          .pipe(finalize(() => this.#spinner.hide()))
           .subscribe({
             next: () => {
-              this.snackBar.open('✅ Listing deleted successfully!', 'Close', {
+              this.#snackBar.open('✅ Listing deleted successfully!', 'Close', {
                 duration: 3000,
               });
-              this.router.navigate(['/profile/my-listings']);
+              this.#router.navigate(['/my-listings']);
             },
             error: () =>
-              this.snackBar.open('❌ Error deleting listing.', 'Close', {
+              this.#snackBar.open('❌ Error deleting listing.', 'Close', {
                 duration: 3000,
               }),
           });
@@ -361,11 +386,11 @@ export class HouseFormComponent implements OnInit {
     this.form.reset();
     this.imagePreviews.set([]);
     this.form.patchValue({ ownerId: ownerId });
-    this.snackBar.open('Form cleared', 'Close', { duration: 2000 });
+    this.#snackBar.open('Form cleared', 'Close', { duration: 2000 });
   }
 
   onCancel(): void {
-    this.router.navigate(['/home']);
+    this.#router.navigate(['/home']);
   }
 
   onImageSelected(event: Event): void {
@@ -399,7 +424,6 @@ export class HouseFormComponent implements OnInit {
 
     zipControl.valueChanges
       .pipe(
-        // CORREÇÃO 2: Operador 'skip(1)' removido daqui
         debounceTime(500),
         distinctUntilChanged(),
         tap(() => {
@@ -409,9 +433,9 @@ export class HouseFormComponent implements OnInit {
         }),
         switchMap((zip) =>
           zip && zip.length === 5
-            ? this.addressService.getAddressByZipCode(zip).pipe(
+            ? this.#addressService.getAddressByZipCode(zip).pipe(
                 catchError(() => {
-                  this.snackBar.open(
+                  this.#snackBar.open(
                     'Invalid or not found ZIP Code.',
                     'Close',
                     { duration: 2000 }
@@ -421,7 +445,7 @@ export class HouseFormComponent implements OnInit {
               )
             : of(null)
         ),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.#destroyRef)
       )
       .subscribe((addressInfo) => {
         this.isZipLoading.set(false);

@@ -60,3 +60,14 @@ li {
   gap: 1rem;
   color: var(--text-color);
 }
+
+// Estilo base para o nome da casa (destaque em ambos os temas)
+.house-name {
+  font-weight: 600;
+  color: var(--purpleBck); // Roxo no modo claro
+}
+
+// Sobrescreve a cor apenas no modo escuro
+:host-context(body.dark-theme) section ul li {
+  color: #ffffff;
+}
