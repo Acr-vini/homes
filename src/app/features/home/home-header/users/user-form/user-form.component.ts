@@ -18,6 +18,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { User } from '../../../../../core/interfaces/user.interface';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-user-form',
@@ -33,6 +34,7 @@ import { User } from '../../../../../core/interfaces/user.interface';
     MatSnackBarModule,
     NgxSpinnerModule,
     MatProgressBarModule,
+    MatIcon,
   ],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss',

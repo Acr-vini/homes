@@ -125,8 +125,9 @@
       <div class="home-filter-wrapper">
         <!-- GRUPO DA ESQUERDA -->
         <div class="toolbar-left-group">
+          <!-- Botão de visualização -->
           <mat-button-toggle-group
-            [value]="displayMode"
+            [value]="displayMode()"
             (change)="onDisplayModeChange($event.value)"
             aria-label="Display Mode"
             class="view-toggle"
@@ -138,6 +139,17 @@
               <mat-icon>view_list</mat-icon>
             </mat-button-toggle>
           </mat-button-toggle-group>
+
+          <!-- BOTÃO DE MAPA -->
+          <button
+            mat-icon-button
+            (click)="toggleMapView()"
+            [class.active]="displayMode() === 'map'"
+            matTooltip="Map View"
+            class="view-toggle-map"
+          >
+            <mat-icon>map</mat-icon>
+          </button>
 
           <!-- ORDENAR POR -->
           <mat-form-field appearance="outline" class="order-by-select">
@@ -220,16 +232,22 @@
         </div>
       </div>
 
+      <!-- LÓGICA DE RENDERIZAÇÃO CONDICIONAL -->
+      @if (displayMode() === 'map') {
+      <section class="map-view-container">
+        <app-housing-map [locations]="filteredLocationList"></app-housing-map>
+      </section>
+      } @else {
       <section
         class="housing-location-container"
-        [class.list-view]="displayMode === 'list'"
+        [class.list-view]="displayMode() === 'list'"
       >
         @for (housingLocation of pagedLocationList; track housingLocation.id) {
         <app-house-cards
           [housingLocation]="housingLocation"
           (houseUpdated)="loadLocations()"
           [compareMode]="compareMode"
-          [displayMode]="displayMode"
+          [displayMode]="$any(displayMode())"
         />
         }
       </section>
@@ -237,14 +255,13 @@
       <mat-paginator
         [length]="filteredLocationList.length"
         [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 20, 50]"
         (page)="onPageChange($event)"
       >
       </mat-paginator>
+      }
       <app-legal-info></app-legal-info>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </form>
 
-<!-- ADICIONE A BANDEJA DE COMPARAÇÃO AQUI -->
 <app-compare-tray></app-compare-tray>

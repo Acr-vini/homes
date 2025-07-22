@@ -51,12 +51,28 @@
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--purpleWeak);
+  }
 
-    button {
-      min-width: 100px;
-      font-weight: 600;
-      border-radius: 8px;
-    }
+  .action-btn {
+    padding: 0 24px !important;
+    height: 48px !important;
+    border-radius: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    font-weight: 600 !important;
+  }
+
+  .save-btn {
+    background-color: var(--purpleBck) !important;
+    color: white !important;
+  }
+
+  .cancel-btn {
+    border-color: var(--purpleBck) !important;
+    color: var(--purpleBck) !important;
   }
 }
 

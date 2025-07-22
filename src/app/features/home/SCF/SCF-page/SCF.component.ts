@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // ALTERADO
 
 import { HousingService } from '../../../../core/services/housing.service';
@@ -26,9 +26,10 @@ import { CompareTrayComponent } from '../../SCF/compare/compare-tray/compare-tra
 import { MatSliderModule } from '@angular/material/slider';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HousingMapComponent } from '../housing-map/housing-map.component';
 
 @Component({
-  selector: 'app-SCF',
+  selector: 'app-scf',
   standalone: true,
   imports: [
     HouseCardsComponent,
@@ -51,6 +52,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     CompareTrayComponent,
     MatSliderModule,
     CommonModule,
+    HousingMapComponent,
   ],
   templateUrl: './SCF.component.html',
   styleUrls: ['./SCF.component.scss'],
@@ -71,7 +73,7 @@ export class SCFComponent implements OnInit {
   // 1. Renomeie estas variáveis para representar os limites do slider
   sliderMinPrice: number = 0;
   sliderMaxPrice: number = 1000000;
-  displayMode: 'grid' | 'list' = 'grid'; // Define 'grid' como padrão
+  displayMode = signal<'grid' | 'list' | 'map'>('grid'); // Define 'grid' como padrão
 
   propertyTypes = ['No Preference', 'house', 'apartment', 'terrain', 'studio'];
 
@@ -315,7 +317,17 @@ export class SCFComponent implements OnInit {
    */
   onDisplayModeChange(mode: 'grid' | 'list'): void {
     if (mode) {
-      this.displayMode = mode;
+      this.displayMode.set(mode);
+    }
+  }
+
+  // Adicione este método para alternar para a visualização de mapa
+  toggleMapView(): void {
+    const currentMode = this.displayMode();
+    if (currentMode === 'map') {
+      this.displayMode.set('grid'); // Volta para a grade como padrão
+    } else {
+      this.displayMode.set('map');
     }
   }
 }

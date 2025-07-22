@@ -263,9 +263,21 @@
 }
 
 .view-toggle {
-  margin-right: 1rem;
-  border: 1px solid var(--border-color, #ccc);
-  border-radius: 8px;
+  margin-right: 8px; // Adiciona um pequeno espaço antes do novo botão
+}
+
+.view-toggle-map {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  &.active {
+    background-color: var(--purpleWeak);
+  }
+}
+
+.map-view-container {
+  height: calc(100vh - 200px); // Altura calculada para preencher a tela
+  width: 100%;
+  padding: 1rem 0;
 }
 
 .order-by-select {

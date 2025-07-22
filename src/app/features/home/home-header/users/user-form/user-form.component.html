@@ -96,23 +96,22 @@
     <!-- Actions -->
     <div class="actions">
       <button
-        mat-icon-button
-        class="save-btn"
-        type="submit"
-        aria-label="Save"
-        matTooltip="Save"
-      >
-        <span class="material-symbols-outlined">save</span>
-      </button>
-      <button
-        mat-icon-button
-        class="cancel-btn"
+        mat-stroked-button
+        class="action-btn cancel-btn"
         type="button"
         (click)="onCancel()"
-        aria-label="Cancel"
-        matTooltip="Cancel"
       >
-        <span class="material-symbols-outlined">cancel</span>
+        <mat-icon>cancel</mat-icon>
+        <span>Cancel</span>
+      </button>
+      <button
+        mat-flat-button
+        class="action-btn save-btn"
+        type="submit"
+        [disabled]="userForm.invalid"
+      >
+        <mat-icon>save</mat-icon>
+        <span>{{ isEditMode() ? "Save Changes" : "Create User" }}</span>
       </button>
     </div>
   </form>

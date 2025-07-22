@@ -71,3 +71,13 @@ li {
 :host-context(body.dark-theme) section ul li {
   color: #ffffff;
 }
+.btn-close {
+  background-color: #381c9e;
+  color: #fff;
+  height: 48px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1e0f53;
+  }
+}
