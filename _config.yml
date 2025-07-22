@@ -1,8 +1,5 @@
-# Excluir pastas e arquivos do processamento do Jekyll
 exclude:
-  - node_modules/
   - Gemfile
   - Gemfile.lock
-  - package.json
-  - package-lock.json
   - README.md
+  - backend/node_modules/
