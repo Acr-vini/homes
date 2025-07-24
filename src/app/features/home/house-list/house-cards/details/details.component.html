@@ -4,12 +4,35 @@
 @if (housingLocation) {
 <article class="page-container">
   <div class="image-container">
-    <!-- Mostra a primeira imagem como principal -->
+    <!-- Imagem Principal -->
     <img
       class="listing-photo housing-image"
-      [src]="housingLocation.photos?.[0] || 'assets/default-image.png'"
-      alt="Exterior photo of {{ housingLocation.name }}"
+      [src]="
+        housingLocation.photos[currentImageIndex] || 'assets/default-image.png'
+      "
+      alt="Photo {{ currentImageIndex + 1 }} of {{ housingLocation.name }}"
     />
+
+    <!-- Flechas de Navegação -->
+    @if (housingLocation.photos.length > 1) {
+    <button
+      mat-icon-button
+      class="nav-arrow prev-arrow"
+      (click)="previousImage()"
+      aria-label="Previous image"
+    >
+      <mat-icon>arrow_back_ios</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="nav-arrow next-arrow"
+      (click)="nextImage()"
+      aria-label="Next image"
+    >
+      <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+    }
+
     <!-- Galeria de miniaturas -->
     <div class="thumbnail-gallery">
       @for(photo of housingLocation.photos; track photo) {

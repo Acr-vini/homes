@@ -169,6 +169,7 @@
         @for (preview of imagePreviews(); track $index) {
         <div class="image-preview">
           <img [src]="preview" alt="Image Preview" />
+          <!-- Botão com novo estilo e função -->
           <button
             mat-icon-button
             class="remove-image-btn"
@@ -176,7 +177,7 @@
             matTooltip="Remove image"
             type="button"
           >
-            <mat-icon>cancel</mat-icon>
+            <mat-icon>close</mat-icon>
           </button>
         </div>
         }

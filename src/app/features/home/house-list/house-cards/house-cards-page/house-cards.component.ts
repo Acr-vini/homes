@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
@@ -24,16 +31,23 @@ import { CompareService } from '../../../../../core/services/compare.service';
 })
 export class HouseCardsComponent {
   @Input() housingLocation!: HousingLocation;
-  @Input() compareMode = false;
   @Input() displayMode: 'grid' | 'list' = 'grid';
-  @Output() houseUpdated = new EventEmitter<void>();
+  @Input() compareMode = false;
+  @Output() favoriteToggled = new EventEmitter<HousingLocation>();
+  @Output() compareToggled = new EventEmitter<HousingLocation>();
+  @Output() editClicked = new EventEmitter<string>();
 
   private spinner = inject(NgxSpinnerService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private compareService = inject(CompareService);
 
-  applications: any[] = [];
+  // --- ADICIONE ESTAS PROPRIEDADES ---
+  currentImageIndex = 0;
+  private imageCycleInterval: any;
+  // ------------------------------------
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   get currentUserRole(): string | null {
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
@@ -56,6 +70,24 @@ export class HouseCardsComponent {
   isFavorited(house: HousingLocation): boolean {
     return this.favoriteIds.includes(String(house.id));
   }
+
+  // --- ADICIONE ESTES DOIS MÉTODOS ---
+  startImageCycle(): void {
+    if (this.housingLocation.photos.length > 1) {
+      this.imageCycleInterval = setInterval(() => {
+        this.currentImageIndex =
+          (this.currentImageIndex + 1) % this.housingLocation.photos.length;
+        this.cdr.detectChanges(); // Força a detecção de mudanças
+      }, 1500); // Muda a imagem a cada 1.5 segundos
+    }
+  }
+
+  stopImageCycle(): void {
+    clearInterval(this.imageCycleInterval);
+    this.currentImageIndex = 0;
+    this.cdr.detectChanges(); // Garante que a imagem volte para a primeira
+  }
+  // ------------------------------------
 
   toggleFavorite(house: HousingLocation): void {
     if (!this.currentUserId) {
@@ -86,6 +118,7 @@ export class HouseCardsComponent {
       });
     }
     localStorage.setItem(this.favoriteKey, JSON.stringify(favoriteIds));
+    this.favoriteToggled.emit(house);
   }
 
   openCreateHouse() {
@@ -94,6 +127,7 @@ export class HouseCardsComponent {
 
   openEditHouse(id: string): void {
     this.router.navigate(['/edit-house', id]);
+    this.editClicked.emit(id);
   }
 
   canEditHouse(house: HousingLocation): boolean {
@@ -116,6 +150,7 @@ export class HouseCardsComponent {
 
   toggleCompareItem(house: HousingLocation): void {
     this.compareService.toggleCompare(house);
+    this.compareToggled.emit(house);
   }
 
   isInCompareList(): boolean {

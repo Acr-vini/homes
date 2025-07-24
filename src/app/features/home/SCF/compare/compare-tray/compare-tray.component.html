@@ -4,7 +4,7 @@
     @for (house of list; track house) {
     <div class="tray-item">
       <img
-        [src]="house.photos?.[0] || 'assets/default-image.png'"
+        [src]="house.photos[0] || 'assets/default-image.png'"
         [alt]="house.name"
       />
       <span>{{ house.name }}</span>

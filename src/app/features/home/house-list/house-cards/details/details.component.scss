@@ -344,3 +344,43 @@ button.primary:hover {
   flex: 1 1 500px; // Define a base e o crescimento da imagem
   order: 1;
 }
+
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  mat-icon {
+    font-size: 2rem;
+    height: 2rem;
+    width: 2rem;
+    line-height: 2rem;
+  }
+}
+
+.prev-arrow {
+  left: 16px;
+
+  mat-icon {
+    transform: translateX(4px);
+  }
+}
+
+.next-arrow {
+  right: 16px;
+}

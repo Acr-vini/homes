@@ -104,6 +104,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   availableVisitTimes: string[] = [];
   availableCheckInDates: string[] = [];
   private dateChangeSub: Subscription | undefined;
+  currentImageIndex = 0; // <-- ADICIONE ESTA PROPRIEDADE
 
   constructor() {
     this.applyForm = this.fb.group({
@@ -515,5 +516,21 @@ export class DetailsComponent implements OnInit, OnDestroy {
         this.patchUserForm();
         this.initMap();
       });
+  }
+
+  // --- ADICIONE ESTES DOIS MÉTODOS ---
+  nextImage(): void {
+    if (this.housingLocation && this.housingLocation.photos.length > 1) {
+      this.currentImageIndex =
+        (this.currentImageIndex + 1) % this.housingLocation.photos.length;
+    }
+  }
+
+  previousImage(): void {
+    if (this.housingLocation && this.housingLocation.photos.length > 1) {
+      this.currentImageIndex =
+        (this.currentImageIndex - 1 + this.housingLocation.photos.length) %
+        this.housingLocation.photos.length;
+    }
   }
 }

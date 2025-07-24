@@ -14,7 +14,7 @@
     @for (house of list; track house) {
     <div class="house-header">
       <img
-        [src]="house.photos?.[0] || 'assets/default-image.png'"
+        [src]="house.photos[0] || 'assets/default-image.png'"
         [alt]="house.name"
       />
       <h2>{{ house.name }}</h2>

@@ -73,36 +73,75 @@ form {
   margin-bottom: 1rem;
 }
 
+.image-previews-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+// ALTERAÇÃO: Estilo do container da imagem de preview
 .image-preview {
-  position: relative;
-  border: 1px dashed #ccc;
-  padding: 0.5rem;
-  border-radius: 8px;
+  position: relative; // Essencial para o posicionamento do botão
   width: 150px;
   height: 150px;
+  border-radius: 8px;
+  overflow: hidden; // Garante que a imagem e o overlay fiquem dentro das bordas
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 4px;
+    transition: transform 0.3s ease;
   }
 
-  .remove-image-btn {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background-color: white;
-    color: red;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-
-    mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
+  // Efeito de hover no container
+  &:hover {
+    img {
+      transform: scale(1.05); // Leve zoom na imagem
     }
+    .remove-image-btn {
+      opacity: 1; // Botão fica totalmente visível
+      transform: scale(1);
+    }
+  }
+}
+
+// ALTERAÇÃO: Novo estilo para o botão de remover
+.remove-image-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+
+  // Estilo do botão
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 32px;
+  height: 32px;
+
+  // Centraliza o ícone perfeitamente
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  // Efeitos de transição e estado inicial
+  opacity: 0; // Começa invisível
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+  }
+
+  &:hover {
+    background-color: #f44336; // Fica vermelho ao passar o mouse sobre ele
   }
 }
 

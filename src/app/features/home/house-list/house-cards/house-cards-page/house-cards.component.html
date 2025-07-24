@@ -5,6 +5,8 @@
   class="home-listing"
   [class.list-view-item]="displayMode === 'list'"
   [class.compare-active]="compareMode"
+  (mouseenter)="startImageCycle()"
+  (mouseleave)="stopImageCycle()"
 >
   <!-- Wrapper para o conteúdo que será desfocado -->
   <div class="card-content-wrapper">
@@ -30,8 +32,11 @@
     >
       <img
         class="home-listing-photo"
-        [src]="housingLocation.photos?.[0] || 'assets/default-image.png'"
-        alt="Exterior photo of {{ housingLocation.name }}"
+        [src]="
+          housingLocation.photos[currentImageIndex] ||
+          'assets/default-image.png'
+        "
+        alt="Photo of {{ housingLocation.name }}"
         loading="eager"
       />
       <h2 class="home-listing-heading">{{ housingLocation.name }}</h2>
