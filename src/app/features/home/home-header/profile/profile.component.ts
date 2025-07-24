@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common'; // 1. Importe o CommonModule
+import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,

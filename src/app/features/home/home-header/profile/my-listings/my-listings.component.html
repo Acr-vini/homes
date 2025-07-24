@@ -36,7 +36,7 @@
         <th mat-header-cell *matHeaderCellDef>Photo</th>
         <td mat-cell *matCellDef="let element">
           <img
-            [src]="element.photo"
+            [src]="element.photos?.[0] || 'assets/default-image.png'"
             [alt]="element.name"
             class="listing-thumbnail"
           />

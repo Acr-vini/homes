@@ -4,11 +4,22 @@
 @if (housingLocation) {
 <article class="page-container">
   <div class="image-container">
+    <!-- Mostra a primeira imagem como principal -->
     <img
       class="listing-photo housing-image"
-      [src]="housingLocation.photo"
+      [src]="housingLocation.photos?.[0] || 'assets/default-image.png'"
       alt="Exterior photo of {{ housingLocation.name }}"
     />
+    <!-- Galeria de miniaturas -->
+    <div class="thumbnail-gallery">
+      @for(photo of housingLocation.photos; track photo) {
+      <img
+        [src]="photo"
+        class="thumbnail"
+        alt="Thumbnail of {{ housingLocation.name }}"
+      />
+      }
+    </div>
     <button
       mat-icon-button
       class="favorite-details-button"
@@ -116,7 +127,9 @@
             matInput
             [matDatepicker]="visitPicker"
             formControlName="visitDate"
-            [min]="today"
+            [min]="visitMinDate"
+            [max]="visitMaxDate"
+            [matDatepickerFilter]="visitDateFilter"
             placeholder="dd/mm/yyyy"
           />
           <mat-datepicker-toggle

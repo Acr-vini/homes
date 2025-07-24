@@ -30,7 +30,7 @@
     >
       <img
         class="home-listing-photo"
-        [src]="housingLocation.photo"
+        [src]="housingLocation.photos?.[0] || 'assets/default-image.png'"
         alt="Exterior photo of {{ housingLocation.name }}"
         loading="eager"
       />

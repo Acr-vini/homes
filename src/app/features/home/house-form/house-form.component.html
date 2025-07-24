@@ -164,20 +164,32 @@
         >
       </div>
 
-      <h4>Property Image</h4>
-      @for (preview of imagePreviews(); track $index) {
-      <div class="image-preview">
-        <img [src]="preview" alt="Image Preview" />
+      <h4>Property Images</h4>
+      <div class="image-previews-container">
+        @for (preview of imagePreviews(); track $index) {
+        <div class="image-preview">
+          <img [src]="preview" alt="Image Preview" />
+          <button
+            mat-icon-button
+            class="remove-image-btn"
+            (click)="removeImage($index)"
+            matTooltip="Remove image"
+            type="button"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+        }
       </div>
-      }
 
       <label for="file-upload-input" class="file-upload-label">
         <mat-icon>upload_file</mat-icon>
-        <span>Select Image</span>
+        <span>Select Images</span>
       </label>
       <input
         id="file-upload-input"
         type="file"
+        multiple
         (change)="onImageSelected($event)"
         accept="image/*"
         hidden
@@ -189,13 +201,14 @@
           <div formGroupName="visitAvailability">
             <mat-form-field class="full-width">
               <mat-label>Available from - until</mat-label>
+              <!-- A CORREÇÃO É REMOVER o formGroupName daqui -->
               <mat-date-range-input [rangePicker]="visitPicker">
                 <input
                   matStartDate
                   placeholder="Start date"
                   formControlName="startDate"
                 />
-                <inpu;t
+                <input
                   matEndDate
                   placeholder="End date"
                   formControlName="endDate"
@@ -238,14 +251,14 @@
               formGroupName="rentDateRange"
             >
               <input
-                matStartDate
-                placeholder="Start date"
                 formControlName="checkInDate"
+                placeholder="Start date"
+                matStartDate
               />
               <input
-                matEndDate
-                placeholder="End date"
                 formControlName="checkOutDate"
+                placeholder="End date"
+                matEndDate
               />
             </mat-date-range-input>
             <mat-datepicker-toggle

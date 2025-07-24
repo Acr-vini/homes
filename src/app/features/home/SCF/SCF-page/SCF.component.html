@@ -140,17 +140,6 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <!-- BOTÃO DE MAPA -->
-          <button
-            mat-icon-button
-            (click)="toggleMapView()"
-            [class.active]="displayMode() === 'map'"
-            matTooltip="Map View"
-            class="view-toggle-map"
-          >
-            <mat-icon>map</mat-icon>
-          </button>
-
           <!-- ORDENAR POR -->
           <mat-form-field appearance="outline" class="order-by-select">
             <mat-label>Order by</mat-label>
@@ -165,6 +154,17 @@
               <mat-option value="priceDesc">highest price</mat-option>
             </mat-select>
           </mat-form-field>
+
+          <!-- BOTÃO DE MAPA -->
+          <button
+            mat-icon-button
+            (click)="toggleMapView()"
+            [class.active]="displayMode() === 'map'"
+            matTooltip="Map View"
+            class="view-toggle-map"
+          >
+            <mat-icon>map</mat-icon>
+          </button>
 
           <!-- Search bar vem logo depois -->
           <mat-form-field

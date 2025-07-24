@@ -1,79 +1,81 @@
 <div class="compare-container">
   @if (compareList$ | async; as list) {
-    <div class="compare-header">
-      <h1>Compare Properties</h1>
-      <button mat-stroked-button color="warn" (click)="clearAndGoBack()">
-        <mat-icon>close</mat-icon>
-        <span>Clear & Go Back</span>
-      </button>
+  <div class="compare-header">
+    <h1>Compare Properties</h1>
+    <button mat-stroked-button color="warn" (click)="clearAndGoBack()">
+      <mat-icon>close</mat-icon>
+      <span>Clear & Go Back</span>
+    </button>
+  </div>
+  @if (list.length === 2) {
+  <div class="compare-grid">
+    <!-- Header Row -->
+    <div class="feature-name header-main"></div>
+    @for (house of list; track house) {
+    <div class="house-header">
+      <img
+        [src]="house.photos?.[0] || 'assets/default-image.png'"
+        [alt]="house.name"
+      />
+      <h2>{{ house.name }}</h2>
+      <p>{{ house.city }}, {{ house.state }}</p>
     </div>
-    @if (list.length === 2) {
-      <div class="compare-grid">
-        <!-- Headers -->
-        <div class="feature-header">Feature</div>
-        @for (house of list; track house) {
-          <div class="house-header">
-            <img [src]="house.photo" [alt]="house.name" />
-            <h2>{{ house.name }}</h2>
-            <p>{{ house.city }}, {{ house.state }}</p>
-          </div>
-        }
-        <!-- Price -->
-        <div class="feature-name">Price</div>
-        @for (house of list; track house) {
-          <div class="feature-value">
-            {{ house.price | currency : "USD" : "symbol" : "1.2-2" }}
-            @if (house.typeOfBusiness === 'rent') {
-              <span>/ day</span>
-            }
-          </div>
-        }
-        <!-- Type -->
-        <div class="feature-name">Type</div>
-        @for (house of list; track house) {
-          <div class="feature-value">
-            {{ house.propertyType | titlecase }} for
-            {{ house.typeOfBusiness | titlecase }}
-          </div>
-        }
-        <!-- Units -->
-        <div class="feature-name">Available Units</div>
-        @for (house of list; track house) {
-          <div class="feature-value">
-            {{ house.availableUnits }}
-          </div>
-        }
-        <!-- Wifi -->
-        <div class="feature-name">
-          <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
-          Wi-Fi
-        </div>
-        @for (house of list; track house) {
-          <div class="feature-value">
-            <mat-icon [ngClass]="house.wifi ? 'icon-yes' : 'icon-no'">
-              {{ house.wifi ? "check_circle" : "cancel" }}
-            </mat-icon>
-          </div>
-        }
-        <!-- Laundry -->
-        <div class="feature-name">
-          <mat-icon inline style="vertical-align: middle"
-            >local_laundry_service</mat-icon
-            >
-            Laundry
-          </div>
-          @for (house of list; track house) {
-            <div class="feature-value">
-              <mat-icon [ngClass]="house.laundry ? 'icon-yes' : 'icon-no'">
-                {{ house.laundry ? "check_circle" : "cancel" }}
-              </mat-icon>
-            </div>
-          }
-        </div>
-      } @else {
-        <div class="not-enough-container">
-          <h2>Please select two houses to compare.</h2>
-        </div>
+    }
+    <!-- Price -->
+    <div class="feature-name">Price</div>
+    @for (house of list; track house) {
+    <div class="feature-value">
+      {{ house.price | currency : "USD" : "symbol" : "1.2-2" }}
+      @if (house.typeOfBusiness === 'rent') {
+      <span>/ day</span>
       }
+    </div>
+    }
+    <!-- Type -->
+    <div class="feature-name">Type</div>
+    @for (house of list; track house) {
+    <div class="feature-value">
+      {{ house.propertyType | titlecase }} for
+      {{ house.typeOfBusiness | titlecase }}
+    </div>
+    }
+    <!-- Units -->
+    <div class="feature-name">Available Units</div>
+    @for (house of list; track house) {
+    <div class="feature-value">
+      {{ house.availableUnits }}
+    </div>
+    }
+    <!-- Wifi -->
+    <div class="feature-name">
+      <mat-icon inline style="vertical-align: middle">wifi</mat-icon>
+      Wi-Fi
+    </div>
+    @for (house of list; track house) {
+    <div class="feature-value">
+      <mat-icon [ngClass]="house.wifi ? 'icon-yes' : 'icon-no'">
+        {{ house.wifi ? "check_circle" : "cancel" }}
+      </mat-icon>
+    </div>
+    }
+    <!-- Laundry -->
+    <div class="feature-name">
+      <mat-icon inline style="vertical-align: middle"
+        >local_laundry_service</mat-icon
+      >
+      Laundry
+    </div>
+    @for (house of list; track house) {
+    <div class="feature-value">
+      <mat-icon [ngClass]="house.laundry ? 'icon-yes' : 'icon-no'">
+        {{ house.laundry ? "check_circle" : "cancel" }}
+      </mat-icon>
+    </div>
     }
   </div>
+  } @else {
+  <div class="not-enough-container">
+    <h2>Please select two houses to compare.</h2>
+  </div>
+  } }
+</div>

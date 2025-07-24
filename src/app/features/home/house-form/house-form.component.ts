@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
   DestroyRef,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,7 +26,7 @@ import { HousingLocation } from '../../../core/interfaces/housinglocation.interf
 import { HousingService } from '../../../core/services/housing.service';
 import { addressService } from '../../../core/services/address.service';
 import { IState, State } from 'country-state-city';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -46,8 +46,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AvailableTimes } from '../../../shared/utils/available-times';
-
-const AVAILABLE_TIMES = AvailableTimes; // Importando os horários disponíveis
+import { AuthService } from '../../../core/services/auth.service';
 
 const RESIDENTIAL_PROPERTY_TYPES = [
   { value: 'apartment', viewValue: 'Apartment', icon: 'apartment' },
@@ -65,8 +64,6 @@ const COMMERCIAL_PROPERTY_TYPES = [
   { value: 'industrial', viewValue: 'Industrial', icon: 'factory' },
   { value: 'terrain', viewValue: 'Terrain', icon: 'landscape' },
 ];
-
-// Rever consts acima e verificar se são necessárias outras constantes ou enums
 
 @Component({
   selector: 'app-house-form',
@@ -103,58 +100,20 @@ export class HouseFormComponent implements OnInit {
   readonly #spinner = inject(NgxSpinnerService);
   readonly #route = inject(ActivatedRoute);
   readonly #addressService = inject(addressService);
+  readonly #authService = inject(AuthService);
   readonly #destroyRef = inject(DestroyRef);
+  readonly availableTimes = AvailableTimes;
 
-  form: FormGroup = this.#fb.group({
-    id: [''],
-    name: ['', Validators.required],
-    street: ['', Validators.required],
-    number: ['', Validators.required],
-    neighborhood: ['', Validators.required],
-    zipCode: ['', Validators.required],
-    state: [{ value: '', disabled: true }, Validators.required],
-    city: [{ value: '', disabled: true }, Validators.required],
-    availableUnits: [1, [Validators.required, Validators.min(0)]],
-    photo: [''],
-    typeOfBusiness: ['', Validators.required],
-    propertyType: ['', Validators.required],
-    price: [null, [Validators.required, Validators.min(1)]],
-    wifi: [false],
-    laundry: [false],
-    visitAvailability: this.#fb.group({
-      startDate: [null],
-      endDate: [null],
-      startTime: [null],
-      endTime: [null],
-    }),
-    rentDateRange: this.#fb.group({
-      checkInDate: [null],
-      checkOutDate: [null],
-    }),
-  });
+  form: FormGroup;
 
-  house = signal<HousingLocation | null>(null);
   progress = signal(0);
   isZipLoading = signal(false);
   imagePreviews = signal<string[]>([]);
   private currentHouseId = signal<string | null>(null);
 
-  // REMOVA a linha antiga:
-  // typeOfBusiness = signal<'sell' | 'rent' | ''>('');
-
-  // ADICIONE a nova versão com toSignal:
-  typeOfBusiness = toSignal(this.form.get('typeOfBusiness')!.valueChanges, {
-    initialValue: this.form.get('typeOfBusiness')!.value,
-  });
+  typeOfBusiness = signal<string>('');
 
   isEditMode = computed(() => !!this.currentHouseId());
-  // priceLabel = computed(() =>
-  //   this.form?.get('typeOfBusiness')?.value === 'rent'
-  //     ? 'Price per day (USD)'
-  //     : 'Price (USD)'
-  // );
-
-  readonly availableTimes = AVAILABLE_TIMES;
   readonly residentialPropertyTypes = RESIDENTIAL_PROPERTY_TYPES;
   readonly commercialPropertyTypes = COMMERCIAL_PROPERTY_TYPES;
   readonly allStates: IState[] = State.getStatesOfCountry('US');
@@ -165,25 +124,7 @@ export class HouseFormComponent implements OnInit {
     stateCode: string;
   } | null = null;
 
-  constructor(
-    @Optional() public dialogRef?: MatDialogRef<HouseFormComponent>
-  ) {}
-
-  ngOnInit(): void {
-    const houseId = this.#route.snapshot.paramMap.get('id');
-    this.currentHouseId.set(houseId);
-
-    if (this.isEditMode()) {
-      this.loadHouseData(houseId!);
-    }
-
-    this.form.valueChanges.subscribe(() => {
-      this.calculateProgress();
-    });
-    this.setupZipCodeListener();
-  }
-
-  private initializeForm(): void {
+  constructor(@Optional() public dialogRef?: MatDialogRef<HouseFormComponent>) {
     this.form = this.#fb.group({
       id: [''],
       name: ['', Validators.required],
@@ -194,7 +135,7 @@ export class HouseFormComponent implements OnInit {
       state: [{ value: '', disabled: true }, Validators.required],
       city: [{ value: '', disabled: true }, Validators.required],
       availableUnits: [1, [Validators.required, Validators.min(0)]],
-      photo: [''],
+      photos: this.#fb.array([], Validators.required),
       typeOfBusiness: ['', Validators.required],
       propertyType: ['', Validators.required],
       price: [null, [Validators.required, Validators.min(1)]],
@@ -213,6 +154,50 @@ export class HouseFormComponent implements OnInit {
     });
   }
 
+  ngOnInit(): void {
+    const houseId = this.#route.snapshot.paramMap.get('id');
+    this.currentHouseId.set(houseId);
+
+    if (this.isEditMode()) {
+      this.loadHouseData(houseId!);
+    } else {
+      // No modo de criação, desabilita ambos os grupos inicialmente.
+      this.form.get('visitAvailability')?.disable();
+      this.form.get('rentDateRange')?.disable();
+    }
+
+    this.setupConditionalLogic();
+    this.setupFormListeners();
+  }
+
+  private setupConditionalLogic(): void {
+    this.form
+      .get('typeOfBusiness')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe((type) => {
+        this.typeOfBusiness.set(type); // Atualiza o signal para o template
+        const visitAvailabilityCtrl = this.form.get('visitAvailability');
+        const rentDateRangeCtrl = this.form.get('rentDateRange');
+
+        if (type === 'sell') {
+          visitAvailabilityCtrl?.enable();
+          rentDateRangeCtrl?.disable();
+          rentDateRangeCtrl?.reset();
+        } else if (type === 'rent') {
+          rentDateRangeCtrl?.enable();
+          visitAvailabilityCtrl?.disable();
+          visitAvailabilityCtrl?.reset();
+        } else {
+          visitAvailabilityCtrl?.disable();
+          rentDateRangeCtrl?.disable();
+        }
+      });
+  }
+
+  get photosFormArray(): FormArray {
+    return this.form.get('photos') as FormArray;
+  }
+
   private loadHouseData(id: string): void {
     this.#spinner.show();
     this.#housingService
@@ -223,9 +208,18 @@ export class HouseFormComponent implements OnInit {
           if (house) {
             this.form.patchValue(house);
 
-            // Opcional: Atualize outras partes da UI, como a pré-visualização da imagem
-            this.imagePreviews.set(house.photo ? [house.photo] : []);
-            this.house.set(house); // Se você ainda precisar disso
+            // AQUI ESTÁ A CORREÇÃO:
+            // 1. Limpa o FormArray e as pré-visualizações existentes.
+            this.photosFormArray.clear();
+            this.imagePreviews.set([]);
+
+            // 2. Se a casa tiver fotos, preenche o FormArray e atualiza o signal.
+            if (house.photos && house.photos.length > 0) {
+              house.photos.forEach((photoUrl) =>
+                this.photosFormArray.push(this.#fb.control(photoUrl))
+              );
+              this.imagePreviews.set([...house.photos]);
+            }
           } else {
             this.#snackBar.open('❌ House not found!', 'Close', {
               duration: 3000,
@@ -240,13 +234,6 @@ export class HouseFormComponent implements OnInit {
           this.#router.navigate(['/home']);
         },
       });
-  }
-
-  private setupFormListeners(): void {
-    this.form.valueChanges
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => this.calculateProgress());
-    this.setupZipCodeListener();
   }
 
   onSubmit(): void {
@@ -283,9 +270,7 @@ export class HouseFormComponent implements OnInit {
       return null;
     }
     const formValues = this.form.getRawValue();
-    const currentUser = JSON.parse(
-      localStorage.getItem('currentUser') || 'null'
-    );
+    const currentUser = this.#authService.getCurrentUser();
 
     const stateIsoCode = this._findStateIso(formValues.state);
     if (!stateIsoCode) {
@@ -295,11 +280,12 @@ export class HouseFormComponent implements OnInit {
       return null;
     }
 
-    return {
+    const payload: Partial<HousingLocation> = {
       ...formValues,
       state: stateIsoCode,
       latitude: this.lastFetchedLocation?.lat,
       longitude: this.lastFetchedLocation?.lon,
+      photos: formValues.photos,
       ...(this.isEditMode()
         ? { editedBy: currentUser?.id, updatedAt: new Date().toISOString() }
         : {
@@ -308,6 +294,8 @@ export class HouseFormComponent implements OnInit {
             listedDate: new Date().toISOString(),
           }),
     };
+
+    return payload;
   }
 
   private _handleSaveResponse(obs$: Observable<any>): void {
@@ -353,9 +341,7 @@ export class HouseFormComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
         this.#spinner.show();
-        const currentUser = JSON.parse(
-          localStorage.getItem('currentUser') || 'null'
-        );
+        const currentUser = this.#authService.getCurrentUser();
         if (!currentUser?.id) {
           this.#spinner.hide();
           this.#snackBar.open('❌ Could not verify user.', 'Close', {
@@ -381,56 +367,65 @@ export class HouseFormComponent implements OnInit {
       });
   }
 
+  onImageSelected(event: Event): void {
+    const files = (event.target as HTMLInputElement).files;
+    if (!files || files.length === 0) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        this.photosFormArray.push(this.#fb.control(result));
+        this.imagePreviews.update((previews) => [...previews, result]);
+        this.form.get('photos')?.markAsDirty();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(index: number): void {
+    this.photosFormArray.removeAt(index);
+    this.imagePreviews.update((previews) =>
+      previews.filter((_, i) => i !== index)
+    );
+  }
+
   onClearForm(): void {
     const ownerId = this.form.get('ownerId')?.value;
     this.form.reset();
+    this.photosFormArray.clear();
     this.imagePreviews.set([]);
     this.form.patchValue({ ownerId: ownerId });
     this.#snackBar.open('Form cleared', 'Close', { duration: 2000 });
   }
 
   onCancel(): void {
-    this.#router.navigate(['/home']);
-  }
-
-  onImageSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      this.imagePreviews.set([result]);
-      this.form.patchValue({ photo: result });
-      this.form.get('photo')?.markAsDirty();
-    };
-    reader.readAsDataURL(file);
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    } else {
+      this.#router.navigate(['/home']);
+    }
   }
 
   calculateProgress(): void {
-    const totalFields = Object.keys(this.form.controls).length;
-    let completedFields = 0;
+    const totalControls = Object.keys(this.form.controls).length;
+    let validControls = 0;
     for (const key in this.form.controls) {
       if (this.form.controls[key].valid) {
-        completedFields++;
+        validControls++;
       }
     }
-    this.progress.set((completedFields / totalFields) * 100);
+    this.progress.set((validControls / totalControls) * 100);
   }
 
-  private setupZipCodeListener(): void {
-    const zipControl = this.form.get('zipCode');
-    if (!zipControl) return;
-
-    zipControl.valueChanges
-      .pipe(
+  setupFormListeners(): void {
+    this.form
+      .get('zipCode')
+      ?.valueChanges.pipe(
         debounceTime(500),
         distinctUntilChanged(),
-        tap(() => {
-          this.isZipLoading.set(true);
-          this.form.patchValue({ city: '', state: '' }, { emitEvent: false });
-          this.lastFetchedLocation = null;
-        }),
+        tap(() => this.isZipLoading.set(true)),
         switchMap((zip) =>
           zip && zip.length === 5
             ? this.#addressService.getAddressByZipCode(zip).pipe(
@@ -468,6 +463,7 @@ export class HouseFormComponent implements OnInit {
 
   private _findStateIso = (stateName: string): string | undefined =>
     this.allStates.find((st) => st.name === stateName)?.isoCode;
+
   private _findStateName = (isoCode: string): string | undefined =>
     this.allStates.find((st) => st.isoCode === isoCode)?.name;
 }

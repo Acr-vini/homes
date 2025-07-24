@@ -56,9 +56,18 @@
 
     <a mat-button [routerLink]="['/activity-date']" class="app-header-nav-link">
       <mat-icon
+        aria-hidden="false"
         [matBadge]="newApplicationCount > 0 ? newApplicationCount : null"
         matBadgeColor="warn"
         matBadgeSize="small"
+        [matBadgeDescription]="
+          newApplicationCount > 0
+            ? newApplicationCount +
+              (newApplicationCount === 1
+                ? ' nova notificação'
+                : ' novas notificações')
+            : ''
+        "
         >event</mat-icon
       >
       <span>Activity Date</span>

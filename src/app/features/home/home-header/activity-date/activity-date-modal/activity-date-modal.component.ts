@@ -10,7 +10,6 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +18,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
@@ -35,8 +33,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatTooltipModule,
     MatButtonModule,
     MatIconModule,
-    MatDatepickerModule
-],
+    MatDatepickerModule,
+  ],
   templateUrl: './activity-date-modal.component.html',
   styleUrls: ['./activity-date-modal.component.scss'],
 

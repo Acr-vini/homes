@@ -5,7 +5,6 @@ import { HousingService } from '../../../../../core/services/housing.service';
 import { HousingLocation } from '../../../../../core/interfaces/housinglocation.interface';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -37,6 +36,7 @@ import { provideNgxMask } from 'ngx-mask';
 import { Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import * as L from 'leaflet';
+import { AvailableTimes } from '../../../../../shared/utils/available-times';
 
 export const APP_DATE_FORMATS = {
   parse: {
@@ -74,7 +74,6 @@ export const APP_DATE_FORMATS = {
     provideNativeDateAdapter(),
     provideNgxMask(),
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-    // 3. Forneça o formato personalizado
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
   ],
   templateUrl: './details.component.html',
@@ -97,7 +96,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
     localStorage.getItem('currentUser') || 'null'
   );
   today = new Date();
-  availableVisitDays: number[] = [];
+  // Adicione estas duas propriedades:
+  visitMinDate: Date | null = null;
+  visitMaxDate: Date | null = null;
+  readonly availableTimes = AvailableTimes; // 2. ADICIONE ESTA PROPRIEDADE
+
   availableVisitTimes: string[] = [];
   availableCheckInDates: string[] = [];
   private dateChangeSub: Subscription | undefined;
@@ -138,7 +141,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
             return;
           }
           this.housingLocation = location;
-          this.processAvailability(location);
+          this.processAvailability(location); // <-- 1. CHAME O NOVO MÉTODO AQUI
           this.setupConditionalValidators();
           this.patchUserForm();
           setTimeout(() => this.initMap(), 0);
@@ -157,6 +160,46 @@ export class DetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.dateChangeSub?.unsubscribe();
   }
+
+  // 2. ADICIONE ESTE MÉTODO
+  processAvailability(location: HousingLocation) {
+    if (location.typeOfBusiness === 'sell' && location.visitAvailability) {
+      if (location.visitAvailability.startDate) {
+        // Converte a string de data para um objeto Date
+        this.visitMinDate = new Date(location.visitAvailability.startDate);
+      }
+      if (location.visitAvailability.endDate) {
+        this.visitMaxDate = new Date(location.visitAvailability.endDate);
+      }
+    }
+    // Adicione aqui a lógica para 'rent' se necessário no futuro
+  }
+
+  // ADICIONE ESTA FUNÇÃO
+  visitDateFilter = (d: Date | null): boolean => {
+    if (!d) {
+      return false;
+    }
+    // Garante que a comparação ignore a parte de "hora" da data
+    const time = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const isAfterMin =
+      !this.visitMinDate ||
+      time >=
+        new Date(
+          this.visitMinDate.getFullYear(),
+          this.visitMinDate.getMonth(),
+          this.visitMinDate.getDate()
+        ).getTime();
+    const isBeforeMax =
+      !this.visitMaxDate ||
+      time <=
+        new Date(
+          this.visitMaxDate.getFullYear(),
+          this.visitMaxDate.getMonth(),
+          this.visitMaxDate.getDate()
+        ).getTime();
+    return isAfterMin && isBeforeMax;
+  };
 
   buildApplyForm(): void {
     this.applyForm = this.fb.group({
@@ -198,23 +241,17 @@ export class DetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const dayName = [
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-    ][selectedDate.getDay()];
+    // AQUI ESTÁ A CORREÇÃO:
+    const { startTime, endTime } = this.housingLocation.visitAvailability;
+    const allTimes = this.availableTimes; // Usando a lista completa de horários
 
-    const timesKey = (dayName +
-      'Times') as keyof typeof this.housingLocation.visitAvailability;
+    if (startTime && endTime) {
+      const startIndex = allTimes.indexOf(startTime);
+      const endIndex = allTimes.indexOf(endTime);
 
-    const times = this.housingLocation.visitAvailability[timesKey];
-
-    if (Array.isArray(times)) {
-      this.availableVisitTimes = times;
+      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+        this.availableVisitTimes = allTimes.slice(startIndex, endIndex + 1);
+      }
     }
   }
 
@@ -301,39 +338,30 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  processAvailability(location: HousingLocation) {
-    if (location.typeOfBusiness === 'sell' && location.visitAvailability) {
-      const dayMap: { [key: string]: number } = {
-        sunday: 0,
-        monday: 1,
-        tuesday: 2,
-        wednesday: 3,
-        thursday: 4,
-        friday: 5,
-        saturday: 6,
-      };
-
-      this.availableVisitDays = [];
-
-      for (const dayName in dayMap) {
-        const timesKey = (dayName +
-          'Times') as keyof typeof location.visitAvailability;
-        const times = location.visitAvailability[timesKey];
-
-        if (Array.isArray(times) && times.length > 0) {
-          this.availableVisitDays.push(dayMap[dayName]);
-        }
-      }
+  // Adicione esta função de filtro
+  visitdateFilter = (d: Date | null): boolean => {
+    if (!d) {
+      return false;
     }
-
-    if (location.typeOfBusiness === 'rent' && location.checkInAvailability) {
-      this.availableCheckInDates = location.checkInAvailability;
-    }
-  }
-
-  visitDateFilter = (d: Date | null): boolean => {
-    const day = (d || new Date()).getDay();
-    return this.availableVisitDays.includes(day);
+    // Garante que a comparação ignore a parte de "hora" da data
+    const time = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const isAfterMin =
+      !this.visitMinDate ||
+      time >=
+        new Date(
+          this.visitMinDate.getFullYear(),
+          this.visitMinDate.getMonth(),
+          this.visitMinDate.getDate()
+        ).getTime();
+    const isBeforeMax =
+      !this.visitMaxDate ||
+      time <=
+        new Date(
+          this.visitMaxDate.getFullYear(),
+          this.visitMaxDate.getMonth(),
+          this.visitMaxDate.getDate()
+        ).getTime();
+    return isAfterMin && isBeforeMax;
   };
 
   checkInDateFilter = (d: Date | null): boolean => {

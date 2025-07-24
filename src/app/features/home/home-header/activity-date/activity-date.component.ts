@@ -10,7 +10,7 @@ import { Application } from '../../../../core/interfaces/application.interface';
 import { HousingService } from '../../../../core/services/housing.service';
 import { ActivityDateModalComponent } from './activity-date-modal/activity-date-modal.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, forkJoin, of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { switchMap, map, finalize, catchError } from 'rxjs/operators';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -93,7 +93,7 @@ export class ActivityDateComponent implements OnInit {
             this.housingService.getHousingLocationById(app.houseId).pipe(
               map((location) => ({
                 ...app,
-                photoUrl: location.photo || 'path/to/default/image.png',
+                photoUrl: location.photos?.[0] || 'path/to/default/image.png',
               })),
               catchError(() =>
                 of({ ...app, photoUrl: 'path/to/default/image.png' })

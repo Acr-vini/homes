@@ -1,36 +1,36 @@
-@if (compareList$ | async; as list) {
-  @if (list.length > 0) {
-    <div class="compare-tray-wrapper">
-      <div class="tray-items">
-        @for (house of list; track house) {
-          <div class="tray-item">
-            <img [src]="house.photo" [alt]="house.name" />
-            <span>{{ house.name }}</span>
-            <button
-              mat-icon-button
-              (click)="removeFromCompare(house.id)"
-              matTooltip="Remove from comparison"
-              >
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </div>
-        }
-        @if (list.length < 2) {
-          <div class="placeholder-item">
-            <mat-icon>add_box</mat-icon>
-            <span>Select one more house</span>
-          </div>
-        }
-      </div>
+@if (compareList$ | async; as list) { @if (list.length > 0) {
+<div class="compare-tray-wrapper">
+  <div class="tray-items">
+    @for (house of list; track house) {
+    <div class="tray-item">
+      <img
+        [src]="house.photos?.[0] || 'assets/default-image.png'"
+        [alt]="house.name"
+      />
+      <span>{{ house.name }}</span>
       <button
-        mat-raised-button
-        color="primary"
-        class="compare-now-btn"
-        [disabled]="list.length !== 2"
-        (click)="goToComparePage()"
-        >
-        Compare Now ({{ list.length }}/2)
+        mat-icon-button
+        (click)="removeFromCompare(house.id)"
+        matTooltip="Remove from comparison"
+      >
+        <mat-icon>cancel</mat-icon>
       </button>
     </div>
-  }
-}
+    } @if (list.length < 2) {
+    <div class="placeholder-item">
+      <mat-icon>add_box</mat-icon>
+      <span>Select one more house</span>
+    </div>
+    }
+  </div>
+  <button
+    mat-raised-button
+    color="primary"
+    class="compare-now-btn"
+    [disabled]="list.length !== 2"
+    (click)="goToComparePage()"
+  >
+    Compare Now ({{ list.length }}/2)
+  </button>
+</div>
+} }

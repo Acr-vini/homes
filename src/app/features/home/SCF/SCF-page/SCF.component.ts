@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // ALTERADO
-
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HousingService } from '../../../../core/services/housing.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HouseCardsComponent } from '../../house-list/house-cards/house-cards-page/house-cards.component';
@@ -8,7 +7,7 @@ import { HousingLocation } from '../../../../core/interfaces/housinglocation.int
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { RouterModule, Router } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox'; // Vamos usar Checkbox
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
