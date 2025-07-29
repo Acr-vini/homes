@@ -38,14 +38,14 @@ export class MyListingsComponent implements OnInit {
   @Input() userId?: string;
 
   private housingService = inject(HousingService);
-  private router = inject(Router); // 1. Injete o Router
+  private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private spinner = inject(NgxSpinnerService);
   private authService = inject(AuthService);
 
-  allListings: HousingLocation[] = []; // Guarda a lista original
-  myListings: HousingLocation[] = []; // Lista filtrada para a tabela
+  allListings: HousingLocation[] = [];
+  myListings: HousingLocation[] = [];
   displayedColumns: string[] = ['photo', 'name', 'status', 'price', 'actions'];
   filterStatus: 'all' | 'active' | 'deleted' = 'all';
 
@@ -68,7 +68,7 @@ export class MyListingsComponent implements OnInit {
       .getHousesByCreatorId(this.userId)
       .subscribe((listings) => {
         this.allListings = listings;
-        this.applyFilter(); // Aplica o filtro inicial
+        this.applyFilter();
       });
   }
 
@@ -84,10 +84,6 @@ export class MyListingsComponent implements OnInit {
   }
 
   editHouse(house: HousingLocation): void {
-    // 2. Remova a lógica do Dialog
-    // const dialogRef = this.dialog.open(EditComponent, ...);
-
-    // 3. Adicione a navegação para a nova rota
     this.router.navigate(['/edit-house', house.id]);
   }
 

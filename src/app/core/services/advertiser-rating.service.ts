@@ -20,7 +20,7 @@ export class AdvertiserRatingService {
    * Adiciona uma nova avaliação de um anunciante.
    * @param ratingData Os dados da avaliação a serem salvos.
    */
-  // ALTERADO: O tipo do payload agora omite 'id' E 'createdAt'
+  //O tipo do payload agora omite 'id' E 'createdAt'
   addRating(
     ratingData: Omit<AdvertiserRating, 'id' | 'createdAt'>
   ): Observable<AdvertiserRating> {

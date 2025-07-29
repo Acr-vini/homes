@@ -17,7 +17,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
-// Define a "forma" dos dados que este componente espera receber
 export interface ReviewFormData {
   houseName: string;
   advertiserName: string;
@@ -41,7 +40,7 @@ export interface ReviewFormData {
 })
 export class AdvertiserReviewFormComponent {
   reviewForm: FormGroup;
-  // Usa um signal para controlar a seleção de estrelas de forma reativa
+  // Signal para controlar a seleção de estrelas de forma reativa
   rating = signal(0);
 
   constructor(

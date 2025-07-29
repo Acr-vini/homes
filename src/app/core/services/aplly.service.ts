@@ -9,7 +9,7 @@ import { User } from '../interfaces/user.interface';
 export class ApplyService {
   private http = inject(HttpClient);
 
-  private readonly API_URL = 'http://localhost:3000'; // URL do seu backend json-server
+  private readonly API_URL = 'http://localhost:3000';
 
   constructor() {}
 

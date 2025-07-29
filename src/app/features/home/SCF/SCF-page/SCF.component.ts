@@ -62,14 +62,13 @@ export class SCFComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
-  private router = inject(Router); // Certifique-se de que o Router está injetado
+  private router = inject(Router);
 
   housingLocationList: HousingLocation[] = [];
   filteredLocationList: HousingLocation[] = [];
 
   filterForm: FormGroup;
 
-  // 1. Renomeie estas variáveis para representar os limites do slider
   sliderMinPrice: number = 0;
   sliderMaxPrice: number = 1000000;
   displayMode = signal<'grid' | 'list' | 'map'>('grid'); // Define 'grid' como padrão
@@ -266,7 +265,6 @@ export class SCFComponent implements OnInit {
   }
 
   clearFilters(): void {
-    // 3. Modifique o reset para usar os valores absolutos do slider
     this.filterForm.reset({
       city: '',
       typeOfBusiness: '',
@@ -298,10 +296,7 @@ export class SCFComponent implements OnInit {
   }
 
   openCreateHouse() {
-    // A lógica antiga de dialog será substituída
-    // this.dialog.open(CreateComponent, ...);
-
-    // Nova lógica de navegação
+    // lógica de navegação
     this.router.navigate(['/create-house']);
   }
 
@@ -320,7 +315,7 @@ export class SCFComponent implements OnInit {
     }
   }
 
-  // Adicione este método para alternar para a visualização de mapa
+  // método para alternar para a visualização de mapa
   toggleMapView(): void {
     const currentMode = this.displayMode();
     if (currentMode === 'map') {

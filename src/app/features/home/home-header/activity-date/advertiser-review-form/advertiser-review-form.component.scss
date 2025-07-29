@@ -74,7 +74,7 @@
 
   .star-error {
     font-size: 0.75rem;
-    color: #f44336; // Cor de erro padrão do Material
+    color: #f44336;
   }
 }
 
@@ -87,7 +87,6 @@
   border-top: 1px solid var(--purpleWeak);
 }
 
-// Estilos de botão baseados no user-form
 .action-btn {
   padding: 0 24px !important;
   height: 48px !important;

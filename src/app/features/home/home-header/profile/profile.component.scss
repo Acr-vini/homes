@@ -2,12 +2,10 @@
   display: block;
   width: 100%;
 
-  // Estilo para os títulos das abas (My Profile, My Listings)
   ::ng-deep .mat-mdc-tab .mdc-tab__text-label {
     color: var(--text-color);
   }
 
-  // Estilo para o título do formulário de senha
   .password-form h3 {
     color: var(--text-color);
   }
@@ -18,7 +16,7 @@ mat-card {
   margin: 2rem auto;
   padding: 2rem;
   width: 100%;
-  max-width: 1200px; /* Ajuste este valor conforme necessário */
+  max-width: 1200px;
 }
 .full-width {
   width: 100%;
@@ -39,7 +37,7 @@ mat-card {
   max-width: 500px;
   min-height: 420px;
   margin: 2rem auto;
-  padding: 0; // Garante que o card principal não tenha padding
+  padding: 0;
   background-color: var(--cardBck);
   border-radius: 16px;
   box-shadow: 0 4px 10px #381c9e49;
@@ -53,7 +51,7 @@ mat-card {
   }
 
   mat-card-title {
-    padding: 2rem 2rem 0 2rem; // Adiciona padding apenas ao título
+    padding: 2rem 2rem 0 2rem;
     flex-shrink: 0;
     font-size: 2rem;
     font-weight: bold;
@@ -63,18 +61,16 @@ mat-card {
   }
 
   mat-card-content {
-    padding: 0; // O contêiner de conteúdo não tem padding
-    overflow-y: auto; // E gerencia o scroll
+    padding: 0;
+    overflow-y: auto;
     flex-grow: 1;
   }
 }
 
-// Wrapper interno que aplica o padding ao conteúdo do perfil
 .profile-content-wrapper {
   padding: 2rem;
 }
 
-// Estilos para os formulários dentro do perfil
 form {
   display: flex;
   flex-direction: column;
@@ -102,9 +98,7 @@ form {
   margin-top: 1rem;
 }
 
-// Estilos para as abas
 mat-tab-group {
-  // Adiciona um espaçamento no topo do conteúdo da aba para criar o gap
   ::ng-deep .mat-mdc-tab-body-content {
     padding-top: 2rem;
   }

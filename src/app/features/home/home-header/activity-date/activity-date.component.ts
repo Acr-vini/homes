@@ -8,7 +8,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin, of } from 'rxjs';
-// CORREÇÃO: Adicionado 'tap' à lista de operadores importados do RxJS
 import { switchMap, map, finalize, catchError, tap } from 'rxjs/operators';
 
 import { ApplicationService } from '../../../../core/services/application.service';
@@ -21,7 +20,6 @@ import { AdvertiserRatingService } from '../../../../core/services/advertiser-ra
 import { AdvertiserReviewFormComponent } from '../activity-date/advertiser-review-form/advertiser-review-form.component';
 import { AdvertiserRating } from '../../../../core/interfaces/advertiser-rating.interface';
 
-// CORREÇÃO: Criado um tipo para o objeto "enriquecido" para clareza e para satisfazer o TypeScript
 type EnrichedApplication = Application & {
   photoUrl?: string;
 };
@@ -41,7 +39,6 @@ type EnrichedApplication = Application & {
   styleUrls: ['./activity-date.component.scss'],
 })
 export class ActivityDateComponent implements OnInit {
-  // As propriedades agora usam o novo tipo para consistência
   applications: EnrichedApplication[] = [];
   upcomingApplications: EnrichedApplication[] = [];
   expiredApplications: EnrichedApplication[] = [];
@@ -210,7 +207,6 @@ export class ActivityDateComponent implements OnInit {
       });
   }
 
-  // CORREÇÃO: Adicionado tipo explícito ao parâmetro 'apps'
   sortApplications(apps: EnrichedApplication[]): void {
     const now = new Date();
     this.upcomingApplications = [];
@@ -360,9 +356,16 @@ export class ActivityDateComponent implements OnInit {
   }
 
   viewDetails(app: Application): void {
-    this.router.navigate(['/details-application'], {
-      state: { ...app },
-    });
+    if (app.houseId) {
+      this.router.navigate(['/details', app.houseId]);
+    } else {
+      console.error('Aplicação sem houseId. Não é possível navegar.', app);
+      this.snackBar.open(
+        '❌ Could not find the associated property.',
+        'Close',
+        { duration: 3000 }
+      );
+    }
   }
 
   confirmDeleteApplication(app: Application): void {

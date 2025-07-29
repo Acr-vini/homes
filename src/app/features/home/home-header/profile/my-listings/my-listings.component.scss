@@ -1,5 +1,5 @@
 .my-listings-container {
-  padding: 0 2rem; /* Adiciona espaçamento nas laterais */
+  padding: 0 2rem;
 }
 
 .listings-header {
@@ -23,7 +23,6 @@
   .filter-select {
     width: 200px;
 
-    // Estilos para diminuir a altura do filtro
     ::ng-deep .mat-mdc-form-field-flex {
       height: 48px !important;
     }
@@ -37,12 +36,12 @@
 
 .table-container {
   width: 100%;
-  overflow-x: auto; // Adiciona a barra de rolagem horizontal ao contêiner
+  overflow-x: auto;
 }
 
 .listings-table {
   width: 100%;
-  min-width: 800px; // Força a tabela a ter um tamanho mínimo, ativando o scroll
+  min-width: 800px;
 }
 
 .listing-thumbnail {
@@ -60,11 +59,11 @@
   color: white;
 
   &.status-active {
-    background-color: #4caf50; // Verde
+    background-color: #4caf50;
   }
 
   &.status-deleted {
-    background-color: #f44336; // Vermelho
+    background-color: #f44336;
   }
 }
 

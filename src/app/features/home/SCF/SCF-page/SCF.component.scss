@@ -108,24 +108,24 @@
 .price-filter-container {
   display: flex;
   flex-direction: column;
-  align-items: center; // Centraliza o slider
+  align-items: center;
   width: 100%;
 
   .mat-body-strong {
     width: 100%;
     text-align: center;
-    margin-bottom: 0; // Remove a margem padrão
+    margin-bottom: 0;
   }
 
   .price-slider {
-    width: 90%; // Usa 90% da largura para não encostar nas bordas
+    width: 90%;
   }
 
   .price-labels {
     display: flex;
-    justify-content: space-between; // Cria o espaço entre os valores
+    justify-content: space-between;
     width: 95%;
-    margin-top: -8px; // Sobe um pouco os labels para perto do slider
+    margin-top: -8px;
     font-size: 0.9rem;
     color: var(--text-color);
     opacity: 0.8;
@@ -263,7 +263,7 @@
 }
 
 .view-toggle {
-  margin-right: 8px; // Adiciona um pequeno espaço antes do novo botão
+  margin-right: 8px;
 }
 
 .view-toggle-map {
@@ -275,7 +275,7 @@
 }
 
 .map-view-container {
-  height: calc(100vh - 200px); // Altura calculada para preencher a tela
+  height: calc(100vh - 200px);
   width: 100%;
   padding: 1rem 0;
 }

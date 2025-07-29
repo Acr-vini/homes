@@ -81,7 +81,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       if (params['tab'] === 'listings') {
-        this.selectedTabIndex = 1; // Assumindo que 'My Listings' é a segunda aba (índice 1)
+        this.selectedTabIndex = 1;
       }
     });
   }

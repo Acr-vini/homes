@@ -10,7 +10,7 @@
   width: 100%;
   max-width: 800px;
   padding: 2rem;
-  position: relative; /* Necessário para o posicionamento absoluto do filho */
+  position: relative;
 }
 
 .mat-card-title {
@@ -35,7 +35,7 @@ h4 {
 .form-toolbar {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: -1rem; /* Puxa o formulário para mais perto */
+  margin-bottom: -1rem;
 }
 
 form {
@@ -59,7 +59,6 @@ form {
   gap: 2rem;
   margin-bottom: 1rem;
 
-  // Seletor específico para o texto da checkbox
   ::ng-deep .mat-mdc-checkbox .mdc-form-field label {
     color: var(--text-color) !important;
   }
@@ -81,13 +80,12 @@ form {
   margin-bottom: 1rem;
 }
 
-// ALTERAÇÃO: Estilo do container da imagem de preview
 .image-preview {
-  position: relative; // Essencial para o posicionamento do botão
+  position: relative;
   width: 150px;
   height: 150px;
   border-radius: 8px;
-  overflow: hidden; // Garante que a imagem e o overlay fiquem dentro das bordas
+  overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   img {
@@ -97,39 +95,34 @@ form {
     transition: transform 0.3s ease;
   }
 
-  // Efeito de hover no container
   &:hover {
     img {
-      transform: scale(1.05); // Leve zoom na imagem
+      transform: scale(1.05);
     }
     .remove-image-btn {
-      opacity: 1; // Botão fica totalmente visível
+      opacity: 1;
       transform: scale(1);
     }
   }
 }
 
-// ALTERAÇÃO: Novo estilo para o botão de remover
 .remove-image-btn {
   position: absolute;
   top: 8px;
   right: 8px;
   z-index: 2;
 
-  // Estilo do botão
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   width: 32px;
   height: 32px;
 
-  // Centraliza o ícone perfeitamente
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
 
-  // Efeitos de transição e estado inicial
-  opacity: 0; // Começa invisível
+  opacity: 0;
   transform: scale(0.8);
   transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
 
@@ -141,7 +134,7 @@ form {
   }
 
   &:hover {
-    background-color: #f44336; // Fica vermelho ao passar o mouse sobre ele
+    background-color: #f44336;
   }
 }
 
@@ -160,14 +153,13 @@ form {
   }
 }
 
-/* Esconde o input de arquivo real */
 #file-upload-input {
   display: none;
 }
 
 .actions {
   display: flex;
-  justify-content: center; /* Centraliza os botões */
+  justify-content: center;
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1rem;
@@ -184,7 +176,7 @@ form {
 }
 
 .save-btn {
-  background-color: var(--purpleBck) !important; /* Usa a variável roxa */
+  background-color: var(--purpleBck) !important;
   color: white !important;
 }
 
@@ -221,7 +213,6 @@ form {
   width: 100%;
 }
 
-// Estilos para o calendário de aluguel
 .availability-instructions {
   font-size: 0.9rem;
   color: #666;
@@ -234,7 +225,6 @@ form {
   border-radius: 4px;
 }
 
-// Estilo para destacar as datas selecionadas no calendário
 ::ng-deep .mat-calendar-body .selected-date .mat-calendar-body-cell-content {
   background-color: var(--purpleBck) !important;
   color: white !important;
@@ -244,14 +234,13 @@ form {
 .time-range-container {
   display: flex;
   gap: 1rem;
-  margin-top: 1.5rem; // Adicione esta linha para criar o espaçamento
+  margin-top: 1.5rem;
 }
 
 .time-field {
   flex: 1;
 }
 
-// MODIFIQUE O ESTILO DO BOTÃO PARA REMOVER O POSICIONAMENTO ABSOLUTO
 .clear-form-btn {
   color: var(--text-color);
 }

@@ -3,7 +3,7 @@
 }
 .page-container {
   display: flex;
-  flex-wrap: wrap; // PERMITE QUE OS ITENS QUEBREM PARA A PRÓXIMA LINHA
+  flex-wrap: wrap;
   gap: 24px;
   padding: 40px;
   align-items: flex-start;
@@ -49,11 +49,10 @@
   font-weight: 500;
   color: var(--text-color);
   margin-bottom: 25px;
-  /* Adicione estas propriedades para alinhar o ícone e o texto */
   display: flex;
   align-items: center;
-  justify-content: center; /* Mantém o grupo centralizado */
-  gap: 8px; /* Adiciona um pequeno espaço entre o ícone e o texto */
+  justify-content: center;
+  gap: 8px;
 }
 
 .listing-features .section-heading {
@@ -104,7 +103,6 @@ label {
   margin-top: 10px;
 }
 
-// Altere o seletor de 'input' para '.form-input'
 .form-input {
   font-size: 16pt;
   margin-bottom: 15px;
@@ -118,7 +116,6 @@ label {
   color: var(--text-color);
 }
 
-// Altere o seletor de 'input:focus' para '.form-input:focus'
 .form-input:focus {
   outline: none;
   border-color: var(--text-color);
@@ -271,7 +268,6 @@ button.primary:hover {
   gap: 1rem;
 }
 
-// Torne este seletor mais específico para não afetar os campos de data
 .apply-form > .form-input {
   border: none;
   border-bottom: 1px solid var(--purpleWeak);
@@ -292,17 +288,16 @@ button.primary:hover {
   display: flex;
   gap: 1rem;
   width: 100%;
-  align-items: flex-start; /* Alinha os itens no topo */
+  align-items: flex-start;
 }
 
-/* Nova classe para o seletor de período */
 .form-field-range {
-  width: 100%; /* Faz o seletor de período ocupar toda a largura */
+  width: 100%;
 }
 
 .full-width-btn {
   width: 100%;
-  margin-top: 1rem; /* Adiciona espaço acima do botão */
+  margin-top: 1rem;
 }
 
 .primary {
@@ -329,19 +324,19 @@ button.primary:hover {
 }
 .heading-section,
 .listing-features {
-  flex: 1 1 300px; // Define a base e o crescimento das informações
+  flex: 1 1 300px;
   order: 2;
 }
 
 .listing-apply {
-  flex: 1 1 350px; // Define a base e o crescimento do formulário
+  flex: 1 1 350px;
   order: 2;
   position: sticky;
   top: 10px;
 }
 
 .image-container {
-  flex: 1 1 500px; // Define a base e o crescimento da imagem
+  flex: 1 1 500px;
   order: 1;
 }
 

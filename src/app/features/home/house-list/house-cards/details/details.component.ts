@@ -80,7 +80,6 @@ export const APP_DATE_FORMATS = {
   styleUrls: ['./details.component.scss'],
 })
 export class DetailsComponent implements OnInit, OnDestroy {
-  // --- Injeção de Dependências ---
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly housingService = inject(HousingService);
@@ -238,7 +237,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
 
     const { startTime, endTime } = this.housingLocation.visitAvailability;
-    const allTimes = this.availableTimes; // Usando a lista completa de horários
+    const allTimes = this.availableTimes;
 
     if (startTime && endTime) {
       const startIndex = allTimes.indexOf(startTime);
@@ -337,7 +336,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
     if (!d) {
       return false;
     }
-    // Garante que a comparação ignore a parte de "hora" da data
     const time = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
     const isAfterMin =
       !this.visitMinDate ||
