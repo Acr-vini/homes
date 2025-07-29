@@ -1,0 +1,67 @@
+<mat-card class="review-card">
+  <mat-card-title>Rate the service for "{{ data.houseName }}"</mat-card-title>
+
+  <p class="review-subtitle">How was your experience with the advertiser?</p>
+
+  <!-- Sistema de Estrelas Interativo -->
+  <div class="star-rating-container">
+    <div class="stars">
+      @for (star of [1, 2, 3, 4, 5]; track star) {
+      <button
+        mat-icon-button
+        (click)="setRating(star)"
+        [attr.aria-label]="'Rate ' + star + ' stars'"
+      >
+        <mat-icon>{{ rating() >= star ? "star" : "star_border" }}</mat-icon>
+      </button>
+      }
+    </div>
+    @if (rating() === 0 && reviewForm.touched) {
+    <mat-error class="star-error">Please select a rating.</mat-error>
+    }
+  </div>
+
+  <!-- Formulário de Comentário -->
+  <form [formGroup]="reviewForm">
+    <mat-form-field class="full-width">
+      <mat-label>Leave your comment</mat-label>
+      <textarea
+        matInput
+        formControlName="comment"
+        rows="4"
+        placeholder="Describe your experience with the service, punctuality, etc."
+        required
+      ></textarea>
+      @if(reviewForm.get('comment')?.hasError('required') &&
+      reviewForm.get('comment')?.touched) {
+      <mat-error>The comment is required.</mat-error>
+      } @if(reviewForm.get('comment')?.hasError('minlength') &&
+      reviewForm.get('comment')?.touched) {
+      <mat-error>The comment must be at least 10 characters long.</mat-error>
+      }
+    </mat-form-field>
+  </form>
+
+  <!-- Ações -->
+  <div class="review-actions">
+    <button
+      mat-stroked-button
+      class="action-btn cancel-btn"
+      type="button"
+      (click)="dialogRef.close()"
+    >
+      <mat-icon>cancel</mat-icon>
+      <span>Cancel</span>
+    </button>
+    <button
+      mat-flat-button
+      class="action-btn submit-btn"
+      type="button"
+      (click)="submitReview()"
+      [disabled]="reviewForm.invalid || rating() === 0"
+    >
+      <mat-icon>send</mat-icon>
+      <span>Submit Review</span>
+    </button>
+  </div>
+</mat-card>

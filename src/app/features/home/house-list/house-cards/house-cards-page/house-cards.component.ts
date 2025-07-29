@@ -42,10 +42,8 @@ export class HouseCardsComponent {
   private router = inject(Router);
   private compareService = inject(CompareService);
 
-  // --- ADICIONE ESTAS PROPRIEDADES ---
   currentImageIndex = 0;
   private imageCycleInterval: any;
-  // ------------------------------------
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -71,7 +69,6 @@ export class HouseCardsComponent {
     return this.favoriteIds.includes(String(house.id));
   }
 
-  // --- ADICIONE ESTES DOIS MÉTODOS ---
   startImageCycle(): void {
     if (this.housingLocation.photos.length > 1) {
       this.imageCycleInterval = setInterval(() => {
@@ -87,7 +84,6 @@ export class HouseCardsComponent {
     this.currentImageIndex = 0;
     this.cdr.detectChanges(); // Garante que a imagem volte para a primeira
   }
-  // ------------------------------------
 
   toggleFavorite(house: HousingLocation): void {
     if (!this.currentUserId) {

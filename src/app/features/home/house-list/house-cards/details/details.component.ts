@@ -96,16 +96,14 @@ export class DetailsComponent implements OnInit, OnDestroy {
     localStorage.getItem('currentUser') || 'null'
   );
   today = new Date();
-  // Adicione estas duas propriedades:
   visitMinDate: Date | null = null;
   visitMaxDate: Date | null = null;
-  readonly availableTimes = AvailableTimes; // 2. ADICIONE ESTA PROPRIEDADE
+  readonly availableTimes = AvailableTimes;
 
   availableVisitTimes: string[] = [];
   availableCheckInDates: string[] = [];
   private dateChangeSub: Subscription | undefined;
-  currentImageIndex = 0; // <-- ADICIONE ESTA PROPRIEDADE
-
+  currentImageIndex = 0;
   constructor() {
     this.applyForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -142,7 +140,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
             return;
           }
           this.housingLocation = location;
-          this.processAvailability(location); // <-- 1. CHAME O NOVO MÉTODO AQUI
+          this.processAvailability(location);
           this.setupConditionalValidators();
           this.patchUserForm();
           setTimeout(() => this.initMap(), 0);
@@ -162,7 +160,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.dateChangeSub?.unsubscribe();
   }
 
-  // 2. ADICIONE ESTE MÉTODO
   processAvailability(location: HousingLocation) {
     if (location.typeOfBusiness === 'sell' && location.visitAvailability) {
       if (location.visitAvailability.startDate) {
@@ -173,10 +170,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
         this.visitMaxDate = new Date(location.visitAvailability.endDate);
       }
     }
-    // Adicione aqui a lógica para 'rent' se necessário no futuro
   }
 
-  // ADICIONE ESTA FUNÇÃO
   visitDateFilter = (d: Date | null): boolean => {
     if (!d) {
       return false;
@@ -242,7 +237,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // AQUI ESTÁ A CORREÇÃO:
     const { startTime, endTime } = this.housingLocation.visitAvailability;
     const allTimes = this.availableTimes; // Usando a lista completa de horários
 
@@ -339,7 +333,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Adicione esta função de filtro
   visitdateFilter = (d: Date | null): boolean => {
     if (!d) {
       return false;
@@ -518,7 +511,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  // --- ADICIONE ESTES DOIS MÉTODOS ---
   nextImage(): void {
     if (this.housingLocation && this.housingLocation.photos.length > 1) {
       this.currentImageIndex =

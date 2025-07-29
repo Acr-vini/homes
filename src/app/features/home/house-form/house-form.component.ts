@@ -208,7 +208,6 @@ export class HouseFormComponent implements OnInit {
           if (house) {
             this.form.patchValue(house);
 
-            // AQUI ESTÁ A CORREÇÃO:
             // 1. Limpa o FormArray e as pré-visualizações existentes.
             this.photosFormArray.clear();
             this.imagePreviews.set([]);

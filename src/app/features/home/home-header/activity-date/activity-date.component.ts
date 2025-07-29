@@ -5,15 +5,26 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ApplicationService } from '../../../../core/services/application.service';
-import { Application } from '../../../../core/interfaces/application.interface';
-import { HousingService } from '../../../../core/services/housing.service';
-import { ActivityDateModalComponent } from './activity-date-modal/activity-date-modal.component';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, of } from 'rxjs';
-import { switchMap, map, finalize, catchError } from 'rxjs/operators';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { forkJoin, of } from 'rxjs';
+// CORREÇÃO: Adicionado 'tap' à lista de operadores importados do RxJS
+import { switchMap, map, finalize, catchError, tap } from 'rxjs/operators';
+
+import { ApplicationService } from '../../../../core/services/application.service';
+import { HousingService } from '../../../../core/services/housing.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { Application } from '../../../../core/interfaces/application.interface';
+import { ActivityDateModalComponent } from './activity-date-modal/activity-date-modal.component';
+
+import { AdvertiserRatingService } from '../../../../core/services/advertiser-rating.service';
+import { AdvertiserReviewFormComponent } from '../activity-date/advertiser-review-form/advertiser-review-form.component';
+import { AdvertiserRating } from '../../../../core/interfaces/advertiser-rating.interface';
+
+// CORREÇÃO: Criado um tipo para o objeto "enriquecido" para clareza e para satisfazer o TypeScript
+type EnrichedApplication = Application & {
+  photoUrl?: string;
+};
 
 @Component({
   selector: 'app-activity-date',
@@ -30,9 +41,10 @@ import { NotificationService } from '../../../../core/services/notification.serv
   styleUrls: ['./activity-date.component.scss'],
 })
 export class ActivityDateComponent implements OnInit {
-  applications: Array<Application & { photoUrl?: string }> = [];
-  upcomingApplications: Array<Application & { photoUrl?: string }> = [];
-  expiredApplications: Array<Application & { photoUrl?: string }> = [];
+  // As propriedades agora usam o novo tipo para consistência
+  applications: EnrichedApplication[] = [];
+  upcomingApplications: EnrichedApplication[] = [];
+  expiredApplications: EnrichedApplication[] = [];
 
   currentUserId: string | null = null;
   isLoading: boolean = false;
@@ -60,7 +72,8 @@ export class ActivityDateComponent implements OnInit {
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private spinner: NgxSpinnerService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private advertiserRatingService: AdvertiserRatingService
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +85,6 @@ export class ActivityDateComponent implements OnInit {
     }
 
     this.loadApplications();
-
     this.notificationService.clearNotifications();
   }
 
@@ -82,39 +94,114 @@ export class ActivityDateComponent implements OnInit {
     }
     this.isLoading = true;
     this.spinner.show();
-    this.applicationService
-      .getByUser(this.currentUserId)
+    console.log('[DEBUG] Iniciando loadApplications...');
+
+    const userApplications$ = this.applicationService.getByUser(
+      this.currentUserId
+    );
+    const userRatings$ = this.advertiserRatingService
+      .getRatingsByReviewer(this.currentUserId)
+      .pipe(catchError(() => of([])));
+
+    forkJoin({
+      apps: userApplications$,
+      ratings: userRatings$,
+    })
       .pipe(
-        switchMap((apps) => {
-          if (apps.length === 0) {
-            return of([]);
-          }
-          const observablesComFoto = apps.map((app) =>
-            this.housingService.getHousingLocationById(app.houseId).pipe(
-              map((location) => ({
-                ...app,
-                photoUrl: location.photos?.[0] || 'path/to/default/image.png',
-              })),
-              catchError(() =>
-                of({ ...app, photoUrl: 'path/to/default/image.png' })
-              )
-            )
+        tap(({ apps, ratings }) => {
+          console.log(
+            '[DEBUG] forkJoin inicial COMPLETO. Aplicações recebidas:',
+            apps.length,
+            'Avaliações recebidas:',
+            ratings.length
           );
-          return forkJoin(observablesComFoto);
+        }),
+        switchMap(
+          ({
+            apps,
+            ratings,
+          }: {
+            apps: Application[];
+            ratings: AdvertiserRating[];
+          }) => {
+            if (apps.length === 0) {
+              console.log(
+                '[DEBUG] Nenhuma aplicação encontrada. Encerrando fluxo.'
+              );
+              return of([]);
+            }
+
+            console.log(
+              '[DEBUG] Entrando no switchMap para enriquecer os dados...'
+            );
+            const ratedActivityIds = new Set(
+              ratings.map((r) => String(r.activityId))
+            );
+
+            const observablesComFoto = apps.map((app) => {
+              console.log(
+                `[DEBUG] Preparando busca de detalhes para a aplicação ID: ${app.id}, Casa ID: ${app.houseId}`
+              );
+              return this.housingService
+                .getHousingLocationById(app.houseId)
+                .pipe(
+                  map((location) => {
+                    console.log(
+                      `[DEBUG] Detalhes da Casa ID ${app.houseId} RECEBIDOS.`
+                    );
+                    return {
+                      ...app,
+                      photoUrl:
+                        location.photos?.[0] || 'path/to/default/image.png',
+                      advertiserId: location.ownerId,
+                      advertiserName: location.ownerName || 'Anunciante',
+                      hasBeenReviewed: ratedActivityIds.has(String(app.id)),
+                    };
+                  }),
+                  catchError(() => {
+                    console.warn(
+                      `[DEBUG] ERRO ao buscar detalhes da Casa ID ${app.houseId}. Retornando fallback.`
+                    );
+                    return of({
+                      ...app,
+                      photoUrl: 'path/to/default/image.png',
+                      hasBeenReviewed: ratedActivityIds.has(String(app.id)),
+                    });
+                  })
+                );
+            });
+
+            console.log(
+              `[DEBUG] Disparando forkJoin para buscar ${observablesComFoto.length} detalhes de casas...`
+            );
+            return forkJoin(observablesComFoto);
+          }
+        ),
+        tap((appsCompletas) => {
+          console.log(
+            '[DEBUG] forkJoin final COMPLETO. Dados enriquecidos:',
+            appsCompletas.length
+          );
         }),
         finalize(() => {
+          console.log(
+            '[DEBUG] Operador finalize EXECUTADO. Escondendo o spinner.'
+          );
           this.spinner.hide();
           this.isLoading = false;
         })
       )
       .subscribe({
-        next: (appsCompletas) => {
+        next: (appsCompletas: any[]) => {
+          console.log(
+            '[DEBUG] subscribe NEXT EXECUTADO. Ordenando aplicações.'
+          );
           this.applications = appsCompletas;
           this.sortApplications(appsCompletas);
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Falha ao buscar as aplicações do usuário', err);
+          console.error('[DEBUG] subscribe ERRO EXECUTADO.', err);
           this.snackBar.open('❌ Failed to load applications.', 'Close', {
             duration: 3000,
           });
@@ -123,7 +210,8 @@ export class ActivityDateComponent implements OnInit {
       });
   }
 
-  sortApplications(apps: Array<Application & { photoUrl?: string }>): void {
+  // CORREÇÃO: Adicionado tipo explícito ao parâmetro 'apps'
+  sortApplications(apps: EnrichedApplication[]): void {
     const now = new Date();
     this.upcomingApplications = [];
     this.expiredApplications = [];
@@ -171,6 +259,68 @@ export class ActivityDateComponent implements OnInit {
     });
   }
 
+  openReviewDialog(app: Application): void {
+    const dialogRef = this.dialog.open(AdvertiserReviewFormComponent, {
+      width: '500px',
+      data: {
+        houseName: app.houseName,
+        advertiserName: app.advertiserName || 'the advertiser',
+      },
+      disableClose: true,
+      panelClass: 'review-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe(/* ... */);
+  }
+
+  private submitAdvertiserRating(
+    app: Application,
+    reviewData: { rating: number; comment: string }
+  ): void {
+    if (!this.currentUserId || !app.advertiserId) {
+      this.snackBar.open('❌ User or Advertiser ID is missing.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    this.spinner.show();
+
+    const ratingPayload: Omit<AdvertiserRating, 'id' | 'createdAt'> = {
+      activityId: app.id,
+      reviewerId: this.currentUserId,
+      reviewerName: app.name,
+      advertiserId: app.advertiserId,
+      rating: reviewData.rating,
+      comment: reviewData.comment,
+    };
+
+    this.advertiserRatingService
+      .addRating(ratingPayload)
+      .pipe(finalize(() => this.spinner.hide()))
+      .subscribe({
+        next: () => {
+          this.snackBar.open('✅ Thank you for your feedback!', 'Close', {
+            duration: 3000,
+          });
+          const targetApp = this.expiredApplications.find(
+            (a) => a.id === app.id
+          );
+          if (targetApp) {
+            targetApp.hasBeenReviewed = true;
+          }
+        },
+        error: (err) => {
+          console.error('Failed to submit rating', err);
+          this.snackBar.open(
+            '❌ There was an error submitting your review.',
+            'Close',
+            { duration: 3000 }
+          );
+        },
+      });
+  }
+
   clearAllExpired(): void {
     if (this.expiredApplications.length === 0) return;
 
@@ -195,7 +345,7 @@ export class ActivityDateComponent implements OnInit {
               'Close',
               { duration: 3000 }
             );
-            this.expiredApplications = []; // Limpa a lista na UI
+            this.expiredApplications = [];
           },
           error: (err) => {
             console.error('Failed to delete all expired applications', err);
@@ -226,17 +376,6 @@ export class ActivityDateComponent implements OnInit {
     });
   }
 
-  confirmCancelApplication(app: Application): void {
-    const snackBarRef = this.snackBar.open(
-      'Are you sure you want to cancel this visit or stay?',
-      'Yes',
-      { duration: 5000 }
-    );
-    snackBarRef.onAction().subscribe(() => {
-      this.cancelApplication(app);
-    });
-  }
-
   deleteApplication(app: Application): void {
     this.spinner.show();
     this.applicationService
@@ -248,20 +387,7 @@ export class ActivityDateComponent implements OnInit {
       });
   }
 
-  cancelApplication(app: Application): void {
-    if (app.typeOfBusiness === 'sell') {
-      app.visitDate = '';
-      app.visitTime = '';
-    } else {
-      app.checkInDate = '';
-      app.checkOutDate = '';
-    }
-    this.applicationService.update(app.id, app).subscribe(() => {
-      this.snackBar.open('✅ Visit or stay canceled!', '', { duration: 2000 });
-    });
-  }
-
-  editApplication(application: any) {
+  editApplication(application: any): void {
     const dialogRef = this.dialog.open(ActivityDateModalComponent, {
       width: '600px',
       data: {
@@ -272,10 +398,7 @@ export class ActivityDateComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const updatedApplicationData = {
-          ...application,
-          ...result,
-        };
+        const updatedApplicationData = { ...application, ...result };
         this.spinner.show();
         this.applicationService
           .update(updatedApplicationData.id, updatedApplicationData)

@@ -290,3 +290,31 @@
   font-weight: bold;
   color: var(--purpleBck);
 }
+
+.hover-actions {
+  .rate-btn {
+    background-color: #ffc107;
+    color: rgba(0, 0, 0, 0.87);
+  }
+}
+
+.reviewed-overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background-color: rgba(33, 150, 243, 0.9);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  pointer-events: none;
+  mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+}

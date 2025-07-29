@@ -1,6 +1,8 @@
 export interface HousingLocation {
   id: string;
   name: string;
+
+  ownerName?: string;
   street: string;
   number: string;
   neighborhood: string;

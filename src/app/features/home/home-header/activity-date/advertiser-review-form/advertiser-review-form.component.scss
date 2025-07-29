@@ -1,0 +1,109 @@
+.review-card {
+  max-width: 450px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2rem 2rem;
+  border-radius: 16px;
+  background: var(--cardBck, #fff);
+  box-shadow: 0 4px 18px #381c9e33;
+  color: var(--text-color, #222);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  mat-card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+    color: var(--titleAC, #381c9e);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .review-subtitle {
+    text-align: center;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: var(--purpleWeak);
+    border-radius: 8px;
+  }
+}
+
+.star-rating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  .stars {
+    display: flex;
+  }
+
+  button {
+    padding: 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #ffc107;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  button:hover mat-icon {
+    transform: scale(1.15);
+  }
+
+  .star-error {
+    font-size: 0.75rem;
+    color: #f44336; // Cor de erro padrão do Material
+  }
+}
+
+.review-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--purpleWeak);
+}
+
+// Estilos de botão baseados no user-form
+.action-btn {
+  padding: 0 24px !important;
+  height: 48px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-weight: 600 !important;
+}
+
+.submit-btn {
+  background-color: var(--purpleBck) !important;
+  color: white !important;
+}
+
+.cancel-btn {
+  border-color: var(--purpleBck) !important;
+  color: var(--purpleBck) !important;
+}

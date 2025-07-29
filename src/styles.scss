@@ -163,7 +163,20 @@ mat-card {
 .mat-paginator-icon-button.mat-button-disabled {
   opacity: 0.4;
 }
+.review-dialog-container {
+  // Zera o padding e o fundo do container principal do dialog
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
 
+  // Zera o fundo e a sombra da "superfície" interna onde o componente é renderizado
+  .mdc-dialog__surface {
+    background: none !important;
+    box-shadow: none !important;
+  }
+}
 // ==========================================================================
 // 6. CLASSES DE UTILIDADE REUTILIZÁVEIS
 // ==========================================================================

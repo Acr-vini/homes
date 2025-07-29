@@ -1,7 +1,11 @@
 export interface Application {
   id: string;
-  userId: string;
   houseId: string;
+  userId: string;
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
   typeOfBusiness: 'sell' | 'rent';
   houseName: string;
   city: string;
@@ -11,4 +15,9 @@ export interface Application {
   checkInDate?: string;
   checkOutDate?: string;
   timestamp: string;
+
+  // --- CAMPOS PARA A LÓGICA DE AVALIAÇÃO ---
+  hasBeenReviewed?: boolean;
+  advertiserId?: string;
+  advertiserName?: string;
 }
